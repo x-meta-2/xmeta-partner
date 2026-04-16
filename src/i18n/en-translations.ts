@@ -1,0 +1,315 @@
+type Messages = Record<string, string>;
+
+type Namespaces = {
+  common: Messages;
+  nav: Messages;
+  auth: Messages;
+  home: Messages;
+  dashboard: Messages;
+  news: Messages;
+  table: Messages;
+  'buy-now': Messages;
+  convert: Messages;
+  security: Messages;
+};
+
+export const enTranslations: Namespaces = {
+  common: {
+    'not-found.title': 'Page not found',
+    'not-found.description': 'The page you are looking for could not be found.',
+    'no-data': 'No data available',
+    'error-occurred': 'An error occurred',
+    success: 'Success',
+  },
+  nav: {
+    buy: 'Buy now',
+    market: 'Market',
+    convert: 'Convert',
+    exchange: 'Exchange',
+    deposit: 'Deposit',
+    withdraw: 'Withdraw',
+    bankDeposit: 'Bank deposit',
+    cryptoDeposit: 'Crypto deposit',
+    buyNow: 'Buy now',
+    buyNowDescription:
+      'Buy crypto instantly with your bank card or supported payment methods.',
+    cryptoDepositDescription:
+      'I already have crypto and want to transfer them To X-Meta.',
+    bankDepositDescription:
+      'I want to deposit fiat money from my bank account to X-Meta.',
+    'binance-safu': 'Protected by Binance SAFU',
+    spot: 'Spot trade',
+    futures: 'Futures trade',
+    news: 'News',
+    instant: 'Instant',
+    'get-mobile': 'Get Mobile',
+    'download-app': 'Download App',
+    'dark-mode': 'Dark Mode',
+  },
+  auth: {
+    'login.title': 'Login',
+    'login.subtitle': 'Please make sure you are visiting the correct URL.',
+    'login.button': 'Login',
+    'confirm.button': 'Confirm',
+    'login.forgot-password': 'Forgot password?',
+    'register.title': 'Sign up',
+    'register.button': 'Sign up',
+    'register.phone.title': 'Verify your phone number',
+    'register.phone.description':
+      'Enter your phone number to recieve a verification code.',
+    'verify.email.title': 'Verify Email',
+    'verify.email.description': 'Enter the 6-digit code we texted to',
+    'verify.phone.title': 'Verify your phone number',
+    'verify.phone.description': 'Enter the 6-digit code we texted to',
+    'forgot.title': 'Reset password',
+    'forgot.subtitle':
+      'Enter your registered email address and we will send you a one-time code.',
+    'forgot.button': 'Reset password',
+    email: 'Email address',
+    password: 'Password',
+    'password.confirm': 'Confirm password',
+    logout: 'Logout',
+    continue: 'Continue',
+  },
+  home: {},
+  dashboard: {
+    'menu.overview': 'Overview',
+    'menu.wallet': 'Wallet',
+    'menu.orders': 'Orders',
+    'menu.settings': 'Settings',
+    'menu.staking': 'Staking',
+    'menu.restore': 'Asset recovery',
+    details: 'Details',
+    spot: 'Spot',
+    futures: 'Futures',
+    earn: 'Earn',
+    'spot-history': 'Spot orders',
+    'futures-history': 'Futures orders',
+    'transaction-history': 'Transaction history',
+    profile: 'Profile',
+    'account-security': 'Account security',
+    'overview.status': 'Status',
+    'overview.not-verified': 'Not Verified',
+    'overview.verified': 'Verified',
+    'overview.rank': 'Rank',
+    'overview.see-profile': 'See Profile',
+    'overview.total-asset-valuation': 'Total asset valuation',
+    'overview.today-pnl': "Today's Change",
+    'spot.estimated-balance': 'Estimated Balance',
+    'futures.margin-balance': 'Margin Balance',
+    'details.assets': 'Assets',
+    'details.total-assets-value': 'Total Assets Value',
+    'details.my-assets': 'My Assets',
+    'details.coin-view': 'Coin View',
+    'details.account-view': 'Account View',
+    'allocation.title': 'Crypto Allocation',
+    'allocation.empty.no-assets': 'No assets found',
+    'allocation.tooltip.top-holdings': 'Top Holdings:',
+    'allocation.tooltip.others': 'Others',
+    'allocation.tooltip.more-coins': 'more coins',
+    'allocation.total-value': 'Total Value',
+    'earn.est-total-value': 'Est. Total Value',
+    'earn.last-day-profits': 'Last Day Profits',
+    'earn.30-day-profits': '30 Day Profits',
+    'earn.90-day-profits': '90 Day Profits',
+    'staking.all-status': 'All status',
+    'staking.ongoing': 'Ongoing',
+    'staking.redeemed': 'Redeemed',
+    'staking.redeemable': 'Redeemable',
+    'staking.cancelled': 'cancelled',
+    edit: 'Edit',
+    personalInfo: 'Personal Information',
+    editNickname: 'Edit Nickname',
+    nicknameDescription:
+      'Choose a nickname that will be displayed to other users.',
+    newNickname: 'New Nickname',
+    cancel: 'Cancel',
+    save: 'Save',
+    editAvatar: 'Edit Avatar',
+    avatarDescription: 'Upload a new avatar to personalize your profile.',
+    countryOfResidency: 'Country of Residency',
+    legalName: 'Legal Name',
+    username: 'Username',
+    email: 'Email',
+    phoneNumber: 'Phone Number',
+    preferences: 'Preferences',
+    language: 'Language',
+    theme: 'Theme',
+    timezone: 'Timezone',
+    currency: 'Currency',
+    accountLimits: 'Account Limits',
+    fiatDepositWithdrawalLimits: 'Fiat Deposit & Withdrawal Limits',
+    cryptoDepositLimit: 'Crypto Deposit Limit',
+    cryptoWithdrawalLimit: 'Crypto Withdrawal Limit',
+    completeIdentityVerification: 'Complete Identity Verification',
+    getVerified: 'Get Verified',
+    maker: 'Maker Fee',
+    taker: 'Taker Fee',
+    lastLogin: 'Last Login',
+    english: 'English',
+    mongolian: 'Mongolian',
+    themeDescription: 'Switch to {{theme}} mode',
+  },
+  news: {
+    news: 'News',
+    'news.read-more': 'Read more',
+  },
+  table: {
+    page: 'Page',
+    assets: 'Assets',
+    amount: 'Amount',
+    free: 'Free',
+    locked: 'Locked',
+    credit: 'Credit',
+    action: 'Action',
+    trade: 'Trade',
+    value: 'Value',
+    'margin-ratio': 'Margin-ratio',
+    'reward-amount': 'Reward Amount',
+    'annual-percentage-rate': 'Annual Percentage Rate',
+    total: 'Total',
+    status: 'Status',
+    'created-date': 'Created date',
+    'redeemable-date': 'Redeemable date',
+  },
+  'buy-now': {
+    spend: 'Spend Amount',
+    receive: 'Receive Amount',
+    balance: 'Balance',
+    'estimated-price': 'Estimated Price',
+    buy: 'Buy Now',
+    'please-amount': 'Please enter an amount',
+    'min-amount': 'Minimum amount is 50,000 MNT',
+    'qr-code': 'Please scan the QR code below to confirm your payment',
+    'req-invoice': 'Invoice has expired. Please try again.',
+    'check-payment': 'Check Payment',
+    'transaction-time': 'Transaction Time',
+    'payment-successful': 'Payment successful',
+    'payment-not': 'Payment not confirmed',
+    confirm: 'Order Confirmation',
+    'confirm-msg':
+      'Please verify your order details below to proceed with the transaction.',
+    'confirm-pay': 'Confirm and Pay',
+    back: 'Go Back',
+    'exchange-rate': 'Exchange Rate',
+    crypto: 'crypto',
+    'easy-way-to-buy': 'The easiest way to buy {{crypto}}',
+    'buy-now-description':
+      'Top up your X-Meta exchange wallet with tugriks, make instant conversions between fiat and crypto, and manage your assets as you wish.',
+    'most-demand': 'Most desired',
+    'fixed-price': 'Fixed price',
+    'payment-options': 'Payment options',
+  },
+  convert: {
+    asset: 'Tether (USDT)',
+    'best-rate-title': 'Convert {{asset}} at the best rate',
+    description:
+      'Top up your X-Meta exchange wallet with tugriks, make instant conversions between fiat and crypto, and manage your assets as you wish.',
+    'kyc-required': 'Please complete your KYC verification',
+    liquidity: 'Liquidity',
+    success: 'Conversion successful',
+    'confirm-note':
+      'Please note that once you confirm the transaction, it cannot be reversed.',
+  },
+  security: {
+    accountProfile: 'Account Profile',
+    manageAccountInfo: 'Manage your personal information and account settings.',
+    noNickname: 'No Nickname',
+    confirm: 'Confirm',
+    cancel: 'Cancel',
+    enable: 'Enable',
+    disable: 'Disable',
+    change: 'Change',
+    more: 'More',
+    next: 'Next',
+    prev: 'Previous',
+    success: 'Success',
+    error: 'An error occurred',
+    getCode: 'Get code',
+    enterCodeError: 'Please enter your verification codes',
+    on: 'On',
+    off: 'Off',
+    verified: 'Verified',
+    notSet: 'Not set',
+
+    // Security checkup
+    securityCheckup: 'Security Checkup',
+    twoFactorAuth: 'Two-Factor Authentication (2FA)',
+    identityVerification: 'Identity Verification',
+    antiPhishingCode: 'Anti-Phishing Code',
+    withdrawalWhitelist: 'Withdrawal Whitelist',
+
+    // Two-factor section
+    googleAuth: 'Google Authenticator',
+    googleAuthDesc: 'Used for withdrawals and security modifications',
+    smsAuth: 'SMS Authenticator',
+    smsAuthDesc: 'Used for withdrawals and security modifications',
+    changeEmail: 'Email Settings',
+    changeEmailDesc: 'Used for withdrawals and security modifications',
+    loginPass: 'Login Password',
+    resetPass: 'Reset Password',
+    resetPassDesc: 'Please enter your current password and a new password.',
+
+    // Advanced security section
+    advancedSecurity: 'Advanced Security',
+    antiPhishingDesc:
+      'By setting up an Anti-Phishing Code, you will be able to tell if your notification emails are coming from us or from phishing attempts.',
+    addressManagement: 'Address Management',
+    addressManagementDesc:
+      'Address Management allows you to save and write memos for each of your withdrawal addresses.',
+    accountActivity: 'Account Activity',
+    accountActivityDesc: 'Last login, suspicious account activity',
+
+    // Enable Google Auth modal
+    enableGoogleAuth: 'Enable Google Authenticator',
+    secureYourCryptoAssetsWith2FA: 'Secure your crypto assets with 2FA',
+    verifyActivation: 'Verify Activation',
+    downloadApp: 'Download Binance Authenticator or Google Authenticator',
+    step1: 'Download and install the authenticator app on your phone.',
+    scanQr: 'Scan this QR Code',
+    ifYouAre:
+      'If you are unable to scan the QR code, please enter this code manually.',
+    secretKey: 'Save this backup key',
+    writeDown:
+      'Please save this key on paper. This key will allow you to recover your Google Authenticator in case of phone loss.',
+    emailVerificationCode: 'Email Verification Code',
+    googleVerificationCode: 'Google Verification Code',
+
+    // Disable Google Auth modal
+    disableGoogleAuthDesc: 'Disable Google Authenticator',
+    yourAccountMoreSecured:
+      'Your account will be more secured with Google Authenticator Enabled',
+    smsVerificationCode: 'SMS Verification Code',
+    useAuthenticatorCodeInstead: 'Use Authenticator Code instead',
+    lostGoogleAuthenticator: 'Lost Google Authenticator?',
+
+    // SMS verification modal
+    enableSms: 'Enable SMS Authenticator',
+    changeSms: 'Change SMS Authenticator',
+    newPhoneNumber: 'New Phone Number',
+    enterPhoneNumber: '+976...',
+
+    // Change password modal
+    oldPass: 'Old Password',
+    newPass: 'New Password',
+    confirmNewPass: 'Confirm New Password',
+    enterOldPass: 'Enter your old password',
+    enterNewPass: 'At least 8 characters',
+    reEnterNewPass: 'Re-enter your new password',
+    passwordsDoNotMatch: 'Passwords do not match',
+
+    // Change email warning dialog
+    forYourAccountSecurity:
+      'For your account security, you must enable all security features before you can change your email format.',
+    registeredPhoneNumber: 'SMS Authentication',
+    setUpNow: 'Set up now',
+
+    // Whitelist modal
+    enableWhitelist: 'Enable Withdrawal Whitelist',
+    disableWhitelist: 'Disable Withdrawal Whitelist',
+    enableWhitelistDesc:
+      'When this function is turned on, your account will only be able to withdraw to whitelisted addresses.',
+    disableWhitelistDesc:
+      'Are you sure you want to disable the withdrawal whitelist? This reduces your account security.',
+  },
+};

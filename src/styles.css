@@ -1,0 +1,159 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap');
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+@import '@fontsource-variable/geist';
+
+@custom-variant dark (&:is(.dark *));
+@plugin "@tailwindcss/typography";
+
+@theme {
+  --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+
+  --spacing-126: 31.5rem;
+  --spacing-128: 32rem;
+  --spacing-138: 34.5rem;
+  --spacing-142: 35.5rem;
+  --spacing-160: 40rem;
+
+  /* Light theme colors */
+
+  /* Brand */
+  --color-primary: #5b21d4;
+  --color-primary-foreground: #ffffff;
+  --color-primary-soft: #ede9fe;
+  --color-primary-hover: #4c1cb4;
+
+  --color-secondary: #f1f5f9;
+  --color-secondary-foreground: #0f172a;
+
+  /* Status — semantic */
+  --color-destructive: #dc2626;
+  --color-destructive-foreground: #ffffff;
+  --color-destructive-soft: #fee2e2;
+
+  --color-success: #059669;
+  --color-success-foreground: #ffffff;
+  --color-success-soft: #d1fae5;
+
+  --color-warning: #d97706;
+  --color-warning-foreground: #ffffff;
+  --color-warning-soft: #fef3c7;
+
+  --color-info: #2563eb;
+  --color-info-foreground: #ffffff;
+  --color-info-soft: #dbeafe;
+
+  /* Surface */
+  --color-muted: #f1f5f9;
+  --color-muted-foreground: #64748b;
+  --color-accent: #f1f5f9;
+  --color-accent-foreground: #0f172a;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #0f172a;
+  --color-card: #ffffff;
+  --color-card-foreground: #0f172a;
+  --color-background: #f8fafc;
+  --color-foreground: #0f172a;
+  --color-border: #e2e8f0;
+  --color-input: #e2e8f0;
+  --color-ring: #5b21d4;
+  --color-footer-text: #475569;
+
+  /* Charts */
+  --color-chart-1: #520ee5;
+  --color-chart-2: #7c3aed;
+  --color-chart-3: #f59e0b;
+  --color-chart-4: #10b981;
+  --color-chart-5: #3b82f6;
+
+  --animate-collapsible-down: collapsible-down 0.2s ease-out;
+  --animate-collapsible-up: collapsible-up 0.2s ease-out;
+
+  @keyframes collapsible-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-collapsible-content-height);
+    }
+  }
+  @keyframes collapsible-up {
+    from {
+      height: var(--radix-collapsible-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+}
+
+/* Dark mode theme overrides */
+/*
+ * Dark palette — deep indigo with layered surfaces.
+ *
+ * Hierarchy (from deepest to brightest):
+ *   background  #0e1020   app shell
+ *   card        #171a30   raised panels (stat cards, tables)
+ *   muted       #20243f   hover/inset surfaces
+ *   border      #2b2f4e   subtle dividers
+ *   border-strong #3a3f63 emphasised outlines
+ *
+ *   primary     #8b5cf6   violet-500, brand accent
+ *   primary-soft #1f1946  subtle violet bg (badge/hover)
+ */
+.dark {
+  --color-primary: #8b5cf6;
+  --color-primary-foreground: #ffffff;
+  --color-primary-soft: #1f1946;
+  --color-primary-hover: #a78bfa;
+
+  --color-secondary: #20243f;
+  --color-secondary-foreground: #e4e7f1;
+
+  --color-destructive: #f87171;
+  --color-destructive-foreground: #ffffff;
+  --color-destructive-soft: #3a1422;
+
+  --color-success: #4ade80;
+  --color-success-foreground: #07140d;
+  --color-success-soft: #0f2e1e;
+
+  --color-warning: #facc15;
+  --color-warning-foreground: #1a1400;
+  --color-warning-soft: #2e2305;
+
+  --color-info: #60a5fa;
+  --color-info-foreground: #07142b;
+  --color-info-soft: #162342;
+
+  --color-muted: #20243f;
+  --color-muted-foreground: #9ca0b8;
+  --color-accent: #20243f;
+  --color-accent-foreground: #e4e7f1;
+  --color-popover: #171a30;
+  --color-popover-foreground: #e4e7f1;
+  --color-card: #171a30;
+  --color-card-foreground: #e4e7f1;
+  --color-background: #0e1020;
+  --color-foreground: #e4e7f1;
+  --color-border: #2b2f4e;
+  --color-input: #20243f;
+  --color-ring: #8b5cf6;
+  --color-footer-text: #9ca0b8;
+
+  --color-chart-1: #8b5cf6;
+  --color-chart-2: #a78bfa;
+  --color-chart-3: #facc15;
+  --color-chart-4: #4ade80;
+  --color-chart-5: #60a5fa;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

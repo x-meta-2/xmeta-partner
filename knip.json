@@ -1,0 +1,28 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "entry": [
+    "src/routes/__root.tsx",
+    "src/routes/**/*.{ts,tsx}",
+    "src/router.tsx",
+    "vite.config.ts",
+    "vitest.config.ts"
+  ],
+  "project": ["src/**/*.{ts,tsx}"],
+  "ignore": [
+    "src/routeTree.gen.ts",
+    "src/types/**",
+    "**/*.d.ts"
+  ],
+  "ignoreDependencies": [
+    "nitro",
+    "@tanstack/react-devtools",
+    "@tanstack/react-router-devtools",
+    "@tanstack/devtools-vite",
+    "@tanstack/eslint-config",
+    "table",
+    "shadcn"
+  ],
+  "vitest": {
+    "config": ["vitest.config.ts"]
+  }
+}
