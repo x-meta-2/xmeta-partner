@@ -13,10 +13,10 @@ export const earningsColumns: ColumnDef<Commission>[] = [
     cell: ({ row }) => row.original.date.slice(0, 10),
   },
   {
-    accessorKey: 'referralEmail',
+    accessorKey: 'referralId',
     header: 'Referral',
     cell: ({ row }) => (
-      <span className="font-mono text-xs">{row.original.referralEmail}</span>
+      <span className="font-mono text-xs">{row.original.referralId}</span>
     ),
   },
   {

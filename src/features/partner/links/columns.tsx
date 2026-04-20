@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Check, Copy, ExternalLink, Trash2 } from 'lucide-react';
+import { Check, Copy, ExternalLink } from 'lucide-react';
 import { toast } from 'sonner';
 import type { ColumnDef } from '@tanstack/react-table';
 
 import { Button } from '#/components/ui/button';
-import { StatusTag } from '#/components/common/status-tag';
+import { Badge } from '#/components/ui/badge';
 import type { ReferralLink } from '#/services/types/partner.types';
 
 const num = (v: number) => v.toLocaleString('en-US');
@@ -33,15 +33,6 @@ function LinkActions({ link }: { link: ReferralLink }) {
       >
         <ExternalLink className="size-4" />
       </Button>
-      <Button
-        size="icon"
-        variant="ghost"
-        onClick={() => toast.info('Delete link (Phase 3.5)')}
-        aria-label="Delete link"
-        className="text-destructive hover:bg-destructive-soft hover:text-destructive"
-      >
-        <Trash2 className="size-4" />
-      </Button>
     </div>
   );
 }
@@ -51,9 +42,16 @@ export const linksColumns: ColumnDef<ReferralLink>[] = [
     accessorKey: 'code',
     header: 'Code',
     cell: ({ row }) => (
-      <span className="font-mono text-xs font-semibold text-primary">
-        {row.original.code}
-      </span>
+      <div className="flex items-center gap-2">
+        <span className="font-mono text-xs font-semibold text-primary">
+          {row.original.code}
+        </span>
+        {row.original.isDefault && (
+          <Badge variant="secondary" className="text-[10px]">
+            Default
+          </Badge>
+        )}
+      </div>
     ),
   },
   {
@@ -82,9 +80,13 @@ export const linksColumns: ColumnDef<ReferralLink>[] = [
     ),
   },
   {
-    accessorKey: 'status',
-    header: 'Status',
-    cell: ({ row }) => <StatusTag status={row.original.status} />,
+    accessorKey: 'conversions',
+    header: () => <div className="text-right">Conversions</div>,
+    cell: ({ row }) => (
+      <div className="text-right tabular-nums">
+        {num(row.original.conversions)}
+      </div>
+    ),
   },
   {
     accessorKey: 'createdAt',

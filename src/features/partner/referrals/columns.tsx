@@ -5,11 +5,6 @@ import type { Referral } from '#/services/types/partner.types';
 
 const money = (v: number) =>
   v.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-const maskEmail = (email: string) => {
-  const [user, domain] = email.split('@');
-  if (!user || !domain) return email;
-  return `${user.slice(0, 2)}***@${domain}`;
-};
 const formatDate = (iso: string) => new Date(iso).toISOString().slice(0, 10);
 
 export const referralsColumns: ColumnDef<Referral>[] = [
@@ -19,17 +14,9 @@ export const referralsColumns: ColumnDef<Referral>[] = [
     cell: ({ row }) => (
       <span className="font-mono text-xs">{row.original.userId}</span>
     ),
-  },
-  {
-    accessorKey: 'email',
-    header: 'Email',
-    cell: ({ row }) => maskEmail(row.original.email),
     filterFn: (row, _id, value: string) => {
       const q = value.toLowerCase();
-      return (
-        row.original.email.toLowerCase().includes(q) ||
-        row.original.userId.toLowerCase().includes(q)
-      );
+      return row.original.userId.toLowerCase().includes(q);
     },
   },
   {
@@ -71,5 +58,14 @@ export const referralsColumns: ColumnDef<Referral>[] = [
     accessorKey: 'lastActive',
     header: 'Last Active',
     cell: ({ row }) => formatDate(row.original.lastActive),
+  },
+  {
+    accessorKey: 'note',
+    header: 'Note',
+    cell: ({ row }) => (
+      <span className="text-xs text-muted-foreground">
+        {row.original.note || '-'}
+      </span>
+    ),
   },
 ];

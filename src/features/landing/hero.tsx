@@ -25,7 +25,7 @@ export function LandingHero() {
           <h1 className="mx-auto max-w-[20ch] text-4xl font-bold tracking-tight sm:text-5xl xl:text-6xl">
             Become an X-Meta Partner and earn up to{' '}
             <span className="bg-gradient-to-r from-primary to-chart-2 bg-clip-text text-transparent">
-              50% commission
+              40% commission
             </span>{' '}
             for life.
           </h1>

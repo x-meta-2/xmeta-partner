@@ -105,7 +105,7 @@ function ThemeToggleButton() {
 
 function ProfileMenu() {
   const partner = mockPartner;
-  const initials = partner.name
+  const initials = `${partner.firstName} ${partner.lastName}`
     .split(' ')
     .map((w) => w[0])
     .slice(0, 2)
@@ -123,19 +123,19 @@ function ProfileMenu() {
             {initials}
           </span>
           <span className="hidden max-w-[120px] truncate font-medium md:inline">
-            {partner.name}
+            {`${partner.firstName} ${partner.lastName}`}
           </span>
           <ChevronDown className="size-3.5 text-muted-foreground" />
         </button>
       </PopoverTrigger>
       <PopoverContent align="end" className="w-64 p-0">
         <div className="border-b p-3">
-          <div className="font-medium">{partner.name}</div>
+          <div className="font-medium">{`${partner.firstName} ${partner.lastName}`}</div>
           <div className="truncate text-xs text-muted-foreground">
-            {partner.email}
+            Partner Account
           </div>
           <div className="mt-2 inline-flex items-center gap-1 rounded-full bg-warning-soft px-2 py-0.5 text-[11px] font-semibold text-warning">
-            {partner.tier.name} · {partner.tier.commissionRate}%
+            {partner.tier.name} · {`${(partner.tier.commissionRate * 100).toFixed(0)}`}%
           </div>
         </div>
         <div className="p-1">

@@ -26,6 +26,12 @@ export const dashboardMenuConfig: MenuConfig = [
     to: '/dashboard/campaigns',
   },
   {
+    id: 'performance',
+    label: 'Performance',
+    icon: 'BarChart3',
+    to: '/dashboard/performance',
+  },
+  {
     id: 'earnings',
     label: 'Earnings',
     icon: 'DollarSign',

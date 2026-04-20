@@ -18,7 +18,7 @@ const formatDate = (iso: string) =>
   });
 
 export function PartnerSettingsPage() {
-  const [name, setName] = useState(mockPartner.name);
+  const [name, setName] = useState(`${mockPartner.firstName} ${mockPartner.lastName}`);
   const [phone, setPhone] = useState(mockPartner.phone ?? '');
   const [wallet, setWallet] = useState(mockPartner.walletAddress ?? '');
   const [saving, setSaving] = useState(false);
@@ -50,7 +50,7 @@ export function PartnerSettingsPage() {
             label="Email"
             hint="Email cannot be changed. Contact support if needed."
           >
-            <Input value={mockPartner.email} disabled />
+            <Input value="partner@x-meta.com" disabled />
           </Field>
           <Field label="Phone Number">
             <Input

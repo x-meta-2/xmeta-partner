@@ -2,8 +2,14 @@ import { Card } from '#/components/ui/card';
 import { Trophy } from 'lucide-react';
 import type { TierProgress } from '#/services/types/partner.types';
 
+const vol = (v: number) => {
+  if (v >= 1_000_000) return `$${(v / 1_000_000).toFixed(1)}M`;
+  if (v >= 1_000) return `$${(v / 1_000).toFixed(0)}K`;
+  return `$${v}`;
+};
+
 export function TierProgressCard({ progress }: { progress: TierProgress }) {
-  const refPct = Math.min(100, Math.round(progress.referralProgress * 100));
+  const clientsPct = Math.min(100, Math.round(progress.activeClientsProgress * 100));
   const volPct = Math.min(100, Math.round(progress.volumeProgress * 100));
   const { currentTier, nextTier } = progress;
 
@@ -16,7 +22,7 @@ export function TierProgressCard({ progress }: { progress: TierProgress }) {
             <Trophy className="size-5 text-amber-500" />
             <span className="text-xl font-semibold">{currentTier.name}</span>
             <span className="text-sm text-muted-foreground">
-              · {currentTier.commissionRate}% commission
+              · {(currentTier.commissionRate * 100).toFixed(0)}% commission
             </span>
           </div>
         </div>
@@ -24,7 +30,7 @@ export function TierProgressCard({ progress }: { progress: TierProgress }) {
           <div className="text-right">
             <div className="text-xs text-muted-foreground">Next</div>
             <div className="text-sm font-medium">
-              {nextTier.name} · {nextTier.commissionRate}%
+              {nextTier.name} · {(nextTier.commissionRate * 100).toFixed(0)}%
             </div>
           </div>
         )}
@@ -33,11 +39,11 @@ export function TierProgressCard({ progress }: { progress: TierProgress }) {
       {nextTier && (
         <>
           <ProgressRow
-            label={`Referrals (${progress.referralCount} / ${nextTier.minReferrals})`}
-            pct={refPct}
+            label={`Active Clients (${progress.activeClients} / ${nextTier.minReferrals})`}
+            pct={clientsPct}
           />
           <ProgressRow
-            label={`Volume ($${progress.totalVolume.toLocaleString('en-US')} / $${nextTier.minVolume.toLocaleString('en-US')})`}
+            label={`Volume (${vol(progress.totalVolume)} / ${vol(nextTier.minVolume)})`}
             pct={volPct}
           />
         </>

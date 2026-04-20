@@ -29,6 +29,7 @@ import { Route as LocaleauthForgotPasswordRouteImport } from './routes/$locale/(
 import { Route as LocaleAuthenticatedDashboardSubAffiliatesRouteImport } from './routes/$locale/_authenticated/dashboard/sub-affiliates'
 import { Route as LocaleAuthenticatedDashboardSettingsRouteImport } from './routes/$locale/_authenticated/dashboard/settings'
 import { Route as LocaleAuthenticatedDashboardReferralsRouteImport } from './routes/$locale/_authenticated/dashboard/referrals'
+import { Route as LocaleAuthenticatedDashboardPerformanceRouteImport } from './routes/$locale/_authenticated/dashboard/performance'
 import { Route as LocaleAuthenticatedDashboardPayoutsRouteImport } from './routes/$locale/_authenticated/dashboard/payouts'
 import { Route as LocaleAuthenticatedDashboardOverviewRouteImport } from './routes/$locale/_authenticated/dashboard/overview'
 import { Route as LocaleAuthenticatedDashboardLinksRouteImport } from './routes/$locale/_authenticated/dashboard/links'
@@ -142,6 +143,12 @@ const LocaleAuthenticatedDashboardReferralsRoute =
     path: '/dashboard/referrals',
     getParentRoute: () => LocaleAuthenticatedRouteRoute,
   } as any)
+const LocaleAuthenticatedDashboardPerformanceRoute =
+  LocaleAuthenticatedDashboardPerformanceRouteImport.update({
+    id: '/dashboard/performance',
+    path: '/dashboard/performance',
+    getParentRoute: () => LocaleAuthenticatedRouteRoute,
+  } as any)
 const LocaleAuthenticatedDashboardPayoutsRoute =
   LocaleAuthenticatedDashboardPayoutsRouteImport.update({
     id: '/dashboard/payouts',
@@ -196,6 +203,7 @@ export interface FileRoutesByFullPath {
   '/$locale/dashboard/links': typeof LocaleAuthenticatedDashboardLinksRoute
   '/$locale/dashboard/overview': typeof LocaleAuthenticatedDashboardOverviewRoute
   '/$locale/dashboard/payouts': typeof LocaleAuthenticatedDashboardPayoutsRoute
+  '/$locale/dashboard/performance': typeof LocaleAuthenticatedDashboardPerformanceRoute
   '/$locale/dashboard/referrals': typeof LocaleAuthenticatedDashboardReferralsRoute
   '/$locale/dashboard/settings': typeof LocaleAuthenticatedDashboardSettingsRoute
   '/$locale/dashboard/sub-affiliates': typeof LocaleAuthenticatedDashboardSubAffiliatesRoute
@@ -222,6 +230,7 @@ export interface FileRoutesByTo {
   '/$locale/dashboard/links': typeof LocaleAuthenticatedDashboardLinksRoute
   '/$locale/dashboard/overview': typeof LocaleAuthenticatedDashboardOverviewRoute
   '/$locale/dashboard/payouts': typeof LocaleAuthenticatedDashboardPayoutsRoute
+  '/$locale/dashboard/performance': typeof LocaleAuthenticatedDashboardPerformanceRoute
   '/$locale/dashboard/referrals': typeof LocaleAuthenticatedDashboardReferralsRoute
   '/$locale/dashboard/settings': typeof LocaleAuthenticatedDashboardSettingsRoute
   '/$locale/dashboard/sub-affiliates': typeof LocaleAuthenticatedDashboardSubAffiliatesRoute
@@ -250,6 +259,7 @@ export interface FileRoutesById {
   '/$locale/_authenticated/dashboard/links': typeof LocaleAuthenticatedDashboardLinksRoute
   '/$locale/_authenticated/dashboard/overview': typeof LocaleAuthenticatedDashboardOverviewRoute
   '/$locale/_authenticated/dashboard/payouts': typeof LocaleAuthenticatedDashboardPayoutsRoute
+  '/$locale/_authenticated/dashboard/performance': typeof LocaleAuthenticatedDashboardPerformanceRoute
   '/$locale/_authenticated/dashboard/referrals': typeof LocaleAuthenticatedDashboardReferralsRoute
   '/$locale/_authenticated/dashboard/settings': typeof LocaleAuthenticatedDashboardSettingsRoute
   '/$locale/_authenticated/dashboard/sub-affiliates': typeof LocaleAuthenticatedDashboardSubAffiliatesRoute
@@ -279,6 +289,7 @@ export interface FileRouteTypes {
     | '/$locale/dashboard/links'
     | '/$locale/dashboard/overview'
     | '/$locale/dashboard/payouts'
+    | '/$locale/dashboard/performance'
     | '/$locale/dashboard/referrals'
     | '/$locale/dashboard/settings'
     | '/$locale/dashboard/sub-affiliates'
@@ -305,6 +316,7 @@ export interface FileRouteTypes {
     | '/$locale/dashboard/links'
     | '/$locale/dashboard/overview'
     | '/$locale/dashboard/payouts'
+    | '/$locale/dashboard/performance'
     | '/$locale/dashboard/referrals'
     | '/$locale/dashboard/settings'
     | '/$locale/dashboard/sub-affiliates'
@@ -332,6 +344,7 @@ export interface FileRouteTypes {
     | '/$locale/_authenticated/dashboard/links'
     | '/$locale/_authenticated/dashboard/overview'
     | '/$locale/_authenticated/dashboard/payouts'
+    | '/$locale/_authenticated/dashboard/performance'
     | '/$locale/_authenticated/dashboard/referrals'
     | '/$locale/_authenticated/dashboard/settings'
     | '/$locale/_authenticated/dashboard/sub-affiliates'
@@ -499,6 +512,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LocaleAuthenticatedDashboardReferralsRouteImport
       parentRoute: typeof LocaleAuthenticatedRouteRoute
     }
+    '/$locale/_authenticated/dashboard/performance': {
+      id: '/$locale/_authenticated/dashboard/performance'
+      path: '/dashboard/performance'
+      fullPath: '/$locale/dashboard/performance'
+      preLoaderRoute: typeof LocaleAuthenticatedDashboardPerformanceRouteImport
+      parentRoute: typeof LocaleAuthenticatedRouteRoute
+    }
     '/$locale/_authenticated/dashboard/payouts': {
       id: '/$locale/_authenticated/dashboard/payouts'
       path: '/dashboard/payouts'
@@ -543,6 +563,7 @@ interface LocaleAuthenticatedRouteRouteChildren {
   LocaleAuthenticatedDashboardLinksRoute: typeof LocaleAuthenticatedDashboardLinksRoute
   LocaleAuthenticatedDashboardOverviewRoute: typeof LocaleAuthenticatedDashboardOverviewRoute
   LocaleAuthenticatedDashboardPayoutsRoute: typeof LocaleAuthenticatedDashboardPayoutsRoute
+  LocaleAuthenticatedDashboardPerformanceRoute: typeof LocaleAuthenticatedDashboardPerformanceRoute
   LocaleAuthenticatedDashboardReferralsRoute: typeof LocaleAuthenticatedDashboardReferralsRoute
   LocaleAuthenticatedDashboardSettingsRoute: typeof LocaleAuthenticatedDashboardSettingsRoute
   LocaleAuthenticatedDashboardSubAffiliatesRoute: typeof LocaleAuthenticatedDashboardSubAffiliatesRoute
@@ -560,6 +581,8 @@ const LocaleAuthenticatedRouteRouteChildren: LocaleAuthenticatedRouteRouteChildr
       LocaleAuthenticatedDashboardOverviewRoute,
     LocaleAuthenticatedDashboardPayoutsRoute:
       LocaleAuthenticatedDashboardPayoutsRoute,
+    LocaleAuthenticatedDashboardPerformanceRoute:
+      LocaleAuthenticatedDashboardPerformanceRoute,
     LocaleAuthenticatedDashboardReferralsRoute:
       LocaleAuthenticatedDashboardReferralsRoute,
     LocaleAuthenticatedDashboardSettingsRoute:

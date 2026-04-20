@@ -94,7 +94,7 @@ export function PartnerEarningsPage() {
           />
         }
         toolbar={{
-          searchKey: 'referralEmail',
+          searchKey: 'referralId',
           searchPlaceholder: 'Search by referral email…',
           filters: [
             { columnId: 'type', title: 'Type', options: TYPE_OPTIONS },

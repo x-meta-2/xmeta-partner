@@ -15,13 +15,6 @@ export const subAffiliatesColumns: ColumnDef<SubAffiliate>[] = [
     ),
   },
   {
-    accessorKey: 'email',
-    header: 'Email',
-    cell: ({ row }) => (
-      <span className="font-mono text-xs">{row.original.email}</span>
-    ),
-  },
-  {
     accessorKey: 'referralCount',
     header: () => <div className="text-right">Referrals</div>,
     cell: ({ row }) => (
