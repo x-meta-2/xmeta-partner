@@ -1,18 +1,20 @@
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { DollarSign, Network, UserCheck, UserPlus } from 'lucide-react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 
+import { PageHeader } from '#/components/common/page-header';
 import { BaseTable, DataTableHeader } from '#/components/data-table';
-import { Card } from '#/components/ui/card';
 import { Button } from '#/components/ui/button';
+import { Card } from '#/components/ui/card';
 import { Input } from '#/components/ui/input';
 import { StatCard } from '#/features/partner/dashboard/stat-card';
-import { PageHeader } from '#/components/common/page-header';
 import {
-  mockSubAffiliateStats,
-  mockSubAffiliates,
-} from '#/features/partner/mock';
+  getSubAffiliateStats,
+  inviteSubAffiliate,
+  listSubAffiliates,
+} from '#/services/apis/partner/sub-affiliates';
+
 import { subAffiliatesColumns } from './columns';
 
 const money = (v: number) =>
@@ -25,24 +27,39 @@ const STATUS_OPTIONS = [
 ];
 
 export function PartnerSubAffiliatesPage() {
+  const queryClient = useQueryClient();
   const [email, setEmail] = useState('');
 
-  const { data: stats = mockSubAffiliateStats } = useQuery({
+  const statsQuery = useQuery({
     queryKey: ['partner', 'sub-affiliates', 'stats'],
-    queryFn: () => Promise.resolve(mockSubAffiliateStats),
+    queryFn: getSubAffiliateStats,
   });
-  const { data: rows = mockSubAffiliates } = useQuery({
+  const listQuery = useQuery({
     queryKey: ['partner', 'sub-affiliates', 'list'],
-    queryFn: () => Promise.resolve(mockSubAffiliates),
+    queryFn: () => listSubAffiliates({ current: 1, pageSize: 50 }),
   });
+
+  const inviteMutation = useMutation({
+    mutationFn: inviteSubAffiliate,
+    onSuccess: () => {
+      toast.success(`Invite sent to ${email}`);
+      queryClient.invalidateQueries({ queryKey: ['partner', 'sub-affiliates'] });
+      setEmail('');
+    },
+    onError: (err) => {
+      toast.error(err instanceof Error ? err.message : 'Failed to send invite');
+    },
+  });
+
+  const stats = statsQuery.data;
+  const rows = listQuery.data?.items ?? [];
 
   const invite = () => {
     if (!email.trim()) {
       toast.error('Email is required');
       return;
     }
-    toast.success(`Invite sent to ${email} (mock)`);
-    setEmail('');
+    inviteMutation.mutate({ email: email.trim() });
   };
 
   return (
@@ -53,11 +70,19 @@ export function PartnerSubAffiliatesPage() {
       />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <StatCard label="Total" value={stats.total.toString()} icon={Network} />
-        <StatCard label="Active" value={stats.active.toString()} icon={UserCheck} />
+        <StatCard
+          label="Total"
+          value={(stats?.total ?? 0).toString()}
+          icon={Network}
+        />
+        <StatCard
+          label="Active"
+          value={(stats?.active ?? 0).toString()}
+          icon={UserCheck}
+        />
         <StatCard
           label="Override Earned"
-          value={money(stats.overrideEarned)}
+          value={money(stats?.overrideEarned ?? 0)}
           icon={DollarSign}
         />
       </div>
@@ -73,7 +98,9 @@ export function PartnerSubAffiliatesPage() {
             onChange={(e) => setEmail(e.target.value)}
             className="max-w-md"
           />
-          <Button onClick={invite}>Send Invite</Button>
+          <Button onClick={invite} disabled={inviteMutation.isPending}>
+            {inviteMutation.isPending ? 'Sending…' : 'Send Invite'}
+          </Button>
         </div>
       </Card>
 
@@ -88,8 +115,8 @@ export function PartnerSubAffiliatesPage() {
           />
         }
         toolbar={{
-          searchKey: 'email',
-          searchPlaceholder: 'Search by email…',
+          searchKey: 'name',
+          searchPlaceholder: 'Search by name…',
           filters: [
             { columnId: 'status', title: 'Status', options: STATUS_OPTIONS },
           ],

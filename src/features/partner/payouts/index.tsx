@@ -2,12 +2,16 @@ import { useQuery } from '@tanstack/react-query';
 import { CheckCircle, Clock, DollarSign, Wallet } from 'lucide-react';
 import { toast } from 'sonner';
 
-import { BaseTable, DataTableHeader } from '#/components/data-table';
-import { Card } from '#/components/ui/card';
-import { Button } from '#/components/ui/button';
-import { StatCard } from '#/features/partner/dashboard/stat-card';
 import { PageHeader } from '#/components/common/page-header';
-import { mockPayoutSummary, mockPayouts } from '#/features/partner/mock';
+import { BaseTable, DataTableHeader } from '#/components/data-table';
+import { Button } from '#/components/ui/button';
+import { Card } from '#/components/ui/card';
+import { StatCard } from '#/features/partner/dashboard/stat-card';
+import {
+  getPendingPayouts,
+  listPayouts,
+} from '#/services/apis/partner/payouts';
+
 import { payoutsColumns } from './columns';
 
 const money = (v: number) =>
@@ -21,16 +25,21 @@ const STATUS_OPTIONS = [
 ];
 
 export function PartnerPayoutsPage() {
-  const { data: summary = mockPayoutSummary } = useQuery({
-    queryKey: ['partner', 'payouts', 'summary'],
-    queryFn: () => Promise.resolve(mockPayoutSummary),
+  const summaryQuery = useQuery({
+    queryKey: ['partner', 'payouts', 'pending'],
+    queryFn: getPendingPayouts,
   });
-  const { data: payouts = mockPayouts } = useQuery({
+  const listQuery = useQuery({
     queryKey: ['partner', 'payouts', 'list'],
-    queryFn: () => Promise.resolve(mockPayouts),
+    queryFn: () => listPayouts({ current: 1, pageSize: 50 }),
   });
 
-  const disabled = summary.pendingBalance < summary.minPayoutAmount;
+  const summary = summaryQuery.data;
+  const payouts = listQuery.data?.items ?? [];
+
+  const pendingBalance = summary?.pendingBalance ?? 0;
+  const minAmount = summary?.minPayoutAmount ?? 0;
+  const disabled = pendingBalance < minAmount;
 
   return (
     <div className="space-y-6">
@@ -50,16 +59,16 @@ export function PartnerPayoutsPage() {
                 Available for Payout
               </div>
               <div className="text-3xl font-semibold tracking-tight text-primary">
-                {money(summary.pendingBalance)}
+                {money(pendingBalance)}
               </div>
               <div className="text-xs text-muted-foreground">
-                Minimum payout: {money(summary.minPayoutAmount)}
+                Minimum payout: {money(minAmount)}
               </div>
             </div>
           </div>
           <Button
             disabled={disabled}
-            onClick={() => toast.info('Payout request (Phase 3.5)')}
+            onClick={() => toast.info('Payout request coming soon')}
           >
             <DollarSign className="size-4" />
             Request Payout
@@ -70,17 +79,17 @@ export function PartnerPayoutsPage() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <StatCard
           label="Total Paid"
-          value={money(summary.totalPaid)}
+          value={money(summary?.totalPaid ?? 0)}
           icon={CheckCircle}
         />
         <StatCard
           label="Pending Balance"
-          value={money(summary.pendingBalance)}
+          value={money(pendingBalance)}
           icon={Clock}
         />
         <StatCard
           label="Last Payout"
-          value={summary.lastPayoutDate ?? '—'}
+          value={summary?.lastPayoutDate ?? '—'}
           icon={Clock}
         />
       </div>

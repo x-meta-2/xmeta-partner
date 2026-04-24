@@ -1,7 +1,7 @@
 import type { ColumnDef } from '@tanstack/react-table';
 
 import { StatusTag } from '#/components/common/status-tag';
-import type { SubAffiliate } from '#/services';
+import type { SubAffiliate } from '#/services/apis/partner/sub-affiliates';
 
 const money = (v: number) =>
   v.toLocaleString('en-US', { style: 'currency', currency: 'USD' });

@@ -16,13 +16,9 @@ import { Route as Localeerrors500RouteImport } from './routes/$locale/(errors)/5
 import { Route as Localeerrors404RouteImport } from './routes/$locale/(errors)/404'
 import { Route as Localeerrors403RouteImport } from './routes/$locale/(errors)/403'
 import { Route as Localeerrors401RouteImport } from './routes/$locale/(errors)/401'
-import { Route as LocaleauthVerifyPhoneRouteImport } from './routes/$locale/(auth)/verify-phone'
-import { Route as LocaleauthVerifyEmailRouteImport } from './routes/$locale/(auth)/verify-email'
 import { Route as LocaleauthSoftwareTokenMfaRouteImport } from './routes/$locale/(auth)/software-token-mfa'
 import { Route as LocaleauthSmsMfaRouteImport } from './routes/$locale/(auth)/sms-mfa'
 import { Route as LocaleauthSelectMfaTypeRouteImport } from './routes/$locale/(auth)/select-mfa-type'
-import { Route as LocaleauthRegisterRouteImport } from './routes/$locale/(auth)/register'
-import { Route as LocaleauthPhoneRegisterRouteImport } from './routes/$locale/(auth)/phone-register'
 import { Route as LocaleauthNewPasswordRequiredRouteImport } from './routes/$locale/(auth)/new-password-required'
 import { Route as LocaleauthLoginRouteImport } from './routes/$locale/(auth)/login'
 import { Route as LocaleauthForgotPasswordRouteImport } from './routes/$locale/(auth)/forgot-password'
@@ -35,6 +31,7 @@ import { Route as LocaleAuthenticatedDashboardOverviewRouteImport } from './rout
 import { Route as LocaleAuthenticatedDashboardLinksRouteImport } from './routes/$locale/_authenticated/dashboard/links'
 import { Route as LocaleAuthenticatedDashboardEarningsRouteImport } from './routes/$locale/_authenticated/dashboard/earnings'
 import { Route as LocaleAuthenticatedDashboardCampaignsRouteImport } from './routes/$locale/_authenticated/dashboard/campaigns'
+import { Route as LocaleAuthenticatedDashboardApplyRouteImport } from './routes/$locale/_authenticated/dashboard/apply'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -72,16 +69,6 @@ const Localeerrors401Route = Localeerrors401RouteImport.update({
   path: '/$locale/401',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LocaleauthVerifyPhoneRoute = LocaleauthVerifyPhoneRouteImport.update({
-  id: '/$locale/(auth)/verify-phone',
-  path: '/$locale/verify-phone',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LocaleauthVerifyEmailRoute = LocaleauthVerifyEmailRouteImport.update({
-  id: '/$locale/(auth)/verify-email',
-  path: '/$locale/verify-email',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const LocaleauthSoftwareTokenMfaRoute =
   LocaleauthSoftwareTokenMfaRouteImport.update({
     id: '/$locale/(auth)/software-token-mfa',
@@ -96,16 +83,6 @@ const LocaleauthSmsMfaRoute = LocaleauthSmsMfaRouteImport.update({
 const LocaleauthSelectMfaTypeRoute = LocaleauthSelectMfaTypeRouteImport.update({
   id: '/$locale/(auth)/select-mfa-type',
   path: '/$locale/select-mfa-type',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LocaleauthRegisterRoute = LocaleauthRegisterRouteImport.update({
-  id: '/$locale/(auth)/register',
-  path: '/$locale/register',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LocaleauthPhoneRegisterRoute = LocaleauthPhoneRegisterRouteImport.update({
-  id: '/$locale/(auth)/phone-register',
-  path: '/$locale/phone-register',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LocaleauthNewPasswordRequiredRoute =
@@ -179,6 +156,12 @@ const LocaleAuthenticatedDashboardCampaignsRoute =
     path: '/dashboard/campaigns',
     getParentRoute: () => LocaleAuthenticatedRouteRoute,
   } as any)
+const LocaleAuthenticatedDashboardApplyRoute =
+  LocaleAuthenticatedDashboardApplyRouteImport.update({
+    id: '/dashboard/apply',
+    path: '/dashboard/apply',
+    getParentRoute: () => LocaleAuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -187,17 +170,14 @@ export interface FileRoutesByFullPath {
   '/$locale/forgot-password': typeof LocaleauthForgotPasswordRoute
   '/$locale/login': typeof LocaleauthLoginRoute
   '/$locale/new-password-required': typeof LocaleauthNewPasswordRequiredRoute
-  '/$locale/phone-register': typeof LocaleauthPhoneRegisterRoute
-  '/$locale/register': typeof LocaleauthRegisterRoute
   '/$locale/select-mfa-type': typeof LocaleauthSelectMfaTypeRoute
   '/$locale/sms-mfa': typeof LocaleauthSmsMfaRoute
   '/$locale/software-token-mfa': typeof LocaleauthSoftwareTokenMfaRoute
-  '/$locale/verify-email': typeof LocaleauthVerifyEmailRoute
-  '/$locale/verify-phone': typeof LocaleauthVerifyPhoneRoute
   '/$locale/401': typeof Localeerrors401Route
   '/$locale/403': typeof Localeerrors403Route
   '/$locale/404': typeof Localeerrors404Route
   '/$locale/500': typeof Localeerrors500Route
+  '/$locale/dashboard/apply': typeof LocaleAuthenticatedDashboardApplyRoute
   '/$locale/dashboard/campaigns': typeof LocaleAuthenticatedDashboardCampaignsRoute
   '/$locale/dashboard/earnings': typeof LocaleAuthenticatedDashboardEarningsRoute
   '/$locale/dashboard/links': typeof LocaleAuthenticatedDashboardLinksRoute
@@ -214,17 +194,14 @@ export interface FileRoutesByTo {
   '/$locale/forgot-password': typeof LocaleauthForgotPasswordRoute
   '/$locale/login': typeof LocaleauthLoginRoute
   '/$locale/new-password-required': typeof LocaleauthNewPasswordRequiredRoute
-  '/$locale/phone-register': typeof LocaleauthPhoneRegisterRoute
-  '/$locale/register': typeof LocaleauthRegisterRoute
   '/$locale/select-mfa-type': typeof LocaleauthSelectMfaTypeRoute
   '/$locale/sms-mfa': typeof LocaleauthSmsMfaRoute
   '/$locale/software-token-mfa': typeof LocaleauthSoftwareTokenMfaRoute
-  '/$locale/verify-email': typeof LocaleauthVerifyEmailRoute
-  '/$locale/verify-phone': typeof LocaleauthVerifyPhoneRoute
   '/$locale/401': typeof Localeerrors401Route
   '/$locale/403': typeof Localeerrors403Route
   '/$locale/404': typeof Localeerrors404Route
   '/$locale/500': typeof Localeerrors500Route
+  '/$locale/dashboard/apply': typeof LocaleAuthenticatedDashboardApplyRoute
   '/$locale/dashboard/campaigns': typeof LocaleAuthenticatedDashboardCampaignsRoute
   '/$locale/dashboard/earnings': typeof LocaleAuthenticatedDashboardEarningsRoute
   '/$locale/dashboard/links': typeof LocaleAuthenticatedDashboardLinksRoute
@@ -243,17 +220,14 @@ export interface FileRoutesById {
   '/$locale/(auth)/forgot-password': typeof LocaleauthForgotPasswordRoute
   '/$locale/(auth)/login': typeof LocaleauthLoginRoute
   '/$locale/(auth)/new-password-required': typeof LocaleauthNewPasswordRequiredRoute
-  '/$locale/(auth)/phone-register': typeof LocaleauthPhoneRegisterRoute
-  '/$locale/(auth)/register': typeof LocaleauthRegisterRoute
   '/$locale/(auth)/select-mfa-type': typeof LocaleauthSelectMfaTypeRoute
   '/$locale/(auth)/sms-mfa': typeof LocaleauthSmsMfaRoute
   '/$locale/(auth)/software-token-mfa': typeof LocaleauthSoftwareTokenMfaRoute
-  '/$locale/(auth)/verify-email': typeof LocaleauthVerifyEmailRoute
-  '/$locale/(auth)/verify-phone': typeof LocaleauthVerifyPhoneRoute
   '/$locale/(errors)/401': typeof Localeerrors401Route
   '/$locale/(errors)/403': typeof Localeerrors403Route
   '/$locale/(errors)/404': typeof Localeerrors404Route
   '/$locale/(errors)/500': typeof Localeerrors500Route
+  '/$locale/_authenticated/dashboard/apply': typeof LocaleAuthenticatedDashboardApplyRoute
   '/$locale/_authenticated/dashboard/campaigns': typeof LocaleAuthenticatedDashboardCampaignsRoute
   '/$locale/_authenticated/dashboard/earnings': typeof LocaleAuthenticatedDashboardEarningsRoute
   '/$locale/_authenticated/dashboard/links': typeof LocaleAuthenticatedDashboardLinksRoute
@@ -273,17 +247,14 @@ export interface FileRouteTypes {
     | '/$locale/forgot-password'
     | '/$locale/login'
     | '/$locale/new-password-required'
-    | '/$locale/phone-register'
-    | '/$locale/register'
     | '/$locale/select-mfa-type'
     | '/$locale/sms-mfa'
     | '/$locale/software-token-mfa'
-    | '/$locale/verify-email'
-    | '/$locale/verify-phone'
     | '/$locale/401'
     | '/$locale/403'
     | '/$locale/404'
     | '/$locale/500'
+    | '/$locale/dashboard/apply'
     | '/$locale/dashboard/campaigns'
     | '/$locale/dashboard/earnings'
     | '/$locale/dashboard/links'
@@ -300,17 +271,14 @@ export interface FileRouteTypes {
     | '/$locale/forgot-password'
     | '/$locale/login'
     | '/$locale/new-password-required'
-    | '/$locale/phone-register'
-    | '/$locale/register'
     | '/$locale/select-mfa-type'
     | '/$locale/sms-mfa'
     | '/$locale/software-token-mfa'
-    | '/$locale/verify-email'
-    | '/$locale/verify-phone'
     | '/$locale/401'
     | '/$locale/403'
     | '/$locale/404'
     | '/$locale/500'
+    | '/$locale/dashboard/apply'
     | '/$locale/dashboard/campaigns'
     | '/$locale/dashboard/earnings'
     | '/$locale/dashboard/links'
@@ -328,17 +296,14 @@ export interface FileRouteTypes {
     | '/$locale/(auth)/forgot-password'
     | '/$locale/(auth)/login'
     | '/$locale/(auth)/new-password-required'
-    | '/$locale/(auth)/phone-register'
-    | '/$locale/(auth)/register'
     | '/$locale/(auth)/select-mfa-type'
     | '/$locale/(auth)/sms-mfa'
     | '/$locale/(auth)/software-token-mfa'
-    | '/$locale/(auth)/verify-email'
-    | '/$locale/(auth)/verify-phone'
     | '/$locale/(errors)/401'
     | '/$locale/(errors)/403'
     | '/$locale/(errors)/404'
     | '/$locale/(errors)/500'
+    | '/$locale/_authenticated/dashboard/apply'
     | '/$locale/_authenticated/dashboard/campaigns'
     | '/$locale/_authenticated/dashboard/earnings'
     | '/$locale/_authenticated/dashboard/links'
@@ -357,13 +322,9 @@ export interface RootRouteChildren {
   LocaleauthForgotPasswordRoute: typeof LocaleauthForgotPasswordRoute
   LocaleauthLoginRoute: typeof LocaleauthLoginRoute
   LocaleauthNewPasswordRequiredRoute: typeof LocaleauthNewPasswordRequiredRoute
-  LocaleauthPhoneRegisterRoute: typeof LocaleauthPhoneRegisterRoute
-  LocaleauthRegisterRoute: typeof LocaleauthRegisterRoute
   LocaleauthSelectMfaTypeRoute: typeof LocaleauthSelectMfaTypeRoute
   LocaleauthSmsMfaRoute: typeof LocaleauthSmsMfaRoute
   LocaleauthSoftwareTokenMfaRoute: typeof LocaleauthSoftwareTokenMfaRoute
-  LocaleauthVerifyEmailRoute: typeof LocaleauthVerifyEmailRoute
-  LocaleauthVerifyPhoneRoute: typeof LocaleauthVerifyPhoneRoute
   Localeerrors401Route: typeof Localeerrors401Route
   Localeerrors403Route: typeof Localeerrors403Route
   Localeerrors404Route: typeof Localeerrors404Route
@@ -421,20 +382,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Localeerrors401RouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/$locale/(auth)/verify-phone': {
-      id: '/$locale/(auth)/verify-phone'
-      path: '/$locale/verify-phone'
-      fullPath: '/$locale/verify-phone'
-      preLoaderRoute: typeof LocaleauthVerifyPhoneRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/$locale/(auth)/verify-email': {
-      id: '/$locale/(auth)/verify-email'
-      path: '/$locale/verify-email'
-      fullPath: '/$locale/verify-email'
-      preLoaderRoute: typeof LocaleauthVerifyEmailRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/$locale/(auth)/software-token-mfa': {
       id: '/$locale/(auth)/software-token-mfa'
       path: '/$locale/software-token-mfa'
@@ -454,20 +401,6 @@ declare module '@tanstack/react-router' {
       path: '/$locale/select-mfa-type'
       fullPath: '/$locale/select-mfa-type'
       preLoaderRoute: typeof LocaleauthSelectMfaTypeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/$locale/(auth)/register': {
-      id: '/$locale/(auth)/register'
-      path: '/$locale/register'
-      fullPath: '/$locale/register'
-      preLoaderRoute: typeof LocaleauthRegisterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/$locale/(auth)/phone-register': {
-      id: '/$locale/(auth)/phone-register'
-      path: '/$locale/phone-register'
-      fullPath: '/$locale/phone-register'
-      preLoaderRoute: typeof LocaleauthPhoneRegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/$locale/(auth)/new-password-required': {
@@ -554,10 +487,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LocaleAuthenticatedDashboardCampaignsRouteImport
       parentRoute: typeof LocaleAuthenticatedRouteRoute
     }
+    '/$locale/_authenticated/dashboard/apply': {
+      id: '/$locale/_authenticated/dashboard/apply'
+      path: '/dashboard/apply'
+      fullPath: '/$locale/dashboard/apply'
+      preLoaderRoute: typeof LocaleAuthenticatedDashboardApplyRouteImport
+      parentRoute: typeof LocaleAuthenticatedRouteRoute
+    }
   }
 }
 
 interface LocaleAuthenticatedRouteRouteChildren {
+  LocaleAuthenticatedDashboardApplyRoute: typeof LocaleAuthenticatedDashboardApplyRoute
   LocaleAuthenticatedDashboardCampaignsRoute: typeof LocaleAuthenticatedDashboardCampaignsRoute
   LocaleAuthenticatedDashboardEarningsRoute: typeof LocaleAuthenticatedDashboardEarningsRoute
   LocaleAuthenticatedDashboardLinksRoute: typeof LocaleAuthenticatedDashboardLinksRoute
@@ -571,6 +512,8 @@ interface LocaleAuthenticatedRouteRouteChildren {
 
 const LocaleAuthenticatedRouteRouteChildren: LocaleAuthenticatedRouteRouteChildren =
   {
+    LocaleAuthenticatedDashboardApplyRoute:
+      LocaleAuthenticatedDashboardApplyRoute,
     LocaleAuthenticatedDashboardCampaignsRoute:
       LocaleAuthenticatedDashboardCampaignsRoute,
     LocaleAuthenticatedDashboardEarningsRoute:
@@ -603,13 +546,9 @@ const rootRouteChildren: RootRouteChildren = {
   LocaleauthForgotPasswordRoute: LocaleauthForgotPasswordRoute,
   LocaleauthLoginRoute: LocaleauthLoginRoute,
   LocaleauthNewPasswordRequiredRoute: LocaleauthNewPasswordRequiredRoute,
-  LocaleauthPhoneRegisterRoute: LocaleauthPhoneRegisterRoute,
-  LocaleauthRegisterRoute: LocaleauthRegisterRoute,
   LocaleauthSelectMfaTypeRoute: LocaleauthSelectMfaTypeRoute,
   LocaleauthSmsMfaRoute: LocaleauthSmsMfaRoute,
   LocaleauthSoftwareTokenMfaRoute: LocaleauthSoftwareTokenMfaRoute,
-  LocaleauthVerifyEmailRoute: LocaleauthVerifyEmailRoute,
-  LocaleauthVerifyPhoneRoute: LocaleauthVerifyPhoneRoute,
   Localeerrors401Route: Localeerrors401Route,
   Localeerrors403Route: Localeerrors403Route,
   Localeerrors404Route: Localeerrors404Route,

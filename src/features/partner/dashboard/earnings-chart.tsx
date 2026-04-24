@@ -6,7 +6,7 @@ import {
   type ChartConfig,
 } from '#/components/ui/chart';
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts';
-import type { ChartPoint } from '#/services';
+import type { ChartPoint } from '#/services/apis/partner/dashboard';
 
 const chartConfig = {
   amount: {

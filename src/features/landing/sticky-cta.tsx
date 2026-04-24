@@ -35,7 +35,7 @@ export function LandingStickyCta() {
             Limited time — available for the first 1,000 approved partners
           </div>
         </div>
-        <LocalizedLink to="/register">
+        <LocalizedLink to="/login">
           <Button size="sm" className="shrink-0">
             Sign Up
           </Button>

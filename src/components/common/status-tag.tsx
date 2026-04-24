@@ -42,7 +42,11 @@ interface StatusTagProps {
 export function StatusTag({ status, className, size }: StatusTagProps) {
   const variant = STATUS_VARIANT[status.toLowerCase()] ?? 'muted';
   return (
-    <Badge variant={variant} size={size} className={`capitalize ${className ?? ''}`}>
+    <Badge
+      variant={variant}
+      size={size}
+      className={`capitalize ${className ?? ''}`}
+    >
       {status}
     </Badge>
   );

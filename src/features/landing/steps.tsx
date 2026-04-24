@@ -32,7 +32,7 @@ export function LandingSteps() {
       </div>
 
       <div className="mt-10 flex justify-center">
-        <LocalizedLink to="/register">
+        <LocalizedLink to="/login">
           <Button size="lg" className="h-12 gap-2 px-8">
             Apply Now <ArrowRight className="size-4" />
           </Button>

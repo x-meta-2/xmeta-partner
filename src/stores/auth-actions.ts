@@ -1,15 +1,12 @@
 import '#/lib/amplify';
 import { fetchAuthSession } from 'aws-amplify/auth';
 
-import { api } from '#/config/api';
-import baseService from '#/services/base-service';
+import { getAuthStatus } from '#/services/apis/partner/profile';
 
 import { useAuthStore } from './auth-store';
-import type { UserData, UserProfileResponse } from '../services';
 
 /**
  * Refresh Cognito tokens and sync with the auth store.
- * Replaces the old `refresh()` function from AuthContext.
  */
 export async function refreshAuth(forceRefresh = false) {
   const { setAccessToken, setIdToken, setAuthLoading } =
@@ -25,7 +22,6 @@ export async function refreshAuth(forceRefresh = false) {
       setIdToken('');
     }
   } catch {
-    // Silently fail — user is simply not logged in
     setAccessToken('');
     setIdToken('');
   } finally {
@@ -34,53 +30,41 @@ export async function refreshAuth(forceRefresh = false) {
 }
 
 /**
- * Load the authenticated user's profile from the backend.
- * Replaces the old `refreshProfile()` function from UserContext.
+ * Fetch the onboarding snapshot ({user, partner, application}) and write
+ * it into the auth store. This drives which screen the authenticated user
+ * sees (dashboard / apply / pending / suspended).
  */
 export async function loadUserProfile() {
-  const { isAuthenticated, setUserData, setUserLoading } =
+  const { isAuthenticated, setUser, setPartner, setApplication, setUserLoading } =
     useAuthStore.getState().auth;
 
   if (!isAuthenticated) {
-    setUserData(undefined);
+    setUser(undefined);
+    setPartner(undefined);
+    setApplication(undefined);
     return;
   }
 
   setUserLoading(true);
   try {
-    const { data } = await baseService.get<UserProfileResponse>(
-      `${api.partner.auth}/info`,
-    );
-
-    const newUserData: UserData = {
-      user: data?.data?.user,
-      preferences: data?.data?.preferences,
-    };
-    setUserData(newUserData);
-
-    // Sync theme from backend preferences
-    const backendTheme = newUserData.preferences?.theme;
-    if (
-      typeof window !== 'undefined' &&
-      (backendTheme === 'light' || backendTheme === 'dark')
-    ) {
-      const currentTheme = window.localStorage.getItem('x-meta-theme');
-      if (currentTheme !== backendTheme) {
-        window.localStorage.setItem('x-meta-theme', backendTheme);
-        window.dispatchEvent(new Event('storage-theme'));
-      }
-    }
+    const status = await getAuthStatus();
+    setUser(status?.user ?? undefined);
+    setPartner(status?.partner ?? undefined);
+    setApplication(status?.application ?? undefined);
   } catch {
-    // Handled by API layer (redirects to sign-in on 401)
+    // API layer handles 401 → redirect to sign-in; 403 surfaces to caller.
   } finally {
     setUserLoading(false);
   }
 }
 
 /**
- * Sign the user out — resets store and Amplify session.
+ * Sign the user out — clears Zustand, Amplify session, and sends the user
+ * back to the public landing page so the sidebar/dashboard chrome unloads.
+ *
+ * @param destination — override the post-logout path (e.g. '/login').
  */
-export async function signOutAndReset() {
+export async function signOutAndReset(destination = '/') {
   const { reset } = useAuthStore.getState().auth;
   reset();
   try {
@@ -88,5 +72,9 @@ export async function signOutAndReset() {
     await signOut();
   } catch {
     // ignore
+  }
+  if (typeof window !== 'undefined') {
+    const locale = window.location.pathname.split('/')[1] || 'mn';
+    window.location.href = `/${locale}${destination}`;
   }
 }

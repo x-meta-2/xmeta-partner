@@ -1,27 +1,34 @@
 import { useQuery } from '@tanstack/react-query';
 import { Activity, Target, UserCheck, Users } from 'lucide-react';
 
+import { PageHeader } from '#/components/common/page-header';
 import { BaseTable, DataTableHeader } from '#/components/data-table';
 import { StatCard } from '#/features/partner/dashboard/stat-card';
-import { PageHeader } from '#/components/common/page-header';
-import { mockReferralStats, mockReferrals } from '#/features/partner/mock';
+import {
+  getReferralStats,
+  listReferrals,
+} from '#/services/apis/partner/referrals';
+
 import { referralsColumns } from './columns';
 
 const STATUS_OPTIONS = [
   { label: 'Active', value: 'active' },
   { label: 'Inactive', value: 'inactive' },
-  { label: 'Suspended', value: 'suspended' },
 ];
 
 export function PartnerReferralsPage() {
-  const { data: stats = mockReferralStats } = useQuery({
+  const statsQuery = useQuery({
     queryKey: ['partner', 'referrals', 'stats'],
-    queryFn: () => Promise.resolve(mockReferralStats),
+    queryFn: getReferralStats,
   });
-  const { data: referrals = mockReferrals } = useQuery({
+  const listQuery = useQuery({
     queryKey: ['partner', 'referrals', 'list'],
-    queryFn: () => Promise.resolve(mockReferrals),
+    queryFn: () => listReferrals({ current: 1, pageSize: 50 }),
   });
+
+  const stats = statsQuery.data;
+  const referrals = listQuery.data?.items ?? [];
+  const total = listQuery.data?.total ?? 0;
 
   return (
     <div className="space-y-6">
@@ -31,12 +38,24 @@ export function PartnerReferralsPage() {
       />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="Total Referrals" value={stats.total.toString()} icon={Users} />
-        <StatCard label="Verified (KYC)" value={stats.verified.toString()} icon={UserCheck} />
-        <StatCard label="Active" value={stats.active.toString()} icon={Activity} />
+        <StatCard
+          label="Total Referrals"
+          value={(stats?.total ?? 0).toString()}
+          icon={Users}
+        />
+        <StatCard
+          label="Verified (KYC)"
+          value={(stats?.verified ?? 0).toString()}
+          icon={UserCheck}
+        />
+        <StatCard
+          label="Active"
+          value={(stats?.active ?? 0).toString()}
+          icon={Activity}
+        />
         <StatCard
           label="Conversion Rate"
-          value={`${stats.conversionRate}%`}
+          value={`${stats?.conversionRate ?? 0}%`}
           icon={Target}
         />
       </div>
@@ -47,13 +66,13 @@ export function PartnerReferralsPage() {
         rowKey="id"
         header={
           <DataTableHeader
-            title={`All Referrals (${referrals.length})`}
+            title={`All Referrals (${total})`}
             description="Search and filter your referred users"
           />
         }
         toolbar={{
-          searchKey: 'email',
-          searchPlaceholder: 'Search by user ID or email...',
+          searchKey: 'userId',
+          searchPlaceholder: 'Search by user ID...',
           filters: [
             { columnId: 'status', title: 'Status', options: STATUS_OPTIONS },
           ],

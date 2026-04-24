@@ -52,7 +52,7 @@ export function LandingCommissionTiers() {
                 </span>
               </div>
             </div>
-            <LocalizedLink to="/register">
+            <LocalizedLink to="/login">
               <Button className="gap-2">
                 Join the Program <ArrowRight className="size-4" />
               </Button>

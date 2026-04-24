@@ -13,7 +13,7 @@ import {
   InputOTPSlot,
 } from '#/components/ui/input-otp';
 import { getErrorMessage } from '#/utils/get-error-message';
-import { LoginNextStepType } from '#/services/apis/account/auth';
+import { LoginNextStepType } from '#/lib/auth-types';
 import { AuthCarousel } from '../components/auth-carousel';
 import { useLocalizedNavigate } from '#/hooks/use-localized-navigate';
 

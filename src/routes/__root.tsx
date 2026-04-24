@@ -9,8 +9,7 @@ import { localeFromPathname, switchLocalePathname } from '#/i18n/routing';
 import { queryClient } from '#/lib/query-client';
 import { Toaster } from '#/components/ui/sonner';
 import { useTokenRefresh } from '#/hooks/use-token-refresh';
-import { loadUserProfile, refreshAuth } from '#/stores/auth-actions';
-import { useAuthStore } from '#/stores/auth-store';
+import { refreshAuth } from '#/stores/auth-actions';
 import { QueryClientProvider } from '@tanstack/react-query';
 import {
   HeadContent,
@@ -21,23 +20,16 @@ import {
 import appCss from '../styles.css?url';
 
 /**
- * Bootstraps the Cognito session and loads the user profile.
- *
- * Replaces the old `<AuthProvider>` / `<UserProvider>` wrappers — the auth
- * state lives entirely in `useAuthStore` now, but we still need a single
- * mount-time effect to hydrate it on first paint.
+ * Bootstrap the Cognito session once at mount. Partner/application status
+ * is fetched by the `_authenticated` route guard — keeping that single
+ * owner avoids firing `/status` twice on every navigation.
  */
 function AuthBootstrap() {
-  const isAuthenticated = useAuthStore((s) => s.auth.isAuthenticated);
   useTokenRefresh();
 
   useEffect(() => {
     void refreshAuth(true);
   }, []);
-
-  useEffect(() => {
-    void loadUserProfile();
-  }, [isAuthenticated]);
 
   return null;
 }

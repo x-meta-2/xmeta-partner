@@ -10,7 +10,7 @@ import { useEffect, useRef, useState } from 'react';
 import { ScaleLoader } from 'react-spinners';
 import { cn } from '#/lib/utils';
 import { getErrorMessage } from '#/utils/get-error-message';
-import type { QrLoginSessionData } from '#/services/index.ts';
+import type { QrLoginSessionData } from '#/services/apis/security/qr-login';
 import { useAuth } from '#/stores/auth-store.ts';
 
 export default function QrLogin() {

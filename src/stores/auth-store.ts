@@ -1,34 +1,39 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-import type { UserData } from '#/services/apis/account/auth';
+import type {
+  Partner,
+  PartnerApplication,
+  PartnerUser,
+} from '#/services/apis/partner/profile';
 
 /**
- * Auth store — Zustand-based, persisted, single source of truth.
+ * Auth store — Zustand-based, persisted, single source of truth for
+ * post-login session state.
  *
- * Replaces the old AuthContext + UserContext pattern.
- *
- * Usage:
- *   // Read (with selective subscription):
- *   const user = useAuthStore((s) => s.auth.userData)
- *   const isAuthenticated = useAuthStore((s) => s.auth.isAuthenticated)
- *
- *   // Mutate:
- *   useAuthStore.getState().auth.setAccessToken(token)
- *   useAuthStore.getState().auth.reset()
+ * The three nullable fields drive the onboarding router:
+ *   partner === active      → dashboard
+ *   partner === suspended   → suspended screen
+ *   !partner + application.pending  → "under review"
+ *   !partner + application.rejected → reapply screen
+ *   !partner + !application → apply form
  */
 
 interface AuthSlice {
   accessToken: string;
   idToken: string;
-  userData: UserData | undefined;
+  user: PartnerUser | undefined;
+  partner: Partner | undefined;
+  application: PartnerApplication | undefined;
   authLoading: boolean;
   userLoading: boolean;
   isAuthenticated: boolean;
 
   setAccessToken: (token: string) => void;
   setIdToken: (token: string) => void;
-  setUserData: (userData: UserData | undefined) => void;
+  setUser: (user: PartnerUser | undefined) => void;
+  setPartner: (partner: Partner | undefined) => void;
+  setApplication: (application: PartnerApplication | undefined) => void;
   setAuthLoading: (loading: boolean) => void;
   setUserLoading: (loading: boolean) => void;
   reset: () => void;
@@ -41,7 +46,9 @@ interface AuthState {
 const initialAuth = {
   accessToken: '',
   idToken: '',
-  userData: undefined,
+  user: undefined,
+  partner: undefined,
+  application: undefined,
   authLoading: true,
   userLoading: false,
   isAuthenticated: false,
@@ -67,9 +74,19 @@ export const useAuthStore = create<AuthState>()(
             auth: { ...state.auth, idToken },
           })),
 
-        setUserData: (userData) =>
+        setUser: (user) =>
           set((state) => ({
-            auth: { ...state.auth, userData },
+            auth: { ...state.auth, user },
+          })),
+
+        setPartner: (partner) =>
+          set((state) => ({
+            auth: { ...state.auth, partner },
+          })),
+
+        setApplication: (application) =>
+          set((state) => ({
+            auth: { ...state.auth, application },
           })),
 
         setAuthLoading: (authLoading) =>
@@ -94,10 +111,14 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'xmeta-auth-storage',
-      // Only persist non-sensitive user data — tokens come from Cognito
+      // Persist only the stable identity (user). Partner/application are
+      // server-authoritative state that changes (approve, suspend, reject)
+      // and MUST be refetched on every app boot — otherwise cached role data
+      // can let non-partners render partner-only pages before the fresh
+      // /status call completes.
       partialize: (state) => ({
         auth: {
-          userData: state.auth.userData,
+          user: state.auth.user,
         },
       }),
       merge: (persisted, current) => {
@@ -116,12 +137,6 @@ export const useAuthStore = create<AuthState>()(
 );
 
 // ---------- Convenience selectors ----------
-//
-// These mirror the API of the legacy AuthContext / UserContext so consumers
-// can read auth state without subscribing to the entire store.
-//
-// `refresh` / `refreshProfile` are imported lazily inside the hook to avoid a
-// circular import with `auth-actions.ts` (which imports this store).
 
 export const useAuth = () => {
   const isAuthenticated = useAuthStore((s) => s.auth.isAuthenticated);
@@ -139,16 +154,18 @@ export const useAuth = () => {
   };
 };
 
-export const useUser = () => {
-  const userData = useAuthStore((s) => s.auth.userData);
+export const usePartner = () => {
+  const partner = useAuthStore((s) => s.auth.partner);
   const userLoading = useAuthStore((s) => s.auth.userLoading);
   const authLoading = useAuthStore((s) => s.auth.authLoading);
   const isAuthenticated = useAuthStore((s) => s.auth.isAuthenticated);
 
   return {
-    userData,
-    loading: authLoading || userLoading || (isAuthenticated && !userData),
+    partner,
+    loading: authLoading || userLoading || (isAuthenticated && !partner),
     refreshProfile: () =>
-      import('./auth-actions').then(({ loadUserProfile }) => loadUserProfile()),
+      import('./auth-actions').then(({ loadUserProfile }) =>
+        loadUserProfile(),
+      ),
   };
 };

@@ -1,35 +1,29 @@
 import { useQuery } from '@tanstack/react-query';
 import {
+  Award,
   BarChart3,
   DollarSign,
   TrendingUp,
-  Users,
   UserCheck,
+  Users,
   UserX,
-  Target,
-  Award,
 } from 'lucide-react';
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
-} from 'recharts';
 
-import { Card, CardContent, CardHeader, CardTitle } from '#/components/ui/card';
-import { Badge } from '#/components/ui/badge';
-import { Progress } from '#/components/ui/progress';
 import { PageHeader } from '#/components/common/page-header';
+import { Badge } from '#/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '#/components/ui/card';
+import { Progress } from '#/components/ui/progress';
 import { StatCard } from '#/features/partner/dashboard/stat-card';
-import { mockPerformanceStats } from '#/features/partner/mock';
-import { TIER_REQUIREMENTS, type TierName } from '#/services';
+import { getDashboardSummary, getTierProgress } from '#/services/apis/partner/dashboard';
+import { getReferralStats } from '#/services/apis/partner/referrals';
+import { TIER_REQUIREMENTS, type TierName } from '#/services/apis/partner/types';
 
 const money = (v: number) =>
-  v.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+  v.toLocaleString('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0,
+  });
 const num = (v: number) => v.toLocaleString('en-US');
 const vol = (v: number) => {
   if (v >= 1_000_000) return `$${(v / 1_000_000).toFixed(1)}M`;
@@ -46,13 +40,36 @@ const TIER_COLORS: Record<TierName, string> = {
 };
 
 export function PerformanceStatisticsPage() {
-  const { data: stats = mockPerformanceStats } = useQuery({
-    queryKey: ['partner', 'performance'],
-    queryFn: () => Promise.resolve(mockPerformanceStats),
+  const summaryQuery = useQuery({
+    queryKey: ['partner', 'dashboard', 'summary'],
+    queryFn: getDashboardSummary,
+  });
+  const tierQuery = useQuery({
+    queryKey: ['partner', 'dashboard', 'tier'],
+    queryFn: getTierProgress,
+  });
+  const refStatsQuery = useQuery({
+    queryKey: ['partner', 'referrals', 'stats'],
+    queryFn: getReferralStats,
   });
 
-  const currentReqs = TIER_REQUIREMENTS[stats.currentTier];
-  const nextReqs = stats.nextTier ? TIER_REQUIREMENTS[stats.nextTier] : null;
+  const summary = summaryQuery.data;
+  const tier = tierQuery.data;
+  const refStats = refStatsQuery.data;
+
+  const currentTierName = (tier?.currentTier.name ?? 'Standard') as TierName;
+  const nextTierName = tier?.nextTier?.name as TierName | undefined;
+  const currentReqs = TIER_REQUIREMENTS[currentTierName];
+  const nextReqs = nextTierName ? TIER_REQUIREMENTS[nextTierName] : null;
+
+  const activeClients = tier?.activeClients ?? 0;
+  const totalVolume = tier?.totalVolume ?? 0;
+  const activeClientsToNext = nextReqs
+    ? Math.max(0, nextReqs.minActiveClients - activeClients)
+    : 0;
+  const volumeToNext = nextReqs
+    ? Math.max(0, nextReqs.minVolume - totalVolume)
+    : 0;
 
   return (
     <div className="space-y-6">
@@ -61,32 +78,30 @@ export function PerformanceStatisticsPage() {
         description="Track your referral performance and tier progress"
       />
 
-      {/* Key Metrics */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           label="Total Referrals"
-          value={num(stats.totalReferrals)}
+          value={num(refStats?.total ?? 0)}
           icon={Users}
         />
         <StatCard
           label="Active Clients"
-          value={num(stats.activeClients)}
+          value={num(activeClients)}
           icon={UserCheck}
           hint="Futures trade in last 120 days"
         />
         <StatCard
           label="Total Volume"
-          value={vol(stats.totalVolume)}
+          value={vol(totalVolume)}
           icon={BarChart3}
         />
         <StatCard
           label="Total Commission"
-          value={money(stats.totalCommission)}
+          value={money(summary?.totalCommission ?? 0)}
           icon={DollarSign}
         />
       </div>
 
-      {/* Tier Progress */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -98,23 +113,23 @@ export function PerformanceStatisticsPage() {
           <div className="flex items-center gap-4">
             <div>
               <span className="text-sm text-muted-foreground">Current Tier</span>
-              <div className={`text-2xl font-bold ${TIER_COLORS[stats.currentTier]}`}>
-                {stats.currentTier}
+              <div className={`text-2xl font-bold ${TIER_COLORS[currentTierName]}`}>
+                {currentTierName}
               </div>
               <Badge variant="outline" className="mt-1">
                 {(currentReqs.commission * 100).toFixed(0)}% commission
               </Badge>
             </div>
-            {stats.nextTier && (
+            {nextTierName && nextReqs && (
               <>
                 <TrendingUp className="size-5 text-muted-foreground" />
                 <div>
                   <span className="text-sm text-muted-foreground">Next Tier</span>
-                  <div className={`text-2xl font-bold ${TIER_COLORS[stats.nextTier]}`}>
-                    {stats.nextTier}
+                  <div className={`text-2xl font-bold ${TIER_COLORS[nextTierName]}`}>
+                    {nextTierName}
                   </div>
                   <Badge variant="outline" className="mt-1">
-                    {nextReqs ? `${(nextReqs.commission * 100).toFixed(0)}% commission` : ''}
+                    {(nextReqs.commission * 100).toFixed(0)}% commission
                   </Badge>
                 </div>
               </>
@@ -130,18 +145,18 @@ export function PerformanceStatisticsPage() {
                     Active Clients
                   </span>
                   <span className="font-medium tabular-nums">
-                    {stats.activeClients} / {nextReqs.minActiveClients}
+                    {activeClients} / {nextReqs.minActiveClients}
                   </span>
                 </div>
                 <Progress
                   value={Math.min(
-                    (stats.activeClients / nextReqs.minActiveClients) * 100,
-                    100
+                    (activeClients / nextReqs.minActiveClients) * 100,
+                    100,
                   )}
                 />
                 <p className="text-xs text-muted-foreground">
-                  {stats.activeClientsToNextTier > 0
-                    ? `${stats.activeClientsToNextTier} more active clients needed`
+                  {activeClientsToNext > 0
+                    ? `${activeClientsToNext} more active clients needed`
                     : 'Requirement met'}
                 </p>
               </div>
@@ -152,18 +167,15 @@ export function PerformanceStatisticsPage() {
                     Trading Volume
                   </span>
                   <span className="font-medium tabular-nums">
-                    {vol(stats.totalVolume)} / {vol(nextReqs.minVolume)}
+                    {vol(totalVolume)} / {vol(nextReqs.minVolume)}
                   </span>
                 </div>
                 <Progress
-                  value={Math.min(
-                    (stats.totalVolume / nextReqs.minVolume) * 100,
-                    100
-                  )}
+                  value={Math.min((totalVolume / nextReqs.minVolume) * 100, 100)}
                 />
                 <p className="text-xs text-muted-foreground">
-                  {stats.volumeToNextTier > 0
-                    ? `${vol(stats.volumeToNextTier)} more volume needed`
+                  {volumeToNext > 0
+                    ? `${vol(volumeToNext)} more volume needed`
                     : 'Requirement met'}
                 </p>
               </div>
@@ -172,7 +184,6 @@ export function PerformanceStatisticsPage() {
         </CardContent>
       </Card>
 
-      {/* Activity Breakdown */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Card className="p-5">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -180,7 +191,7 @@ export function PerformanceStatisticsPage() {
             Active Clients
           </div>
           <div className="mt-1 text-3xl font-bold text-success tabular-nums">
-            {num(stats.activeClients)}
+            {num(activeClients)}
           </div>
           <p className="mt-1 text-xs text-muted-foreground">
             Futures trade within last 120 days
@@ -192,7 +203,7 @@ export function PerformanceStatisticsPage() {
             Inactive Clients
           </div>
           <div className="mt-1 text-3xl font-bold text-destructive tabular-nums">
-            {num(stats.inactiveClients)}
+            {num(refStats?.inactive ?? 0)}
           </div>
           <p className="mt-1 text-xs text-muted-foreground">
             No futures trade in last 120 days
@@ -200,46 +211,6 @@ export function PerformanceStatisticsPage() {
         </Card>
       </div>
 
-      {/* Monthly Performance Chart */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Target className="size-5" />
-            Monthly Performance
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ResponsiveContainer width="100%" height={350}>
-            <BarChart data={stats.monthlyStats}>
-              <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
-              <XAxis dataKey="month" className="text-xs" />
-              <YAxis className="text-xs" />
-              <Tooltip
-                contentStyle={{
-                  borderRadius: '8px',
-                  border: '1px solid var(--border)',
-                  background: 'var(--card)',
-                }}
-              />
-              <Legend />
-              <Bar
-                dataKey="newReferrals"
-                name="New Referrals"
-                fill="hsl(var(--primary))"
-                radius={[4, 4, 0, 0]}
-              />
-              <Bar
-                dataKey="activeClients"
-                name="Active Clients"
-                fill="hsl(var(--success))"
-                radius={[4, 4, 0, 0]}
-              />
-            </BarChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
-
-      {/* All Tiers Reference */}
       <Card>
         <CardHeader>
           <CardTitle>Commission Tiers</CardTitle>
@@ -256,37 +227,40 @@ export function PerformanceStatisticsPage() {
                 </tr>
               </thead>
               <tbody>
-                {(Object.entries(TIER_REQUIREMENTS) as [TierName, typeof TIER_REQUIREMENTS[TierName]][]).map(
-                  ([name, req]) => (
-                    <tr
-                      key={name}
-                      className={`border-b last:border-0 ${
-                        name === stats.currentTier ? 'bg-primary/5' : ''
-                      }`}
-                    >
-                      <td className="py-3">
-                        <span className={`font-semibold ${TIER_COLORS[name]}`}>
-                          {name}
-                        </span>
-                        {name === stats.currentTier && (
-                          <Badge variant="secondary" className="ml-2 text-[10px]">
-                            Current
-                          </Badge>
-                        )}
-                      </td>
-                      <td className="py-3 font-medium tabular-nums">
-                        {(req.commission * 100).toFixed(0)}%
-                      </td>
-                      <td className="py-3 tabular-nums">
-                        {'>='} {req.minActiveClients}
-                      </td>
-                      <td className="py-3 tabular-nums">
-                        {vol(req.minVolume)}
-                        {req.maxVolume ? ` – ${vol(req.maxVolume)}` : '+'}
-                      </td>
-                    </tr>
-                  )
-                )}
+                {(
+                  Object.entries(TIER_REQUIREMENTS) as [
+                    TierName,
+                    (typeof TIER_REQUIREMENTS)[TierName],
+                  ][]
+                ).map(([name, req]) => (
+                  <tr
+                    key={name}
+                    className={`border-b last:border-0 ${
+                      name === currentTierName ? 'bg-primary/5' : ''
+                    }`}
+                  >
+                    <td className="py-3">
+                      <span className={`font-semibold ${TIER_COLORS[name]}`}>
+                        {name}
+                      </span>
+                      {name === currentTierName && (
+                        <Badge variant="secondary" className="ml-2 text-[10px]">
+                          Current
+                        </Badge>
+                      )}
+                    </td>
+                    <td className="py-3 font-medium tabular-nums">
+                      {(req.commission * 100).toFixed(0)}%
+                    </td>
+                    <td className="py-3 tabular-nums">
+                      {'>='} {req.minActiveClients}
+                    </td>
+                    <td className="py-3 tabular-nums">
+                      {vol(req.minVolume)}
+                      {req.maxVolume ? ` – ${vol(req.maxVolume)}` : '+'}
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

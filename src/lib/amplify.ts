@@ -1,5 +1,5 @@
 import { Amplify } from 'aws-amplify';
-import { fetchAuthSession } from 'aws-amplify/auth';
+import { fetchAuthSession, updatePassword } from 'aws-amplify/auth';
 
 import { env } from '#/config/env';
 
@@ -13,11 +13,18 @@ Amplify.configure({
   },
 });
 
+export interface ChangePasswordRequest {
+  old_password: string;
+  password: string;
+}
+
+export interface ChangePasswordResponse {
+  code: number;
+  msg?: string;
+}
+
 /**
  * Thin wrapper around `fetchAuthSession` returning the tokens we care about.
- *
- * Lives here (rather than in `auth.service.ts`) to avoid a circular import
- * between `api-services` and `auth.service` — both of those depend on this.
  */
 export const refreshTokens = async ({
   forceRefresh = false,
@@ -38,5 +45,26 @@ export const refreshTokens = async ({
   } catch (error) {
     console.error('refreshTokens error:', error);
     return null;
+  }
+};
+
+/**
+ * Change the authenticated user's password via Cognito.
+ */
+export const changePassword = async (
+  data: ChangePasswordRequest,
+): Promise<ChangePasswordResponse> => {
+  try {
+    await updatePassword({
+      oldPassword: data.old_password,
+      newPassword: data.password,
+    });
+    return { code: 0 };
+  } catch (err) {
+    console.error('changePassword error:', err);
+    return {
+      code: 1,
+      msg: err instanceof Error ? err.message : 'Unknown error',
+    };
   }
 };

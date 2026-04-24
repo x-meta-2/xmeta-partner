@@ -1,23 +1,21 @@
-import '#/lib/amplify';
 import { confirmSignIn, signIn, signOut } from 'aws-amplify/auth';
+import type { Dispatch, SetStateAction } from 'react';
 import { toast } from 'sonner';
 
 import { useLocalizedNavigate } from '#/hooks/use-localized-navigate';
 import { usePostAuthNavigation } from '#/hooks/use-post-auth-navigation';
 import {
   changePassword as changePasswordApi,
-  requestEmailCode,
-  requestSmsCode,
   type ChangePasswordRequest,
   type ChangePasswordResponse,
-} from '#/services/apis/account/auth';
+} from '#/lib/amplify';
+import { LoginNextStepType, type LoginRequest } from '#/lib/auth-types';
 import {
-  LoginNextStepType,
-  type LoginRequest,
-} from '#/services/apis/account/auth';
+  requestEmailCode,
+  requestSmsCode,
+} from '#/services/apis/security/verification-code';
 import { refreshAuth } from '#/stores/auth-actions';
 import { getErrorMessage } from '#/utils/get-error-message';
-import type { Dispatch, SetStateAction } from 'react';
 
 /**
  * Authentication action hook.

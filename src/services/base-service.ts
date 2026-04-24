@@ -94,10 +94,10 @@ baseService.interceptors.response.use(
     }
 
     // No session at all — sign out and bounce to login.
+    // signOutAndReset handles the navigation itself.
     if (typeof globalThis !== 'undefined') {
       const { signOutAndReset } = await import('#/stores/auth-actions');
-      await signOutAndReset();
-      globalThis.location.href = '/auth/login';
+      await signOutAndReset('/login');
     }
 
     throw error;

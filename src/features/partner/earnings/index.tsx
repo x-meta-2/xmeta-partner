@@ -1,17 +1,18 @@
 import { useQuery } from '@tanstack/react-query';
 import { CheckCircle, Clock, DollarSign, TrendingUp } from 'lucide-react';
 
+import { PageHeader } from '#/components/common/page-header';
 import { BaseTable, DataTableHeader } from '#/components/data-table';
 import { Card } from '#/components/ui/card';
 import { StatCard } from '#/features/partner/dashboard/stat-card';
-import { PageHeader } from '#/components/common/page-header';
+import type { CommissionBreakdown } from '#/services/apis/partner/commissions';
 import {
-  mockCommissionBreakdown,
-  mockCommissions,
-  mockDashboardSummary,
-  mockPayoutSummary,
-} from '#/features/partner/mock';
-import type { CommissionBreakdown } from '#/services';
+  getCommissionBreakdown,
+  listCommissions,
+} from '#/services/apis/partner/commissions';
+import { getDashboardSummary } from '#/services/apis/partner/dashboard';
+import { getPendingPayouts } from '#/services/apis/partner/payouts';
+
 import { earningsColumns } from './columns';
 
 const money = (v: number) =>
@@ -31,22 +32,27 @@ const STATUS_OPTIONS = [
 ];
 
 export function PartnerEarningsPage() {
-  const { data: summary = mockDashboardSummary } = useQuery({
-    queryKey: ['partner', 'earnings', 'summary'],
-    queryFn: () => Promise.resolve(mockDashboardSummary),
+  const summaryQuery = useQuery({
+    queryKey: ['partner', 'dashboard', 'summary'],
+    queryFn: getDashboardSummary,
   });
-  const { data: pending = mockPayoutSummary } = useQuery({
-    queryKey: ['partner', 'earnings', 'pending'],
-    queryFn: () => Promise.resolve(mockPayoutSummary),
+  const pendingQuery = useQuery({
+    queryKey: ['partner', 'payouts', 'pending'],
+    queryFn: getPendingPayouts,
   });
-  const { data: breakdown = mockCommissionBreakdown } = useQuery({
-    queryKey: ['partner', 'earnings', 'breakdown'],
-    queryFn: () => Promise.resolve(mockCommissionBreakdown),
+  const breakdownQuery = useQuery({
+    queryKey: ['partner', 'commissions', 'breakdown'],
+    queryFn: getCommissionBreakdown,
   });
-  const { data: rows = mockCommissions } = useQuery({
-    queryKey: ['partner', 'earnings', 'list'],
-    queryFn: () => Promise.resolve(mockCommissions),
+  const listQuery = useQuery({
+    queryKey: ['partner', 'commissions', 'list'],
+    queryFn: () => listCommissions({ current: 1, pageSize: 50 }),
   });
+
+  const summary = summaryQuery.data;
+  const pending = pendingQuery.data;
+  const breakdown = breakdownQuery.data;
+  const rows = listQuery.data?.items ?? [];
 
   return (
     <div className="space-y-6">
@@ -58,30 +64,30 @@ export function PartnerEarningsPage() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           label="Total Earned"
-          value={money(summary.totalCommission)}
-          trend={summary.commissionTrend}
+          value={money(summary?.totalCommission ?? 0)}
+          trend={summary?.commissionTrend}
           icon={DollarSign}
         />
         <StatCard
           label="Pending"
-          value={money(pending.pendingBalance)}
+          value={money(pending?.pendingBalance ?? 0)}
           icon={Clock}
           hint="awaiting payout"
         />
         <StatCard
           label="Paid Out"
-          value={money(pending.totalPaid)}
+          value={money(pending?.totalPaid ?? 0)}
           icon={CheckCircle}
           hint="lifetime"
         />
         <StatCard
           label="This Month"
-          value={money(summary.thisMonthCommission)}
+          value={money(summary?.thisMonthCommission ?? 0)}
           icon={TrendingUp}
         />
       </div>
 
-      <BreakdownCard breakdown={breakdown} />
+      {breakdown && <BreakdownCard breakdown={breakdown} />}
 
       <BaseTable
         data={rows}
@@ -95,7 +101,7 @@ export function PartnerEarningsPage() {
         }
         toolbar={{
           searchKey: 'referralId',
-          searchPlaceholder: 'Search by referral email…',
+          searchPlaceholder: 'Search by referral ID…',
           filters: [
             { columnId: 'type', title: 'Type', options: TYPE_OPTIONS },
             { columnId: 'status', title: 'Status', options: STATUS_OPTIONS },
@@ -123,11 +129,7 @@ function BreakdownCard({ breakdown }: { breakdown: CommissionBreakdown }) {
       <div className="flex items-center justify-between">
         <div className="text-base font-medium">Breakdown by Product</div>
         <div className="text-sm text-muted-foreground">
-          Total{' '}
-          {breakdown.total.toLocaleString('en-US', {
-            style: 'currency',
-            currency: 'USD',
-          })}
+          Total {money(breakdown.total)}
         </div>
       </div>
       <div className="space-y-3">

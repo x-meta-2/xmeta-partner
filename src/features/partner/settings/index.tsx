@@ -1,14 +1,16 @@
-import { useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Save } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import { Card } from '#/components/ui/card';
+import { PageHeader } from '#/components/common/page-header';
 import { Button } from '#/components/ui/button';
+import { Card } from '#/components/ui/card';
 import { Input } from '#/components/ui/input';
 import { Label } from '#/components/ui/label';
 import { Separator } from '#/components/ui/separator';
-import { PageHeader } from '#/components/common/page-header';
-import { mockPartner } from '#/features/partner/mock';
+import { getProfile, updateProfile } from '#/services/apis/partner/profile';
+import { loadUserProfile } from '#/stores/auth-actions';
 
 const formatDate = (iso: string) =>
   new Date(iso).toLocaleDateString('en-US', {
@@ -18,39 +20,84 @@ const formatDate = (iso: string) =>
   });
 
 export function PartnerSettingsPage() {
-  const [name, setName] = useState(`${mockPartner.firstName} ${mockPartner.lastName}`);
-  const [phone, setPhone] = useState(mockPartner.phone ?? '');
-  const [wallet, setWallet] = useState(mockPartner.walletAddress ?? '');
-  const [saving, setSaving] = useState(false);
+  const queryClient = useQueryClient();
 
-  const save = async () => {
-    setSaving(true);
-    await new Promise((r) => setTimeout(r, 600));
-    setSaving(false);
-    toast.success('Settings saved (mock)');
+  const partnerQuery = useQuery({
+    queryKey: ['partner', 'profile'],
+    queryFn: getProfile,
+  });
+  const partner = partnerQuery.data;
+
+  const [companyName, setCompanyName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [country, setCountry] = useState('');
+  const [website, setWebsite] = useState('');
+
+  useEffect(() => {
+    if (partner) {
+      setCompanyName(partner.companyName ?? '');
+      setPhone(partner.phone ?? '');
+      setCountry(partner.country ?? '');
+      setWebsite(partner.website ?? '');
+    }
+  }, [partner]);
+
+  const updateMutation = useMutation({
+    mutationFn: updateProfile,
+    onSuccess: () => {
+      toast.success('Settings saved');
+      queryClient.invalidateQueries({ queryKey: ['partner', 'profile'] });
+      void loadUserProfile();
+    },
+    onError: (err) => {
+      toast.error(err instanceof Error ? err.message : 'Failed to save');
+    },
+  });
+
+  const save = () => {
+    updateMutation.mutate({ companyName, phone, country, website });
   };
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Settings" description="Manage your partner account settings" />
+      <PageHeader
+        title="Settings"
+        description="Manage your partner account settings"
+      />
 
-      {/* Profile Information */}
       <Card className="gap-5 p-6">
         <div>
-          <div className="text-base font-semibold">Profile Information</div>
+          <div className="text-base font-semibold">Identity</div>
           <div className="text-xs text-muted-foreground">
-            Update your personal details and contact information
+            Name and email are managed from your xmeta account.
           </div>
         </div>
-        <div className="max-w-lg space-y-4">
-          <Field label="Full Name">
-            <Input value={name} onChange={(e) => setName(e.target.value)} />
+        <div className="grid max-w-2xl gap-4 sm:grid-cols-2">
+          <Field label="First Name">
+            <Input value={partner?.user?.firstName ?? ''} disabled />
           </Field>
-          <Field
-            label="Email"
-            hint="Email cannot be changed. Contact support if needed."
-          >
-            <Input value="partner@x-meta.com" disabled />
+          <Field label="Last Name">
+            <Input value={partner?.user?.lastName ?? ''} disabled />
+          </Field>
+          <Field label="Email">
+            <Input value={partner?.user?.email ?? ''} disabled />
+          </Field>
+        </div>
+      </Card>
+
+      <Card className="gap-5 p-6">
+        <div>
+          <div className="text-base font-semibold">Partner Profile</div>
+          <div className="text-xs text-muted-foreground">
+            Details specific to your partner account
+          </div>
+        </div>
+        <div className="grid max-w-2xl gap-4 sm:grid-cols-2">
+          <Field label="Company Name">
+            <Input
+              value={companyName}
+              onChange={(e) => setCompanyName(e.target.value)}
+            />
           </Field>
           <Field label="Phone Number">
             <Input
@@ -59,62 +106,55 @@ export function PartnerSettingsPage() {
               placeholder="+976 xxxx xxxx"
             />
           </Field>
-        </div>
-      </Card>
-
-      {/* Payout Settings */}
-      <Card className="gap-5 p-6">
-        <div>
-          <div className="text-base font-semibold">Payout Settings</div>
-          <div className="text-xs text-muted-foreground">
-            Configure your payout wallet address
-          </div>
-        </div>
-        <div className="max-w-lg">
-          <Field label="USDT Wallet Address (TRC-20)">
+          <Field label="Country">
             <Input
-              value={wallet}
-              onChange={(e) => setWallet(e.target.value)}
-              placeholder="Enter your TRC-20 wallet address"
-              className="font-mono text-sm"
+              value={country}
+              onChange={(e) => setCountry(e.target.value)}
+            />
+          </Field>
+          <Field label="Website">
+            <Input
+              value={website}
+              onChange={(e) => setWebsite(e.target.value)}
+              placeholder="https://…"
             />
           </Field>
         </div>
       </Card>
 
-      {/* Partner Account — read-only */}
       <Card className="gap-0 p-0">
         <div className="p-6 pb-3">
           <div className="text-base font-semibold">Partner Account</div>
         </div>
         <div className="space-y-3 px-6 pb-6 text-sm">
           <InfoRow label="Partner ID">
-            <span className="font-mono">{mockPartner.id}</span>
+            <span className="font-mono">{partner?.id ?? '—'}</span>
           </InfoRow>
           <Separator className="opacity-40" />
           <InfoRow label="Referral Code">
             <span className="font-mono font-semibold text-primary">
-              {mockPartner.referralCode}
+              {partner?.referralCode ?? '—'}
             </span>
           </InfoRow>
           <Separator className="opacity-40" />
           <InfoRow label="Current Tier">
             <span className="font-medium">
-              {mockPartner.tier.name} · {mockPartner.tier.commissionRate}%
+              {partner?.tier
+                ? `${partner.tier.name} · ${(partner.tier.commissionRate * 100).toFixed(0)}%`
+                : '—'}
             </span>
           </InfoRow>
           <Separator className="opacity-40" />
           <InfoRow label="Member Since">
-            <span>{formatDate(mockPartner.createdAt)}</span>
+            <span>{partner?.createdAt ? formatDate(partner.createdAt) : '—'}</span>
           </InfoRow>
         </div>
       </Card>
 
-      {/* Save footer */}
       <div className="flex justify-end">
-        <Button onClick={save} disabled={saving}>
+        <Button onClick={save} disabled={updateMutation.isPending}>
           <Save className="size-4" />
-          {saving ? 'Saving…' : 'Save Changes'}
+          {updateMutation.isPending ? 'Saving…' : 'Save Changes'}
         </Button>
       </div>
     </div>

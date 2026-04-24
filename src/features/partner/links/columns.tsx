@@ -5,7 +5,7 @@ import type { ColumnDef } from '@tanstack/react-table';
 
 import { Button } from '#/components/ui/button';
 import { Badge } from '#/components/ui/badge';
-import type { ReferralLink } from '#/services';
+import type { ReferralLink } from '#/services/apis/partner/links';
 
 const num = (v: number) => v.toLocaleString('en-US');
 const formatDate = (iso: string) => new Date(iso).toISOString().slice(0, 10);
