@@ -1,29 +1,29 @@
 import { env } from './env';
 
 /**
- * API endpoint registry — partner portal.
+ * Centralized API endpoint registry — partner portal.
  *
- * `partner.base` is the primary. Legacy `v3.*` / `xmeta.*` shims kept
- * only because inherited auth-actions/security code still references them.
- * They all resolve to the same partner-api base URL.
- * TODO: delete legacy shims after auth-actions cleanup.
+ * Single base URL, one service. Per-domain path prefixes for clarity.
+ *
+ * Usage:
+ *   import { api } from '#/config/api';
+ *   baseService.get(`${api.partner.dashboard}/summary`)
  */
-const base = env.VITE_PARTNER_API_URL;
+
+const BASE = env.VITE_PARTNER_API_URL;
 
 export const api = {
-  partner: { base },
-
-  // Legacy shims — remove when auth-actions is fully migrated.
-  v3: {
-    base,
-    account: base,
-    security: base,
-    staking: base,
-    config: base,
-    takeAction: base,
+  partner: {
+    base: BASE,
+    auth: `${BASE}/auth`,
+    dashboard: `${BASE}/dashboard`,
+    referrals: `${BASE}/referrals`,
+    links: `${BASE}/links`,
+    campaigns: `${BASE}/campaigns`,
+    commissions: `${BASE}/commissions`,
+    payouts: `${BASE}/payouts`,
+    subAffiliates: `${BASE}/sub-affiliates`,
   },
-  xmeta: { open: base, security: base },
-  key: '',
 } as const;
 
 export type ApiConfig = typeof api;

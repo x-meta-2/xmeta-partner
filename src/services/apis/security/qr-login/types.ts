@@ -59,25 +59,12 @@ export type SecurityResponse = {
 
 export type SecurityInfoType = {
   mfa: {
-    tokenMfa: {
-      status: number;
-    };
-    smsMfa: {
-      status: number;
-      phoneNumberMasked: string;
-    };
+    tokenMfa: { status: number };
+    smsMfa: { status: number; phoneNumberMasked: string };
   };
-  whiteList: {
-    status: number;
-  };
-  antiPhishing: {
-    status: number;
-    codeMasked: string;
-  };
-  withdrawBan: {
-    uid: string;
-    banned: number;
-  };
+  whiteList: { status: number };
+  antiPhishing: { status: number; codeMasked: string };
+  withdrawBan: { uid: string; banned: number };
 };
 
 export type PostMfaResponse = {

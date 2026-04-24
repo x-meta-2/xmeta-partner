@@ -27,7 +27,7 @@ import type {
   SubAffiliate,
   SubAffiliateStats,
   TierProgress,
-} from '#/services/types/partner.types';
+} from '#/services';
 
 const MOCK_NOW = new Date('2026-04-15T12:00:00Z').getTime();
 const DAY = 86_400_000;

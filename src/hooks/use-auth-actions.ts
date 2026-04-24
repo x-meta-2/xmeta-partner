@@ -10,11 +10,11 @@ import {
   requestSmsCode,
   type ChangePasswordRequest,
   type ChangePasswordResponse,
-} from '#/services/api/auth.service';
+} from '#/services/apis/account/auth';
 import {
   LoginNextStepType,
   type LoginRequest,
-} from '#/services/types/login.types';
+} from '#/services/apis/account/auth';
 import { refreshAuth } from '#/stores/auth-actions';
 import { getErrorMessage } from '#/utils/get-error-message';
 import type { Dispatch, SetStateAction } from 'react';

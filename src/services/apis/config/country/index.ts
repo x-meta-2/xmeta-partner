@@ -1,5 +1,7 @@
-import type { Country } from '#/services/types/country.types';
 import { createServerFn } from '@tanstack/react-start';
+import type { Country } from './types';
+
+export type { Country } from './types';
 
 export const fetchSupportedCountries = createServerFn({
   method: 'GET',
@@ -12,7 +14,7 @@ export const fetchSupportedCountries = createServerFn({
   return rawData
     .filter((item) => {
       const hasName = !!item.name;
-      const isNotBroken = item.emoji && !item.emoji.includes('\uFFFD');
+      const isNotBroken = item.emoji && !item.emoji.includes('�');
       return hasName && isNotBroken;
     })
     .sort((a, b) => a.name.localeCompare(b.name));

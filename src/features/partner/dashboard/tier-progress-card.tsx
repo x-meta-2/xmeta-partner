@@ -1,6 +1,6 @@
 import { Card } from '#/components/ui/card';
 import { Trophy } from 'lucide-react';
-import type { TierProgress } from '#/services/types/partner.types';
+import type { TierProgress } from '#/services';
 
 const vol = (v: number) => {
   if (v >= 1_000_000) return `$${(v / 1_000_000).toFixed(1)}M`;

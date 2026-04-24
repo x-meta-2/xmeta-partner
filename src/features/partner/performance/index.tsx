@@ -26,7 +26,7 @@ import { Progress } from '#/components/ui/progress';
 import { PageHeader } from '#/components/common/page-header';
 import { StatCard } from '#/features/partner/dashboard/stat-card';
 import { mockPerformanceStats } from '#/features/partner/mock';
-import { TIER_REQUIREMENTS, type TierName } from '#/services/types/partner.types';
+import { TIER_REQUIREMENTS, type TierName } from '#/services';
 
 const money = (v: number) =>
   v.toLocaleString('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });

@@ -1,60 +1,110 @@
 /**
- * Services barrel — single import point for HTTP clients, services, and types.
+ * Services barrel — single entry point for all partner-web APIs and types.
  *
- *   import { partnerClient, authService, type Partner } from '#/services'
+ * Prefer direct imports in new code:
+ *   import { getDashboardSummary } from '#/services/apis/partner/dashboard';
  */
 
-// ---------- HTTP Clients ----------
-export {
-  partnerClient,
-  apiClient,
-  accountClient,
-  securityClient,
-  stakingClient,
-  takeActionClient,
-  configClient,
-  legacyClient,
-  ApiError,
-  isApiError,
-} from './api/client';
+// ---------- HTTP Client ----------
+export { default as baseService } from './base-service';
 
-// ---------- Auth (used by features/auth flows) ----------
-export { authService } from './api/auth.service';
+// ---------- Account ----------
+export { LoginNextStepType } from './apis/account/auth';
 export type {
+  ChangePasswordRequest,
+  ChangePasswordResponse,
+  ConfirmMFARequest,
   LoginRequest,
   LoginResponse,
-  ConfirmMFARequest,
-} from './api/auth.service';
+  UserData,
+  UserProfileResponse,
+} from './apis/account/auth';
 
-// ---------- Partner domain services ----------
+// ---------- Security ----------
+export type {
+  VerificationCodeRequest,
+  VerificationCodeResponse,
+} from './apis/security/verification-code';
+export type {
+  AuthTokens,
+  EmailVerification,
+  PostMfaResponse,
+  QrLoginCheckRequest,
+  QrLoginCheckResponse,
+  QrLoginRequestResponse,
+  QrLoginSessionData,
+  SecurityInfoType,
+  SecurityRequest,
+  SecurityResponse,
+  SmsVerification,
+  TokenVerification,
+} from './apis/security/qr-login';
+
+// ---------- Config ----------
+export type { Country } from './apis/config/country';
+
+// ---------- Partner shared ----------
+export { TIER_REQUIREMENTS, unwrapPartner } from './apis/partner/types';
+export type {
+  PartnerPaginated,
+  PartnerPaginationInput,
+  PartnerResponse,
+  PartnerTier,
+  TierName,
+} from './apis/partner/types';
+
+// ---------- Partner pages ----------
+export type { Partner, PartnerStatus } from './apis/partner/auth';
+export type {
+  ChartPeriod,
+  ChartPoint,
+  DashboardSummary,
+  ReferralChartPoint,
+  TierProgress,
+} from './apis/partner/dashboard';
+export type {
+  KycStatus,
+  Referral,
+  ReferralStats,
+  ReferralStatus,
+} from './apis/partner/referrals';
+export type { LinkStatus, ReferralLink } from './apis/partner/links';
 export {
-  partnerService,
-  dashboardService,
-  referralsService,
-  linksService,
-  campaignsService,
-  commissionsService,
-  payoutsService,
-  subAffiliatesService,
-} from './api/partner';
+  REFERRAL_CODE_BLOCKED_REGEX,
+  REFERRAL_CODE_MAX_COUNT,
+  REFERRAL_CODE_MAX_LENGTH,
+  REFERRAL_CODE_MIN_LENGTH,
+  validateReferralCode,
+} from './apis/partner/links';
+export type { Campaign, CampaignStatus } from './apis/partner/campaigns';
+export type {
+  Commission,
+  CommissionBreakdown,
+  CommissionStatus,
+  CommissionType,
+  DailyCommission,
+} from './apis/partner/commissions';
+export type {
+  Payout,
+  PayoutStatus,
+  PayoutSummary,
+} from './apis/partner/payouts';
+export type {
+  SubAffiliate,
+  SubAffiliateStats,
+  SubAffiliateStatus,
+} from './apis/partner/sub-affiliates';
+export type {
+  MonthlyPerformance,
+  PerformanceStats,
+} from './apis/partner/performance';
 
-// ---------- Misc shared services ----------
-export * as countryService from './api/country-service';
-
-// ---------- Partner domain types ----------
-export type * from './types/partner.types';
-
-// ---------- Auth & legacy types ----------
+// ---------- Common types ----------
 export type {
   BaseResponse,
-  PaginatedResponse,
-  FuturesResponse,
   ConvertHistoryResponse,
+  FuturesResponse,
+  PaginatedResponse,
   PaginationInput,
   PaginationOutput,
-} from './types/common.types';
-export type * from './types/user.types';
-export type * from './types/security.types';
-export type * from './types/login.types';
-export type * from './types/menu.types';
-export type * from './types/country.types';
+} from './types';

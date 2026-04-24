@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-import type { UserData } from '#/services/types/user.types';
+import type { UserData } from '#/services/apis/account/auth';
 
 /**
  * Auth store — Zustand-based, persisted, single source of truth.

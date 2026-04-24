@@ -1,5 +1,7 @@
 /**
- * Common API response shapes shared across all domain services.
+ * Shared API response shapes used across all services.
+ *
+ * Page-specific types live in `apis/{name}/{page}/types.ts`.
  */
 
 export interface BaseResponse<T> {
@@ -8,12 +10,6 @@ export interface BaseResponse<T> {
   msg: string;
   status: string;
 }
-
-/**
- * @deprecated Use `BaseResponse<T>` instead.
- * Kept for backwards compatibility with legacy code.
- */
-export type ApiResponse<T> = BaseResponse<T>;
 
 export interface PaginatedResponse<T> {
   data: {
@@ -25,17 +21,6 @@ export interface PaginatedResponse<T> {
   msg: string;
   status: string;
 }
-
-/**
- * @deprecated Use `PaginatedResponse<T>` instead.
- * Kept for backwards compatibility with legacy code.
- */
-export type ApiResponseList<T> = PaginatedResponse<T>;
-
-/**
- * @deprecated Use `FuturesResponse<T>` instead.
- */
-export type ApiResponseFutures<T> = FuturesResponse<T>;
 
 export interface FuturesResponse<T> {
   data: {
@@ -68,3 +53,12 @@ export interface PaginationOutput<T> {
   page: number;
   pageSize: number;
 }
+
+/** @deprecated Use `BaseResponse<T>` instead. */
+export type ApiResponse<T> = BaseResponse<T>;
+
+/** @deprecated Use `PaginatedResponse<T>` instead. */
+export type ApiResponseList<T> = PaginatedResponse<T>;
+
+/** @deprecated Use `FuturesResponse<T>` instead. */
+export type ApiResponseFutures<T> = FuturesResponse<T>;

@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import dayjs from 'dayjs'
 
-import type { PaginationInput } from '#/services/types/common.types'
+import type { PaginationInput } from '#/services/types'
 
 interface FilterParamsOptions {
   /** Default months to subtract for date range start */

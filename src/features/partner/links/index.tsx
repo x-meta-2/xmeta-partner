@@ -24,7 +24,7 @@ import {
   REFERRAL_CODE_MIN_LENGTH,
   REFERRAL_CODE_MAX_LENGTH,
   validateReferralCode,
-} from '#/services/types/partner.types';
+} from '#/services';
 import { linksColumns } from './columns';
 
 const num = (v: number) => v.toLocaleString('en-US');

@@ -1,7 +1,7 @@
 import {
   qrLoginCheckApi,
   qrLoginRequestApi,
-} from '#/services/api/security/qr-login';
+} from '#/services/apis/security/qr-login';
 import { decryptQrData } from '#/utils/decrypt-qr-data';
 import { usePostAuthNavigation } from '#/hooks/use-post-auth-navigation';
 import { confirmSignIn, signIn } from 'aws-amplify/auth';

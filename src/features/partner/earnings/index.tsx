@@ -11,7 +11,7 @@ import {
   mockDashboardSummary,
   mockPayoutSummary,
 } from '#/features/partner/mock';
-import type { CommissionBreakdown } from '#/services/types/partner.types';
+import type { CommissionBreakdown } from '#/services';
 import { earningsColumns } from './columns';
 
 const money = (v: number) =>

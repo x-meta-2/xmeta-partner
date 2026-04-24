@@ -2,7 +2,7 @@ import '#/lib/amplify';
 import { fetchAuthSession } from 'aws-amplify/auth';
 
 import { api } from '#/config/api';
-import { apiServices } from '#/services/api/security/api-services';
+import baseService from '#/services/base-service';
 
 import { useAuthStore } from './auth-store';
 import type { UserData, UserProfileResponse } from '../services';
@@ -48,9 +48,8 @@ export async function loadUserProfile() {
 
   setUserLoading(true);
   try {
-    const data = await apiServices<UserProfileResponse>(
-      `${api.v3.account}/api/account/v3/accounts/user/account-info`,
-      'GET',
+    const { data } = await baseService.get<UserProfileResponse>(
+      `${api.partner.auth}/info`,
     );
 
     const newUserData: UserData = {
