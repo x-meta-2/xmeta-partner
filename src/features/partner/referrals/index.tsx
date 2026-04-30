@@ -1,15 +1,19 @@
 import { useQuery } from '@tanstack/react-query';
-import { Activity, Target, UserCheck, Users } from 'lucide-react';
+import { Activity, Eye, Target, UserCheck, Users } from 'lucide-react';
+import { useState } from 'react';
 
 import { PageHeader } from '#/components/common/page-header';
 import { BaseTable, DataTableHeader } from '#/components/data-table';
+import { Button } from '#/components/ui/button';
 import { StatCard } from '#/features/partner/dashboard/stat-card';
 import {
   getReferralStats,
   listReferrals,
+  type Referral,
 } from '#/services/apis/partner/referrals';
 
 import { referralsColumns } from './columns';
+import { ReferralDetailDrawer } from './referral-detail-drawer';
 
 const STATUS_OPTIONS = [
   { label: 'Active', value: 'active' },
@@ -17,6 +21,8 @@ const STATUS_OPTIONS = [
 ];
 
 export function PartnerReferralsPage() {
+  const [selected, setSelected] = useState<Referral | null>(null);
+
   const statsQuery = useQuery({
     queryKey: ['partner', 'referrals', 'stats'],
     queryFn: getReferralStats,
@@ -42,21 +48,25 @@ export function PartnerReferralsPage() {
           label="Total Referrals"
           value={(stats?.total ?? 0).toString()}
           icon={Users}
+          isLoading={statsQuery.isLoading}
         />
         <StatCard
-          label="Verified (KYC)"
-          value={(stats?.verified ?? 0).toString()}
+          label="Deposited"
+          value={(stats?.deposited ?? 0).toString()}
           icon={UserCheck}
+          isLoading={statsQuery.isLoading}
         />
         <StatCard
           label="Active"
           value={(stats?.active ?? 0).toString()}
           icon={Activity}
+          isLoading={statsQuery.isLoading}
         />
         <StatCard
-          label="Conversion Rate"
-          value={`${stats?.conversionRate ?? 0}%`}
+          label="Inactive"
+          value={(stats?.inactive ?? 0).toString()}
           icon={Target}
+          isLoading={statsQuery.isLoading}
         />
       </div>
 
@@ -64,6 +74,17 @@ export function PartnerReferralsPage() {
         data={referrals}
         columns={referralsColumns}
         rowKey="id"
+        isLoading={listQuery.isLoading}
+        rowActions={(row) => (
+          <Button
+            size="icon-sm"
+            variant="ghost"
+            onClick={() => setSelected(row)}
+            aria-label="View referral details"
+          >
+            <Eye className="h-4 w-4" />
+          </Button>
+        )}
         header={
           <DataTableHeader
             title={`All Referrals (${total})`}
@@ -77,6 +98,11 @@ export function PartnerReferralsPage() {
             { columnId: 'status', title: 'Status', options: STATUS_OPTIONS },
           ],
         }}
+      />
+
+      <ReferralDetailDrawer
+        referral={selected}
+        onClose={() => setSelected(null)}
       />
     </div>
   );

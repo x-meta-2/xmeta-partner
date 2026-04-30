@@ -51,7 +51,6 @@ export const enTranslations: Namespaces = {
     'login.subtitle': 'Please make sure you are visiting the correct URL.',
     'login.button': 'Login',
     'confirm.button': 'Confirm',
-    'login.forgot-password': 'Forgot password?',
     'register.title': 'Sign up',
     'register.button': 'Sign up',
     'register.phone.title': 'Verify your phone number',
@@ -61,10 +60,6 @@ export const enTranslations: Namespaces = {
     'verify.email.description': 'Enter the 6-digit code we texted to',
     'verify.phone.title': 'Verify your phone number',
     'verify.phone.description': 'Enter the 6-digit code we texted to',
-    'forgot.title': 'Reset password',
-    'forgot.subtitle':
-      'Enter your registered email address and we will send you a one-time code.',
-    'forgot.button': 'Reset password',
     email: 'Email address',
     password: 'Password',
     'password.confirm': 'Confirm password',

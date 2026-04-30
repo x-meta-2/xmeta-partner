@@ -48,7 +48,7 @@ export const landingBenefits: Benefit[] = [
     icon: Sparkles,
     title: 'Partner-Exclusive Events',
     description:
-      'Regular campaigns, contests and rewards to supercharge your referral earnings.',
+      'Contests, leaderboards, and partner-only rewards to supercharge your referral earnings.',
   },
   {
     icon: Headset,
@@ -61,52 +61,6 @@ export const landingBenefits: Benefit[] = [
     title: 'Global Brand, Local Support',
     description:
       'Reach audiences in 170+ countries with localised materials and multi-language support.',
-  },
-];
-
-export interface CommissionTier {
-  name: string;
-  rate: string;
-  activeClients: string;
-  tradingVolume: string;
-  color: string;
-}
-
-export const commissionTiers: CommissionTier[] = [
-  {
-    name: 'Standard',
-    rate: '20%',
-    activeClients: '0+',
-    tradingVolume: '$0 – $15M',
-    color: 'text-muted-foreground',
-  },
-  {
-    name: 'Bronze',
-    rate: '25%',
-    activeClients: '1+',
-    tradingVolume: '$15M – $30M',
-    color: 'text-amber-700',
-  },
-  {
-    name: 'Silver',
-    rate: '30%',
-    activeClients: '3+',
-    tradingVolume: '$30M – $150M',
-    color: 'text-slate-400',
-  },
-  {
-    name: 'Gold',
-    rate: '35%',
-    activeClients: '8+',
-    tradingVolume: '$150M – $450M',
-    color: 'text-yellow-500',
-  },
-  {
-    name: 'Diamond',
-    rate: '40%',
-    activeClients: '10+',
-    tradingVolume: '$450M+',
-    color: 'text-cyan-400',
   },
 ];
 

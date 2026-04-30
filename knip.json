@@ -8,11 +8,7 @@
     "vitest.config.ts"
   ],
   "project": ["src/**/*.{ts,tsx}"],
-  "ignore": [
-    "src/routeTree.gen.ts",
-    "src/types/**",
-    "**/*.d.ts"
-  ],
+  "ignore": ["src/routeTree.gen.ts", "src/types/**", "**/*.d.ts"],
   "ignoreDependencies": [
     "nitro",
     "@tanstack/react-devtools",

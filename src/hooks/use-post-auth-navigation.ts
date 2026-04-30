@@ -1,14 +1,14 @@
-import { useCallback } from 'react'
-import { useRouter, useRouterState } from '@tanstack/react-router'
+import { useCallback } from 'react';
+import { useRouter, useRouterState } from '@tanstack/react-router';
 
-import { localeFromPathname, stripLocalePrefix } from '#/i18n/routing'
-import type { Locale } from '#/i18n/locales'
+import { localeFromPathname, stripLocalePrefix } from '#/i18n/routing';
+import type { Locale } from '#/i18n/locales';
 
 /**
  * Default destination after a successful login/MFA, when no `redirect`
  * search param is present.
  */
-const DEFAULT_POST_LOGIN_PATH = '/dashboard/overview'
+const DEFAULT_POST_LOGIN_PATH = '/dashboard/overview';
 
 /**
  * Post-authentication navigation helper.
@@ -35,41 +35,41 @@ const DEFAULT_POST_LOGIN_PATH = '/dashboard/overview'
  *   }
  */
 export function usePostAuthNavigation() {
-  const router = useRouter()
-  const pathname = useRouterState({ select: (s) => s.location.pathname })
+  const router = useRouter();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
   const search = useRouterState({ select: (s) => s.location.search }) as {
-    redirect?: string
-  }
+    redirect?: string;
+  };
 
   return useCallback(async () => {
-    const locale: Locale = localeFromPathname(pathname)
+    const locale: Locale = localeFromPathname(pathname);
 
     // Validate the redirect param — prevent open-redirect vulnerabilities.
     // Only accept same-origin absolute paths.
-    const redirectParam = search.redirect
+    const redirectParam = search.redirect;
     const safeRedirect =
       typeof redirectParam === 'string' &&
       redirectParam.startsWith('/') &&
       !redirectParam.startsWith('//') // reject `//evil.com`
         ? redirectParam
-        : null
+        : null;
 
     if (safeRedirect) {
       // The redirect param may or may not include a locale prefix.
       // Strip any existing locale and re-inject the current one so the
       // user stays in their chosen language.
-      const stripped = stripLocalePrefix(safeRedirect)
+      const stripped = stripLocalePrefix(safeRedirect);
       await router.navigate({
         to: `/$locale${stripped === '/' ? '' : stripped}`,
         params: { locale },
-      } as never)
-      return
+      } as never);
+      return;
     }
 
     // No redirect → go to the default post-login page.
     await router.navigate({
       to: `/$locale${DEFAULT_POST_LOGIN_PATH}`,
       params: { locale },
-    } as never)
-  }, [router, pathname, search.redirect])
+    } as never);
+  }, [router, pathname, search.redirect]);
 }

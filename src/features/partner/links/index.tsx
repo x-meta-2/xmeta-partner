@@ -8,10 +8,9 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
-
 import { PageHeader } from '#/components/common/page-header';
 import { BaseTable, DataTableHeader } from '#/components/data-table';
-import { Alert, AlertDescription } from '#/components/ui/alert';
+import { Alert, AlertDescription, AlertTitle } from '#/components/ui/alert';
 import { Button } from '#/components/ui/button';
 import {
   Dialog,
@@ -32,10 +31,8 @@ import {
   listReferralLinks,
   validateReferralCode,
 } from '#/services/apis/partner/links';
-
+import { formatCount } from '#/utils';
 import { linksColumns } from './columns';
-
-const num = (v: number) => v.toLocaleString('en-US');
 
 export function PartnerLinksPage() {
   const queryClient = useQueryClient();
@@ -123,11 +120,14 @@ export function PartnerLinksPage() {
               https://x-meta.com/ref/{code || 'CODE'}
             </span>
           </div>
-          <Alert variant="default" className="border-muted">
+          <Alert variant="destructive" className="border-destructive/40">
             <AlertCircle className="size-4" />
+            <AlertTitle>Double-check your code before saving</AlertTitle>
             <AlertDescription className="text-xs">
-              Referral links are permanent and cannot be edited or deleted
-              after creation.
+              Once created, this referral link{' '}
+              <strong>cannot be edited or deleted</strong>. The code you choose
+              is permanent and will keep tracking referrals as long as it&apos;s
+              shared.
             </AlertDescription>
           </Alert>
         </div>
@@ -159,16 +159,19 @@ export function PartnerLinksPage() {
           label="Total Links"
           value={`${links.length} / ${REFERRAL_CODE_MAX_COUNT}`}
           icon={Link2}
+          isLoading={linksQuery.isLoading}
         />
         <StatCard
           label="Total Clicks"
-          value={num(totalClicks)}
+          value={formatCount(totalClicks)}
           icon={MousePointerClick}
+          isLoading={linksQuery.isLoading}
         />
         <StatCard
           label="Total Registrations"
-          value={num(totalReg)}
+          value={formatCount(totalReg)}
           icon={UserPlus}
+          isLoading={linksQuery.isLoading}
         />
       </div>
 
@@ -176,6 +179,7 @@ export function PartnerLinksPage() {
         data={links}
         columns={linksColumns}
         rowKey="id"
+        isLoading={linksQuery.isLoading}
         header={
           <DataTableHeader
             title="Referral Links"

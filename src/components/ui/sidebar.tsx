@@ -87,7 +87,6 @@ function SidebarProvider({
 
     if (cookieValue === 'true' && !_open) _setOpen(true);
     if (cookieValue === 'false' && _open) _setOpen(false);
-
   }, []);
 
   const open = openProp ?? _open;

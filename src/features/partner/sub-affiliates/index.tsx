@@ -43,7 +43,9 @@ export function PartnerSubAffiliatesPage() {
     mutationFn: inviteSubAffiliate,
     onSuccess: () => {
       toast.success(`Invite sent to ${email}`);
-      queryClient.invalidateQueries({ queryKey: ['partner', 'sub-affiliates'] });
+      queryClient.invalidateQueries({
+        queryKey: ['partner', 'sub-affiliates'],
+      });
       setEmail('');
     },
     onError: (err) => {
@@ -74,16 +76,19 @@ export function PartnerSubAffiliatesPage() {
           label="Total"
           value={(stats?.total ?? 0).toString()}
           icon={Network}
+          isLoading={statsQuery.isLoading}
         />
         <StatCard
           label="Active"
           value={(stats?.active ?? 0).toString()}
           icon={UserCheck}
+          isLoading={statsQuery.isLoading}
         />
         <StatCard
           label="Override Earned"
           value={money(stats?.overrideEarned ?? 0)}
           icon={DollarSign}
+          isLoading={statsQuery.isLoading}
         />
       </div>
 
@@ -108,6 +113,7 @@ export function PartnerSubAffiliatesPage() {
         data={rows}
         columns={subAffiliatesColumns}
         rowKey="id"
+        isLoading={listQuery.isLoading}
         header={
           <DataTableHeader
             title="Sub-Affiliate Network"

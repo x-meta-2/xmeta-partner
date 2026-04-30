@@ -2,14 +2,10 @@ import type { ColumnDef } from '@tanstack/react-table';
 
 import { StatusTag } from '#/components/common/status-tag';
 import type { Payout } from '#/services/apis/partner/payouts';
+import { formatDate, formatDateTime } from '#/utils/date';
 
 const money = (v: number) =>
   v.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-const formatDate = (iso: string) => new Date(iso).toISOString().slice(0, 10);
-const formatDateTime = (iso: string) => {
-  const d = new Date(iso);
-  return `${d.toISOString().slice(0, 10)} ${d.toISOString().slice(11, 16)}`;
-};
 
 export const payoutsColumns: ColumnDef<Payout>[] = [
   {
@@ -54,7 +50,9 @@ export const payoutsColumns: ColumnDef<Payout>[] = [
     header: 'Completed',
     cell: ({ row }) => (
       <span className="text-muted-foreground">
-        {row.original.completedAt ? formatDateTime(row.original.completedAt) : '—'}
+        {row.original.completedAt
+          ? formatDateTime(row.original.completedAt)
+          : '—'}
       </span>
     ),
   },

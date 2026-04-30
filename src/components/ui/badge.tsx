@@ -30,8 +30,7 @@ const badgeVariants = cva(
           'border-transparent bg-warning-soft text-warning [a]:hover:bg-warning-soft/80',
         destructive:
           'border-transparent bg-destructive-soft text-destructive [a]:hover:bg-destructive-soft/80',
-        info:
-          'border-transparent bg-info-soft text-info [a]:hover:bg-info-soft/80',
+        info: 'border-transparent bg-info-soft text-info [a]:hover:bg-info-soft/80',
         outline:
           'border-border bg-transparent text-foreground [a]:hover:bg-muted [a]:hover:text-muted-foreground',
         muted:

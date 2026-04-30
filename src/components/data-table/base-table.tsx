@@ -15,10 +15,7 @@ import {
 } from '@tanstack/react-table';
 
 import { cn } from '#/lib/utils';
-import {
-  useTableUrlState,
-  type NavigateFn,
-} from '#/hooks/use-table-url-state';
+import { useTableUrlState, type NavigateFn } from '#/hooks/use-table-url-state';
 import {
   Table,
   TableBody,
@@ -222,7 +219,9 @@ export function BaseTable<TData extends object>({
       : { getPaginationRowModel: getPaginationRowModel() }),
     ...(manualFiltering ? {} : { getFilteredRowModel: getFilteredRowModel() }),
     getRowId: (row) =>
-      typeof rowKey === 'function' ? String(rowKey(row)) : String(row[rowKey] ?? ''),
+      typeof rowKey === 'function'
+        ? String(rowKey(row))
+        : String(row[rowKey] ?? ''),
   });
 
   useEffect(() => {
@@ -314,9 +313,8 @@ export function BaseTable<TData extends object>({
                         key={cell.id}
                         className={cn(
                           'h-12 px-4 align-middle',
-                          (
-                            cell.column.columnDef.meta as { className?: string }
-                          )?.className,
+                          (cell.column.columnDef.meta as { className?: string })
+                            ?.className,
                         )}
                       >
                         {flexRender(

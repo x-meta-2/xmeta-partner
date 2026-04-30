@@ -35,13 +35,20 @@ export async function refreshAuth(forceRefresh = false) {
  * sees (dashboard / apply / pending / suspended).
  */
 export async function loadUserProfile() {
-  const { isAuthenticated, setUser, setPartner, setApplication, setUserLoading } =
-    useAuthStore.getState().auth;
+  const {
+    isAuthenticated,
+    setUser,
+    setPartner,
+    setApplication,
+    setUserLoading,
+    setUserLoaded,
+  } = useAuthStore.getState().auth;
 
   if (!isAuthenticated) {
     setUser(undefined);
     setPartner(undefined);
     setApplication(undefined);
+    setUserLoaded(true);
     return;
   }
 
@@ -51,9 +58,17 @@ export async function loadUserProfile() {
     setUser(status?.user ?? undefined);
     setPartner(status?.partner ?? undefined);
     setApplication(status?.application ?? undefined);
-  } catch {
-    // API layer handles 401 → redirect to sign-in; 403 surfaces to caller.
+  } catch (err) {
+    // 401 is handled by the axios interceptor (refresh + redirect). Anything
+    // else is a real failure — log it so it doesn't masquerade as "user is
+    // not a partner" when really the backend is down or returning 5xx.
+    if (typeof window !== 'undefined') {
+      console.error('[auth] /status failed', err);
+    }
   } finally {
+    // Always release the dashboard gate — a failed /status should surface
+    // the resulting state (e.g. NotPartnerCard) rather than spin forever.
+    setUserLoaded(true);
     setUserLoading(false);
   }
 }

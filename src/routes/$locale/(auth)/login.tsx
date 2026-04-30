@@ -16,9 +16,6 @@ export const Route = createFileRoute('/$locale/(auth)/login')({
   beforeLoad: async ({ params }) => {
     if (typeof window === 'undefined') return;
 
-    // If the user already has a valid Cognito session, bounce them to the
-    // dashboard — the _authenticated gate decides which screen (real
-    // dashboard / onboarding card / suspended / etc.) to show.
     const current = useAuthStore.getState().auth;
     if (!current.isAuthenticated && current.authLoading) {
       await refreshAuth(false);

@@ -9,7 +9,8 @@ export function LandingBenefits() {
           Exclusive Benefits for X-Meta Partners
         </h2>
         <p className="mt-3 text-base text-muted-foreground">
-          Everything you need to turn your audience into a recurring revenue stream.
+          Everything you need to turn your audience into a recurring revenue
+          stream.
         </p>
       </div>
 

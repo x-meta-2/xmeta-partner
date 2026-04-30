@@ -68,7 +68,31 @@ baseService.interceptors.request.use(
   (error) => Promise.reject(error),
 );
 
-// Response interceptor — refresh + retry once on 401, then sign out
+/**
+ * Pull the backend's `body.message` out of an axios error and re-throw a
+ * plain Error whose `.message` is what `mutation.onError` consumers
+ * actually want to show via `toast.error(err.message)`. Falls back to
+ * axios's own message (e.g. "Network Error") when the body is missing.
+ */
+function unwrapApiError(error: AxiosError): Error {
+  const data = error.response?.data as { message?: unknown } | undefined;
+  const message =
+    typeof data?.message === 'string' && data.message.length > 0
+      ? data.message
+      : error.message;
+  const err = new Error(message);
+  // Preserve the axios fields handlers occasionally inspect (status code,
+  // raw response, etc.) without leaking the original Error subclass.
+  Object.assign(err, {
+    status: error.response?.status,
+    response: error.response,
+    config: error.config,
+  });
+  return err;
+}
+
+// Response interceptor — refresh + retry once on 401, otherwise unwrap the
+// backend's `body.message` so callers get a human-readable Error.
 baseService.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
@@ -76,12 +100,12 @@ baseService.interceptors.response.use(
     const config = error.config as RetryConfig | undefined;
 
     if (status !== 401 || !config || config._retry) {
-      throw error;
+      throw unwrapApiError(error);
     }
 
     const isAuthRequest = config.url?.includes('/auth/');
     if (isAuthRequest) {
-      throw error;
+      throw unwrapApiError(error);
     }
 
     config._retry = true;
@@ -100,7 +124,7 @@ baseService.interceptors.response.use(
       await signOutAndReset('/login');
     }
 
-    throw error;
+    throw unwrapApiError(error);
   },
 );
 

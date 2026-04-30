@@ -1,13 +1,13 @@
-import { useRouter } from '@tanstack/react-router'
-import { AlertTriangle, RotateCcw } from 'lucide-react'
+import { useRouter } from '@tanstack/react-router';
+import { AlertTriangle, RotateCcw } from 'lucide-react';
 
-import { Button } from '#/components/ui/button'
-import { LocalizedLink } from '#/components/common/localized-link'
-import { useI18n } from '#/i18n/context'
+import { Button } from '#/components/ui/button';
+import { LocalizedLink } from '#/components/common/localized-link';
+import { useI18n } from '#/i18n/context';
 
 export const ServerErrorPage = () => {
-  const { t } = useI18n()
-  const router = useRouter()
+  const { t } = useI18n();
+  const router = useRouter();
 
   return (
     <div className="flex min-h-[calc(100vh-160px)] flex-col items-center justify-center gap-6 px-4 text-center">
@@ -38,5 +38,5 @@ export const ServerErrorPage = () => {
         </Button>
       </div>
     </div>
-  )
-}
+  );
+};

@@ -8,15 +8,15 @@ import type {
 import { unwrapPartner } from '../types';
 import type { Commission, CommissionBreakdown, DailyCommission } from './types';
 
-export type {
-  Commission,
-  CommissionBreakdown,
-  CommissionStatus,
-  CommissionType,
-  DailyCommission,
-} from './types';
+export { CommissionStatus } from './types';
+export type { Commission, CommissionBreakdown, DailyCommission } from './types';
 
-export const listCommissions = async (params: PartnerPaginationInput = {}) =>
+export interface CommissionListParams extends PartnerPaginationInput {
+  status?: string;
+  referredUserId?: string;
+}
+
+export const listCommissions = async (params: CommissionListParams = {}) =>
   unwrapPartner<PartnerPaginated<Commission>>(
     await baseService.post<PartnerResponse<PartnerPaginated<Commission>>>(
       `${api.partner.commissions}/list`,

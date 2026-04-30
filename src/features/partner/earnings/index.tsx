@@ -18,17 +18,11 @@ import { earningsColumns } from './columns';
 const money = (v: number) =>
   v.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 
-const TYPE_OPTIONS = [
-  { label: 'Spot', value: 'spot' },
-  { label: 'Futures', value: 'futures' },
-  { label: 'Earn', value: 'earn' },
-  { label: 'Override', value: 'override' },
-];
-
 const STATUS_OPTIONS = [
   { label: 'Pending', value: 'pending' },
-  { label: 'Confirmed', value: 'confirmed' },
+  { label: 'Approved', value: 'approved' },
   { label: 'Paid', value: 'paid' },
+  { label: 'Cancelled', value: 'cancelled' },
 ];
 
 export function PartnerEarningsPage() {
@@ -58,7 +52,7 @@ export function PartnerEarningsPage() {
     <div className="space-y-6">
       <PageHeader
         title="Earnings"
-        description="Commission breakdown across all product types"
+        description="Direct futures commissions and sub-affiliate overrides"
       />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -67,23 +61,27 @@ export function PartnerEarningsPage() {
           value={money(summary?.totalCommission ?? 0)}
           trend={summary?.commissionTrend}
           icon={DollarSign}
+          isLoading={summaryQuery.isLoading}
         />
         <StatCard
           label="Pending"
           value={money(pending?.pendingBalance ?? 0)}
           icon={Clock}
           hint="awaiting payout"
+          isLoading={pendingQuery.isLoading}
         />
         <StatCard
           label="Paid Out"
           value={money(pending?.totalPaid ?? 0)}
           icon={CheckCircle}
           hint="lifetime"
+          isLoading={pendingQuery.isLoading}
         />
         <StatCard
           label="This Month"
           value={money(summary?.thisMonthCommission ?? 0)}
           icon={TrendingUp}
+          isLoading={summaryQuery.isLoading}
         />
       </div>
 
@@ -93,6 +91,7 @@ export function PartnerEarningsPage() {
         data={rows}
         columns={earningsColumns}
         rowKey="id"
+        isLoading={listQuery.isLoading}
         header={
           <DataTableHeader
             title="Commission History"
@@ -100,10 +99,9 @@ export function PartnerEarningsPage() {
           />
         }
         toolbar={{
-          searchKey: 'referralId',
-          searchPlaceholder: 'Search by referral ID…',
+          searchKey: 'tradeId',
+          searchPlaceholder: 'Search by trade ID…',
           filters: [
-            { columnId: 'type', title: 'Type', options: TYPE_OPTIONS },
             { columnId: 'status', title: 'Status', options: STATUS_OPTIONS },
           ],
         }}
@@ -115,19 +113,17 @@ export function PartnerEarningsPage() {
 function BreakdownCard({ breakdown }: { breakdown: CommissionBreakdown }) {
   const rows: Array<{
     label: string;
-    key: keyof CommissionBreakdown;
+    key: 'futures' | 'override';
     color: string;
   }> = [
-    { label: 'Spot', key: 'spot', color: 'bg-primary' },
     { label: 'Futures', key: 'futures', color: 'bg-chart-2' },
-    { label: 'Earn', key: 'earn', color: 'bg-info' },
-    { label: 'Override', key: 'override', color: 'bg-success' },
+    { label: 'Sub-affiliate override', key: 'override', color: 'bg-success' },
   ];
 
   return (
     <Card className="gap-4 p-5">
       <div className="flex items-center justify-between">
-        <div className="text-base font-medium">Breakdown by Product</div>
+        <div className="text-base font-medium">Earnings split</div>
         <div className="text-sm text-muted-foreground">
           Total {money(breakdown.total)}
         </div>

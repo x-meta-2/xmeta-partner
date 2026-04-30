@@ -12,15 +12,18 @@ import { env } from './env';
 
 const BASE = env.VITE_PARTNER_API_URL;
 const PARTNER = `${BASE}/partner`;
+const PUBLIC = `${BASE}/public/partner`;
 
 export const api = {
+  public: {
+    tiers: `${PUBLIC}/tiers`,
+  },
   partner: {
     base: PARTNER,
     auth: `${PARTNER}/auth`,
     dashboard: `${PARTNER}/dashboard`,
     referrals: `${PARTNER}/referrals`,
     links: `${PARTNER}/links`,
-    campaigns: `${PARTNER}/campaigns`,
     commissions: `${PARTNER}/commissions`,
     payouts: `${PARTNER}/payouts`,
     subAffiliates: `${PARTNER}/sub-affiliates`,

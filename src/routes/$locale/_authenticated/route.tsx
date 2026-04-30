@@ -1,54 +1,57 @@
-import { createFileRoute, Outlet, redirect, useRouterState } from '@tanstack/react-router';
+import { useEffect } from 'react';
+import {
+  createFileRoute,
+  Outlet,
+  useRouterState,
+} from '@tanstack/react-router';
 
 import { PageLoader } from '#/components/common/page-loader';
 import { DashboardLayout } from '#/components/layout/dashboard-layout';
 import { DashboardSidebar } from '#/components/sidebar/dashboard-sidebar';
 import { DashboardSidebarMobile } from '#/components/sidebar/dashboard-sidebar-mobile';
 import { PartnerGate } from '#/features/partner/onboarding/partner-gate';
-import { loadUserProfile, refreshAuth } from '#/stores/auth-actions';
+import { useLocalizedNavigate } from '#/hooks/use-localized-navigate';
+import { loadUserProfile } from '#/stores/auth-actions';
 import { useAuthStore } from '#/stores/auth-store';
 
-// Block the FIRST authenticated navigation this session until partner
-// status is fresh. Subsequent clicks stay instant and refresh in background.
-// Reset on logout so the next login re-blocks.
-let statusHydrated = false;
-
+// Auth + profile bootstrap lives here in client `useEffect`s rather than
+// `beforeLoad`. TanStack Start runs `beforeLoad` on the server during SSR
+// and does NOT re-run it on client hydration, so any `/status` call placed
+// there would silently never fire on the client.
 export const Route = createFileRoute('/$locale/_authenticated')({
-  beforeLoad: async ({ location, params }) => {
-    if (typeof window === 'undefined') return;
-
-    // Hydrate Cognito session on hard refresh / direct navigation.
-    const current = useAuthStore.getState().auth;
-    if (!current.isAuthenticated && current.authLoading) {
-      await refreshAuth(false);
-    }
-
-    const { isAuthenticated } = useAuthStore.getState().auth;
-    if (!isAuthenticated) {
-      statusHydrated = false;
-      throw redirect({
-        to: '/$locale/login',
-        params: { locale: params.locale },
-        search: { redirect: location.href },
-      });
-    }
-
-    if (!statusHydrated) {
-      await loadUserProfile();
-      statusHydrated = true;
-    }
-    // Intentionally no background refresh here — call `loadUserProfile()`
-    // explicitly from mutations (apply, update profile) when data changes.
-  },
-  pendingComponent: PendingLayout,
   component: AuthenticatedLayout,
 });
 
-function PendingLayout() {
-  return <PageLoader fullScreen />;
-}
-
 function AuthenticatedLayout() {
+  const authLoading = useAuthStore((s) => s.auth.authLoading);
+  const isAuthenticated = useAuthStore((s) => s.auth.isAuthenticated);
+  const userLoaded = useAuthStore((s) => s.auth.userLoaded);
+  const navigate = useLocalizedNavigate();
+
+  // Fetch the partner/application snapshot every time the dashboard mounts
+  // for an authenticated user — covers hard refresh AND post-login
+  // navigation (where root-level `AuthBootstrap` already mounted earlier).
+  useEffect(() => {
+    if (isAuthenticated && !userLoaded) {
+      void loadUserProfile();
+    }
+  }, [isAuthenticated, userLoaded]);
+
+  // Once Cognito hydration finishes, redirect unauthenticated users to login.
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      void navigate('/login', { replace: true });
+    }
+  }, [authLoading, isAuthenticated, navigate]);
+
+  // Block render until we know who the user is + have the fresh /status
+  // snapshot. Without this gate, persisted user data flashes the wrong
+  // onboarding card before partner/application populate.
+  if (authLoading || (isAuthenticated && !userLoaded)) {
+    return <PageLoader fullScreen />;
+  }
+  if (!isAuthenticated) return null;
+
   return (
     <DashboardLayout
       sidebarContent={<DashboardSidebar />}

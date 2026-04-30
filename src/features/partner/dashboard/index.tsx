@@ -10,7 +10,6 @@ import {
 } from '#/services/apis/partner/dashboard';
 import { getProfile, PartnerStatus } from '#/services/apis/partner/profile';
 import { useAuthStore } from '#/stores/auth-store';
-
 import { EarningsChart } from './earnings-chart';
 import { RecentActivity } from './recent-activity';
 import { ReferralLinkCard } from './referral-link-card';
@@ -74,22 +73,26 @@ export function PartnerDashboardPage() {
           trend={summary?.commissionTrend}
           icon={DollarSign}
           hint="vs. last 30 days"
+          isLoading={summaryQuery.isLoading}
         />
         <StatCard
           label="This Month"
           value={money(summary?.thisMonthCommission ?? 0)}
           icon={TrendingUp}
+          isLoading={summaryQuery.isLoading}
         />
         <StatCard
           label="Active Referrals"
           value={(summary?.activeReferrals ?? 0).toString()}
           trend={summary?.referralsTrend}
           icon={Users}
+          isLoading={summaryQuery.isLoading}
         />
         <StatCard
           label="Referred Volume"
           value={money(summary?.referredVolume ?? 0)}
           icon={BarChart3}
+          isLoading={summaryQuery.isLoading}
         />
       </div>
 

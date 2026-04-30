@@ -7,7 +7,6 @@ import { AuthCarousel } from '#/features/auth/components/auth-carousel';
 import QrLogin from '#/features/auth/components/QrLogin';
 import { useAuthActions } from '#/hooks/use-auth-actions.ts';
 import { useBoolean } from '#/hooks/use-boolean';
-import { useLocalizedNavigate } from '#/hooks/use-localized-navigate';
 import { useI18n } from '#/i18n/context';
 import {
   HoverCard,
@@ -20,7 +19,6 @@ import { useRef } from 'react';
 import Turnstile from 'react-turnstile';
 
 export const LoginPage = () => {
-  const navigate = useLocalizedNavigate();
   const { t } = useI18n();
   const { login } = useAuthActions();
 
@@ -156,17 +154,6 @@ export const LoginPage = () => {
                         {field.state.meta.errors[0]}
                       </p>
                     )}
-                    <Button
-                      variant="link"
-                      type="button"
-                      className="p-0 flex justify-end"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        void navigate('/forgot-password');
-                      }}
-                    >
-                      {t('auth:login.forgot-password')}
-                    </Button>
                   </Field>
                 )}
               </form.Field>

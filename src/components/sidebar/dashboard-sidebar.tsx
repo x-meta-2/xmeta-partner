@@ -29,7 +29,7 @@ export function DashboardSidebar() {
   const currentPath = location.pathname;
   const { t } = useI18n();
   const normalizedPath = stripLocalePrefix(currentPath);
-  
+
   const { state, toggleSidebar } = useSidebar();
   const { isHovered } = useSidebarHover();
 
@@ -137,7 +137,9 @@ export function DashboardSidebar() {
                                   className={cn(
                                     'size-5 transition-transform duration-200 block',
                                     isOpen ? 'rotate-180' : '',
-                                    isGroupActive ? '' : 'text-muted-foreground',
+                                    isGroupActive
+                                      ? ''
+                                      : 'text-muted-foreground',
                                   )}
                                 />
                               )}

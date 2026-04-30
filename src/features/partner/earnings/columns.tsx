@@ -6,48 +6,54 @@ import type { Commission } from '#/services/apis/partner/commissions';
 const money = (v: number) =>
   v.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 
+const percent = (v: number) => `${(v * 100).toFixed(2)}%`;
+
 export const earningsColumns: ColumnDef<Commission>[] = [
   {
-    accessorKey: 'date',
+    accessorKey: 'tradeDate',
     header: 'Date',
-    cell: ({ row }) => row.original.date.slice(0, 10),
+    cell: ({ row }) => row.original.tradeDate.slice(0, 10),
   },
   {
-    accessorKey: 'referralId',
-    header: 'Referral',
+    accessorKey: 'tradeId',
+    header: 'Trade',
     cell: ({ row }) => (
-      <span className="font-mono text-xs">{row.original.referralId}</span>
+      <span className="font-mono text-xs">{row.original.tradeId}</span>
     ),
   },
   {
-    accessorKey: 'type',
-    header: 'Type',
-    cell: ({ row }) => <span className="capitalize">{row.original.type}</span>,
-    filterFn: (row, _id, value: string[]) =>
-      value.length === 0 || value.includes(row.original.type),
+    accessorKey: 'isOverride',
+    header: 'Source',
+    cell: ({ row }) => (
+      <span className="capitalize">
+        {row.original.isOverride ? 'Override' : 'Futures'}
+      </span>
+    ),
   },
   {
-    accessorKey: 'tradingVolume',
+    accessorKey: 'tradeAmount',
     header: () => <div className="text-right">Volume</div>,
     cell: ({ row }) => (
       <div className="text-right tabular-nums">
-        {money(row.original.tradingVolume)}
+        {money(row.original.tradeAmount)}
       </div>
     ),
   },
   {
-    accessorKey: 'rate',
+    accessorKey: 'commissionRate',
     header: () => <div className="text-right">Rate</div>,
     cell: ({ row }) => (
-      <div className="text-right tabular-nums">{row.original.rate}%</div>
+      <div className="text-right tabular-nums">
+        {percent(row.original.commissionRate)}
+      </div>
     ),
   },
   {
-    accessorKey: 'amount',
+    accessorKey: 'commissionAmount',
     header: () => <div className="text-right">Amount</div>,
     cell: ({ row }) => (
       <div className="text-right font-semibold tabular-nums text-primary">
-        {money(row.original.amount)}
+        {money(row.original.commissionAmount)}
       </div>
     ),
   },

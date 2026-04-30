@@ -38,9 +38,9 @@ export interface Partner {
   totalReferrals: number;
   totalEarnings: number;
   companyName?: string;
-  phone?: string;
-  country?: string;
   website?: string;
+  /** Same shape as the apply form payload: `{ facebook, instagram }`. */
+  socialMedia?: { facebook?: string; instagram?: string };
   createdAt: string;
 }
 
@@ -48,8 +48,6 @@ export interface PartnerApplication {
   id: string;
   userId: string;
   companyName?: string;
-  phone?: string;
-  country?: string;
   website?: string;
   socialMedia?: Record<string, unknown>;
   audienceSize?: string;
@@ -69,8 +67,6 @@ export interface AuthStatus {
 
 export interface ApplyPartnerPayload {
   companyName?: string;
-  phone?: string;
-  country?: string;
   website?: string;
   socialMedia?: Record<string, unknown>;
   audienceSize?: string;

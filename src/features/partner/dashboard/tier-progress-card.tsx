@@ -9,7 +9,10 @@ const vol = (v: number) => {
 };
 
 export function TierProgressCard({ progress }: { progress: TierProgress }) {
-  const clientsPct = Math.min(100, Math.round(progress.activeClientsProgress * 100));
+  const clientsPct = Math.min(
+    100,
+    Math.round(progress.activeClientsProgress * 100),
+  );
   const volPct = Math.min(100, Math.round(progress.volumeProgress * 100));
   const { currentTier, nextTier } = progress;
 
@@ -39,7 +42,7 @@ export function TierProgressCard({ progress }: { progress: TierProgress }) {
       {nextTier && (
         <>
           <ProgressRow
-            label={`Active Clients (${progress.activeClients} / ${nextTier.minReferrals})`}
+            label={`Active Clients (${progress.activeClients} / ${nextTier.minActiveClients})`}
             pct={clientsPct}
           />
           <ProgressRow

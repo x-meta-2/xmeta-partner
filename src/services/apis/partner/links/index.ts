@@ -17,9 +17,7 @@ export {
   validateReferralCode,
 } from './types';
 
-export const listReferralLinks = async (
-  params: PartnerPaginationInput = {},
-) =>
+export const listReferralLinks = async (params: PartnerPaginationInput = {}) =>
   unwrapPartner<PartnerPaginated<ReferralLink>>(
     await baseService.post<PartnerResponse<PartnerPaginated<ReferralLink>>>(
       `${api.partner.links}/list`,
@@ -32,23 +30,5 @@ export const createReferralLink = async (payload: { code: string }) =>
     await baseService.post<PartnerResponse<ReferralLink>>(
       `${api.partner.links}/create`,
       payload,
-    ),
-  );
-
-export const updateReferralLink = async (
-  id: string,
-  payload: Partial<ReferralLink>,
-) =>
-  unwrapPartner<ReferralLink>(
-    await baseService.put<PartnerResponse<ReferralLink>>(
-      `${api.partner.links}/${id}`,
-      payload,
-    ),
-  );
-
-export const deleteReferralLink = async (id: string) =>
-  unwrapPartner<null>(
-    await baseService.delete<PartnerResponse<null>>(
-      `${api.partner.links}/${id}`,
     ),
   );

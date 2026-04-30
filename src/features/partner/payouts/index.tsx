@@ -81,16 +81,19 @@ export function PartnerPayoutsPage() {
           label="Total Paid"
           value={money(summary?.totalPaid ?? 0)}
           icon={CheckCircle}
+          isLoading={summaryQuery.isLoading}
         />
         <StatCard
           label="Pending Balance"
           value={money(pendingBalance)}
           icon={Clock}
+          isLoading={summaryQuery.isLoading}
         />
         <StatCard
           label="Last Payout"
           value={summary?.lastPayoutDate ?? '—'}
           icon={Clock}
+          isLoading={summaryQuery.isLoading}
         />
       </div>
 
@@ -98,6 +101,7 @@ export function PartnerPayoutsPage() {
         data={payouts}
         columns={payoutsColumns}
         rowKey="id"
+        isLoading={listQuery.isLoading}
         header={
           <DataTableHeader
             title="Payout History"

@@ -4,10 +4,7 @@ import { SidebarProvider, useSidebar } from '#/components/ui/sidebar';
 import { TooltipProvider } from '#/components/ui/tooltip';
 import { cn } from '#/lib/utils';
 
-import {
-  SidebarHoverProvider,
-  useSidebarHover,
-} from './sidebar-hover-context';
+import { SidebarHoverProvider, useSidebarHover } from './sidebar-hover-context';
 
 type DashboardLayoutProps = Readonly<{
   children: React.ReactNode;

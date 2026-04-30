@@ -51,7 +51,6 @@ export const mnTranslations: Namespaces = {
     'login.subtitle': 'Та зөв URL хаягаар зочилж байгаа эсэхээ шалгана уу.',
     'login.button': 'Нэвтрэх',
     'confirm.button': 'Баталгаажуулах',
-    'login.forgot-password': 'Нууц үг мартсан ?',
     'register.title': 'Бүртгүүлэх',
     'register.button': 'Бүртгүүлэх',
     'register.phone.title': 'Утасны дугаар баталгаажуулах',
@@ -61,10 +60,6 @@ export const mnTranslations: Namespaces = {
     'verify.email.description': 'Бид таны имэйл руу 6 оронтой код илгээсэн',
     'verify.phone.title': 'Утасны дугаар баталгаажуулах',
     'verify.phone.description': 'Та баталгаажуулах код оруулна уу.',
-    'forgot.title': 'Нууц үг сэргээх',
-    'forgot.subtitle':
-      'Бүртгэлтэй цахим шуудангаа оруулна уу. Бид таны И-мэйл хаягруу нэг удаагийн код явуулах болно.',
-    'forgot.button': 'Нууц үг сэргээх',
     email: 'И-мэйл хаяг',
     password: 'Нууц үг',
     'password.confirm': 'Нууц үг давтах',

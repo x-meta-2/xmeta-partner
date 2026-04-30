@@ -1,22 +1,21 @@
 import { useState } from 'react';
 import { Check, Copy, ExternalLink } from 'lucide-react';
-import { toast } from 'sonner';
 import type { ColumnDef } from '@tanstack/react-table';
 
-import { Button } from '#/components/ui/button';
 import { Badge } from '#/components/ui/badge';
+import { Button } from '#/components/ui/button';
 import type { ReferralLink } from '#/services/apis/partner/links';
-
-const num = (v: number) => v.toLocaleString('en-US');
-const formatDate = (iso: string) => new Date(iso).toISOString().slice(0, 10);
+import { copyToClipboard } from '#/utils/clipboard';
+import { formatDate } from '#/utils/date';
+import { formatCount } from '#/utils';
 
 function LinkActions({ link }: { link: ReferralLink }) {
   const [copied, setCopied] = useState(false);
 
   const copy = async () => {
-    await navigator.clipboard.writeText(link.url);
+    const ok = await copyToClipboard(link.url, 'Link copied');
+    if (!ok) return;
     setCopied(true);
-    toast.success('Link copied');
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -46,9 +45,9 @@ export const linksColumns: ColumnDef<ReferralLink>[] = [
         <span className="font-mono text-xs font-semibold text-primary">
           {row.original.code}
         </span>
-        {row.original.isDefault && (
+        {!row.original?.isActive && (
           <Badge variant="secondary" className="text-[10px]">
-            Default
+            Inactive
           </Badge>
         )}
       </div>
@@ -67,7 +66,9 @@ export const linksColumns: ColumnDef<ReferralLink>[] = [
     accessorKey: 'clicks',
     header: () => <div className="text-right">Clicks</div>,
     cell: ({ row }) => (
-      <div className="text-right tabular-nums">{num(row.original.clicks)}</div>
+      <div className="text-right tabular-nums">
+        {formatCount(row.original.clicks)}
+      </div>
     ),
   },
   {
@@ -75,16 +76,7 @@ export const linksColumns: ColumnDef<ReferralLink>[] = [
     header: () => <div className="text-right">Registrations</div>,
     cell: ({ row }) => (
       <div className="text-right tabular-nums">
-        {num(row.original.registrations)}
-      </div>
-    ),
-  },
-  {
-    accessorKey: 'conversions',
-    header: () => <div className="text-right">Conversions</div>,
-    cell: ({ row }) => (
-      <div className="text-right tabular-nums">
-        {num(row.original.conversions)}
+        {formatCount(row.original.registrations)}
       </div>
     ),
   },

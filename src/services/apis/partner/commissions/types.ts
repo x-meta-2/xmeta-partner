@@ -1,23 +1,33 @@
-export type CommissionType = 'spot' | 'futures' | 'earn' | 'override';
-export type CommissionStatus = 'pending' | 'confirmed' | 'paid';
+export const CommissionStatus = {
+  Pending: 'pending',
+  Approved: 'approved',
+  Paid: 'paid',
+  Cancelled: 'cancelled',
+} as const;
+export type CommissionStatus =
+  (typeof CommissionStatus)[keyof typeof CommissionStatus];
 
+/** Mirrors the Go `database.Commission` struct returned by the API. */
 export interface Commission {
   id: string;
-  referralId: string;
-  type: CommissionType;
-  amount: number;
-  currency: string;
-  tradingVolume: number;
-  rate: number;
+  partnerId: string;
+  referredUserId: string;
+  tradeId: string;
+  tradeAmount: number;
+  commissionRate: number;
+  commissionAmount: number;
+  tierId: string | null;
+  isOverride: boolean;
+  overridePartnerId: string | null;
   status: CommissionStatus;
-  date: string;
+  payoutId: string | null;
+  tradeDate: string;
   createdAt: string;
 }
 
+/** Futures-only commission split between direct earnings and sub-affiliate overrides. */
 export interface CommissionBreakdown {
-  spot: number;
   futures: number;
-  earn: number;
   override: number;
   total: number;
 }

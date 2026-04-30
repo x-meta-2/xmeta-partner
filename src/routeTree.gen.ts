@@ -21,7 +21,6 @@ import { Route as LocaleauthSmsMfaRouteImport } from './routes/$locale/(auth)/sm
 import { Route as LocaleauthSelectMfaTypeRouteImport } from './routes/$locale/(auth)/select-mfa-type'
 import { Route as LocaleauthNewPasswordRequiredRouteImport } from './routes/$locale/(auth)/new-password-required'
 import { Route as LocaleauthLoginRouteImport } from './routes/$locale/(auth)/login'
-import { Route as LocaleauthForgotPasswordRouteImport } from './routes/$locale/(auth)/forgot-password'
 import { Route as LocaleAuthenticatedDashboardSubAffiliatesRouteImport } from './routes/$locale/_authenticated/dashboard/sub-affiliates'
 import { Route as LocaleAuthenticatedDashboardSettingsRouteImport } from './routes/$locale/_authenticated/dashboard/settings'
 import { Route as LocaleAuthenticatedDashboardReferralsRouteImport } from './routes/$locale/_authenticated/dashboard/referrals'
@@ -30,7 +29,6 @@ import { Route as LocaleAuthenticatedDashboardPayoutsRouteImport } from './route
 import { Route as LocaleAuthenticatedDashboardOverviewRouteImport } from './routes/$locale/_authenticated/dashboard/overview'
 import { Route as LocaleAuthenticatedDashboardLinksRouteImport } from './routes/$locale/_authenticated/dashboard/links'
 import { Route as LocaleAuthenticatedDashboardEarningsRouteImport } from './routes/$locale/_authenticated/dashboard/earnings'
-import { Route as LocaleAuthenticatedDashboardCampaignsRouteImport } from './routes/$locale/_authenticated/dashboard/campaigns'
 import { Route as LocaleAuthenticatedDashboardApplyRouteImport } from './routes/$locale/_authenticated/dashboard/apply'
 
 const IndexRoute = IndexRouteImport.update({
@@ -96,12 +94,6 @@ const LocaleauthLoginRoute = LocaleauthLoginRouteImport.update({
   path: '/$locale/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LocaleauthForgotPasswordRoute =
-  LocaleauthForgotPasswordRouteImport.update({
-    id: '/$locale/(auth)/forgot-password',
-    path: '/$locale/forgot-password',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 const LocaleAuthenticatedDashboardSubAffiliatesRoute =
   LocaleAuthenticatedDashboardSubAffiliatesRouteImport.update({
     id: '/dashboard/sub-affiliates',
@@ -150,12 +142,6 @@ const LocaleAuthenticatedDashboardEarningsRoute =
     path: '/dashboard/earnings',
     getParentRoute: () => LocaleAuthenticatedRouteRoute,
   } as any)
-const LocaleAuthenticatedDashboardCampaignsRoute =
-  LocaleAuthenticatedDashboardCampaignsRouteImport.update({
-    id: '/dashboard/campaigns',
-    path: '/dashboard/campaigns',
-    getParentRoute: () => LocaleAuthenticatedRouteRoute,
-  } as any)
 const LocaleAuthenticatedDashboardApplyRoute =
   LocaleAuthenticatedDashboardApplyRouteImport.update({
     id: '/dashboard/apply',
@@ -167,7 +153,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$locale': typeof LocaleAuthenticatedRouteRouteWithChildren
   '/$locale/': typeof LocaleIndexRoute
-  '/$locale/forgot-password': typeof LocaleauthForgotPasswordRoute
   '/$locale/login': typeof LocaleauthLoginRoute
   '/$locale/new-password-required': typeof LocaleauthNewPasswordRequiredRoute
   '/$locale/select-mfa-type': typeof LocaleauthSelectMfaTypeRoute
@@ -178,7 +163,6 @@ export interface FileRoutesByFullPath {
   '/$locale/404': typeof Localeerrors404Route
   '/$locale/500': typeof Localeerrors500Route
   '/$locale/dashboard/apply': typeof LocaleAuthenticatedDashboardApplyRoute
-  '/$locale/dashboard/campaigns': typeof LocaleAuthenticatedDashboardCampaignsRoute
   '/$locale/dashboard/earnings': typeof LocaleAuthenticatedDashboardEarningsRoute
   '/$locale/dashboard/links': typeof LocaleAuthenticatedDashboardLinksRoute
   '/$locale/dashboard/overview': typeof LocaleAuthenticatedDashboardOverviewRoute
@@ -191,7 +175,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$locale': typeof LocaleIndexRoute
-  '/$locale/forgot-password': typeof LocaleauthForgotPasswordRoute
   '/$locale/login': typeof LocaleauthLoginRoute
   '/$locale/new-password-required': typeof LocaleauthNewPasswordRequiredRoute
   '/$locale/select-mfa-type': typeof LocaleauthSelectMfaTypeRoute
@@ -202,7 +185,6 @@ export interface FileRoutesByTo {
   '/$locale/404': typeof Localeerrors404Route
   '/$locale/500': typeof Localeerrors500Route
   '/$locale/dashboard/apply': typeof LocaleAuthenticatedDashboardApplyRoute
-  '/$locale/dashboard/campaigns': typeof LocaleAuthenticatedDashboardCampaignsRoute
   '/$locale/dashboard/earnings': typeof LocaleAuthenticatedDashboardEarningsRoute
   '/$locale/dashboard/links': typeof LocaleAuthenticatedDashboardLinksRoute
   '/$locale/dashboard/overview': typeof LocaleAuthenticatedDashboardOverviewRoute
@@ -217,7 +199,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/$locale/_authenticated': typeof LocaleAuthenticatedRouteRouteWithChildren
   '/$locale/': typeof LocaleIndexRoute
-  '/$locale/(auth)/forgot-password': typeof LocaleauthForgotPasswordRoute
   '/$locale/(auth)/login': typeof LocaleauthLoginRoute
   '/$locale/(auth)/new-password-required': typeof LocaleauthNewPasswordRequiredRoute
   '/$locale/(auth)/select-mfa-type': typeof LocaleauthSelectMfaTypeRoute
@@ -228,7 +209,6 @@ export interface FileRoutesById {
   '/$locale/(errors)/404': typeof Localeerrors404Route
   '/$locale/(errors)/500': typeof Localeerrors500Route
   '/$locale/_authenticated/dashboard/apply': typeof LocaleAuthenticatedDashboardApplyRoute
-  '/$locale/_authenticated/dashboard/campaigns': typeof LocaleAuthenticatedDashboardCampaignsRoute
   '/$locale/_authenticated/dashboard/earnings': typeof LocaleAuthenticatedDashboardEarningsRoute
   '/$locale/_authenticated/dashboard/links': typeof LocaleAuthenticatedDashboardLinksRoute
   '/$locale/_authenticated/dashboard/overview': typeof LocaleAuthenticatedDashboardOverviewRoute
@@ -244,7 +224,6 @@ export interface FileRouteTypes {
     | '/'
     | '/$locale'
     | '/$locale/'
-    | '/$locale/forgot-password'
     | '/$locale/login'
     | '/$locale/new-password-required'
     | '/$locale/select-mfa-type'
@@ -255,7 +234,6 @@ export interface FileRouteTypes {
     | '/$locale/404'
     | '/$locale/500'
     | '/$locale/dashboard/apply'
-    | '/$locale/dashboard/campaigns'
     | '/$locale/dashboard/earnings'
     | '/$locale/dashboard/links'
     | '/$locale/dashboard/overview'
@@ -268,7 +246,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/$locale'
-    | '/$locale/forgot-password'
     | '/$locale/login'
     | '/$locale/new-password-required'
     | '/$locale/select-mfa-type'
@@ -279,7 +256,6 @@ export interface FileRouteTypes {
     | '/$locale/404'
     | '/$locale/500'
     | '/$locale/dashboard/apply'
-    | '/$locale/dashboard/campaigns'
     | '/$locale/dashboard/earnings'
     | '/$locale/dashboard/links'
     | '/$locale/dashboard/overview'
@@ -293,7 +269,6 @@ export interface FileRouteTypes {
     | '/'
     | '/$locale/_authenticated'
     | '/$locale/'
-    | '/$locale/(auth)/forgot-password'
     | '/$locale/(auth)/login'
     | '/$locale/(auth)/new-password-required'
     | '/$locale/(auth)/select-mfa-type'
@@ -304,7 +279,6 @@ export interface FileRouteTypes {
     | '/$locale/(errors)/404'
     | '/$locale/(errors)/500'
     | '/$locale/_authenticated/dashboard/apply'
-    | '/$locale/_authenticated/dashboard/campaigns'
     | '/$locale/_authenticated/dashboard/earnings'
     | '/$locale/_authenticated/dashboard/links'
     | '/$locale/_authenticated/dashboard/overview'
@@ -319,7 +293,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LocaleAuthenticatedRouteRoute: typeof LocaleAuthenticatedRouteRouteWithChildren
   LocaleIndexRoute: typeof LocaleIndexRoute
-  LocaleauthForgotPasswordRoute: typeof LocaleauthForgotPasswordRoute
   LocaleauthLoginRoute: typeof LocaleauthLoginRoute
   LocaleauthNewPasswordRequiredRoute: typeof LocaleauthNewPasswordRequiredRoute
   LocaleauthSelectMfaTypeRoute: typeof LocaleauthSelectMfaTypeRoute
@@ -417,13 +390,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LocaleauthLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/$locale/(auth)/forgot-password': {
-      id: '/$locale/(auth)/forgot-password'
-      path: '/$locale/forgot-password'
-      fullPath: '/$locale/forgot-password'
-      preLoaderRoute: typeof LocaleauthForgotPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/$locale/_authenticated/dashboard/sub-affiliates': {
       id: '/$locale/_authenticated/dashboard/sub-affiliates'
       path: '/dashboard/sub-affiliates'
@@ -480,13 +446,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LocaleAuthenticatedDashboardEarningsRouteImport
       parentRoute: typeof LocaleAuthenticatedRouteRoute
     }
-    '/$locale/_authenticated/dashboard/campaigns': {
-      id: '/$locale/_authenticated/dashboard/campaigns'
-      path: '/dashboard/campaigns'
-      fullPath: '/$locale/dashboard/campaigns'
-      preLoaderRoute: typeof LocaleAuthenticatedDashboardCampaignsRouteImport
-      parentRoute: typeof LocaleAuthenticatedRouteRoute
-    }
     '/$locale/_authenticated/dashboard/apply': {
       id: '/$locale/_authenticated/dashboard/apply'
       path: '/dashboard/apply'
@@ -499,7 +458,6 @@ declare module '@tanstack/react-router' {
 
 interface LocaleAuthenticatedRouteRouteChildren {
   LocaleAuthenticatedDashboardApplyRoute: typeof LocaleAuthenticatedDashboardApplyRoute
-  LocaleAuthenticatedDashboardCampaignsRoute: typeof LocaleAuthenticatedDashboardCampaignsRoute
   LocaleAuthenticatedDashboardEarningsRoute: typeof LocaleAuthenticatedDashboardEarningsRoute
   LocaleAuthenticatedDashboardLinksRoute: typeof LocaleAuthenticatedDashboardLinksRoute
   LocaleAuthenticatedDashboardOverviewRoute: typeof LocaleAuthenticatedDashboardOverviewRoute
@@ -514,8 +472,6 @@ const LocaleAuthenticatedRouteRouteChildren: LocaleAuthenticatedRouteRouteChildr
   {
     LocaleAuthenticatedDashboardApplyRoute:
       LocaleAuthenticatedDashboardApplyRoute,
-    LocaleAuthenticatedDashboardCampaignsRoute:
-      LocaleAuthenticatedDashboardCampaignsRoute,
     LocaleAuthenticatedDashboardEarningsRoute:
       LocaleAuthenticatedDashboardEarningsRoute,
     LocaleAuthenticatedDashboardLinksRoute:
@@ -543,7 +499,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LocaleAuthenticatedRouteRoute: LocaleAuthenticatedRouteRouteWithChildren,
   LocaleIndexRoute: LocaleIndexRoute,
-  LocaleauthForgotPasswordRoute: LocaleauthForgotPasswordRoute,
   LocaleauthLoginRoute: LocaleauthLoginRoute,
   LocaleauthNewPasswordRequiredRoute: LocaleauthNewPasswordRequiredRoute,
   LocaleauthSelectMfaTypeRoute: LocaleauthSelectMfaTypeRoute,

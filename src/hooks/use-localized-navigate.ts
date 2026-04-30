@@ -1,8 +1,8 @@
-import { useCallback } from 'react'
-import { useRouter, useRouterState } from '@tanstack/react-router'
+import { useCallback } from 'react';
+import { useRouter, useRouterState } from '@tanstack/react-router';
 
-import { localeFromPathname } from '#/i18n/routing'
-import type { Locale } from '#/i18n/locales'
+import { localeFromPathname } from '#/i18n/routing';
+import type { Locale } from '#/i18n/locales';
 
 /**
  * Locale-aware navigation helper.
@@ -29,41 +29,39 @@ import type { Locale } from '#/i18n/locales'
  *   navigate({ to: '/dashboard/overview' })      // object form too
  */
 export function useLocalizedNavigate() {
-  const router = useRouter()
-  const pathname = useRouterState({ select: (s) => s.location.pathname })
+  const router = useRouter();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return useCallback(
     async (
       target:
         | string
         | {
-            to: string
-            search?: Record<string, unknown>
-            replace?: boolean
+            to: string;
+            search?: Record<string, unknown>;
+            replace?: boolean;
           },
       options?: { replace?: boolean },
     ) => {
-      const locale: Locale = localeFromPathname(pathname)
-      const to = typeof target === 'string' ? target : target.to
-      const search = typeof target === 'object' ? target.search : undefined
+      const locale: Locale = localeFromPathname(pathname);
+      const to = typeof target === 'string' ? target : target.to;
+      const search = typeof target === 'object' ? target.search : undefined;
       const replace =
-        typeof target === 'object'
-          ? target.replace
-          : options?.replace
+        typeof target === 'object' ? target.replace : options?.replace;
 
       // Accept both `/dashboard/overview` and `/$locale/dashboard/overview`
       // and also full `/mn/dashboard/overview` paths.
-      const normalized = normalizeRoutePath(to)
+      const normalized = normalizeRoutePath(to);
 
       await router.navigate({
         to: normalized,
         params: { locale },
         search,
         replace,
-      } as never)
+      } as never);
     },
     [router, pathname],
-  )
+  );
 }
 
 /**
@@ -76,18 +74,18 @@ export function useLocalizedNavigate() {
  */
 function normalizeRoutePath(to: string): string {
   if (!to.startsWith('/')) {
-    return `/$locale/${to}`
+    return `/$locale/${to}`;
   }
 
   if (to.startsWith('/$locale')) {
-    return to
+    return to;
   }
 
   // Strip a hard-coded locale prefix like `/mn/...` or `/en/...`
-  const match = /^\/(mn|en)(\/.*|$)/.exec(to)
+  const match = /^\/(mn|en)(\/.*|$)/.exec(to);
   if (match) {
-    return `/$locale${match[2] || ''}`
+    return `/$locale${match[2] || ''}`;
   }
 
-  return `/$locale${to}`
+  return `/$locale${to}`;
 }

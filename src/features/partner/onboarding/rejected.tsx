@@ -41,8 +41,8 @@ export function RejectedApplication({
             </div>
           ) : (
             <p className="text-sm text-muted-foreground">
-              Your application was not approved. You may reapply with
-              additional information.
+              Your application was not approved. You may reapply with additional
+              information.
             </p>
           )}
         </div>

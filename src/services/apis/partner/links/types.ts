@@ -1,12 +1,11 @@
 /**
- * Link rules:
- * - Code: 5-7 uppercase alphanumeric characters
- * - Max 3 links per partner
- * - Default link (7 chars, uppercase) auto-created on first login
- * - Cannot edit or delete links
+ * Referral link rules:
+ * - Code: 5-7 uppercase alphanumeric characters (auto-generated default = 7)
+ * - Max 3 links per partner — first one auto-created on partner approval
+ * - Code itself is immutable; URL and is-active state are editable
  * - Regex validation: must NOT contain "XMETA" (case-insensitive)
  */
-export type LinkStatus = 'active';
+export type LinkStatus = 'active' | 'inactive';
 
 export interface ReferralLink {
   id: string;
@@ -14,9 +13,7 @@ export interface ReferralLink {
   url: string;
   clicks: number;
   registrations: number;
-  conversions: number;
-  status: LinkStatus;
-  isDefault: boolean;
+  isActive: boolean;
   createdAt: string;
 }
 

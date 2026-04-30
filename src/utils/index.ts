@@ -6,6 +6,16 @@ export const FieldRequireMessage = 'Энэ талбарыг оруулах ша�
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+/**
+ * "1,234,567" — locale-stable thousands grouping for whole-number metrics
+ * (clicks, registrations, headcount). Use {@link formatThousandSeparator}
+ * for currency-style values that need decimal places.
+ */
+export function formatCount(value: number): string {
+  return value.toLocaleString('en-US');
+}
+
 export function formatThousandSeparator(value?: number | string) {
   if (!value) return '0';
   return value.toLocaleString(undefined, {

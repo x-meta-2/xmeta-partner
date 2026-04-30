@@ -14,8 +14,7 @@ function formatTime(iso: string) {
 }
 
 function describe(c: Commission) {
-  if (c.type === 'override') return 'Sub-affiliate override';
-  return `${c.type.charAt(0).toUpperCase()}${c.type.slice(1)} trading commission`;
+  return c.isOverride ? 'Sub-affiliate override' : 'Futures trading commission';
 }
 
 export function RecentActivity({ items }: { items: Commission[] }) {
@@ -47,7 +46,7 @@ export function RecentActivity({ items }: { items: Commission[] }) {
                 </div>
               </div>
               <div className="shrink-0 text-sm font-semibold text-primary">
-                +{money(c.amount)}
+                +{money(c.commissionAmount)}
               </div>
             </li>
           ))}

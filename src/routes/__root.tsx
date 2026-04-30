@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { ErrorBoundary } from '#/components/common/error-boundary';
+import { RouteProgressBar } from '#/components/common/route-progress-bar';
 import { LandingTopBar } from '#/components/layout/landing-topbar';
 import { PartnerFooter } from '#/components/layout/partner-footer';
 import { PartnerTopBar } from '#/components/layout/partner-topbar';
@@ -20,9 +21,13 @@ import {
 import appCss from '../styles.css?url';
 
 /**
- * Bootstrap the Cognito session once at mount. Partner/application status
- * is fetched by the `_authenticated` route guard — keeping that single
- * owner avoids firing `/status` twice on every navigation.
+ * Hydrate the Cognito session on every page load.
+ *
+ * MUST live in a client `useEffect` (not in a route `beforeLoad`) — TanStack
+ * Start runs `beforeLoad` on the server during SSR and does NOT re-run it on
+ * client hydration, so any browser-only call placed there silently never
+ * fires on the client. Partner/application `/status` is fetched by the
+ * authenticated dashboard layout for the same reason.
  */
 function AuthBootstrap() {
   useTokenRefresh();
@@ -87,8 +92,7 @@ function RootLayout({
   const isAuthPage =
     pathname.includes('/auth/') ||
     pathname.endsWith('/login') ||
-    pathname.endsWith('/register') ||
-    pathname.endsWith('/forgot-password');
+    pathname.endsWith('/register');
   const isDashboard = pathname.includes('/dashboard');
   const isLanding = !isAuthPage && !isDashboard;
 
@@ -130,6 +134,7 @@ function RootDocument({ children }: Readonly<{ children: React.ReactNode }>) {
         <QueryClientProvider client={queryClient}>
           <ErrorBoundary>
             <AuthBootstrap />
+            <RouteProgressBar />
             <RootLayout locale={locale} pathname={pathname}>
               {children}
             </RootLayout>

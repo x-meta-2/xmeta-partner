@@ -10,15 +10,15 @@ export const subAffiliatesColumns: ColumnDef<SubAffiliate>[] = [
   {
     accessorKey: 'name',
     header: 'Name',
-    cell: ({ row }) => (
-      <span className="font-medium">{row.original.name}</span>
-    ),
+    cell: ({ row }) => <span className="font-medium">{row.original.name}</span>,
   },
   {
     accessorKey: 'referralCount',
     header: () => <div className="text-right">Referrals</div>,
     cell: ({ row }) => (
-      <div className="text-right tabular-nums">{row.original.referralCount}</div>
+      <div className="text-right tabular-nums">
+        {row.original.referralCount}
+      </div>
     ),
   },
   {

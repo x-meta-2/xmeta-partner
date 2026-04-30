@@ -1,7 +1,10 @@
 import { api } from '#/config/api';
 import baseService from '#/services/base-service';
 
-import type { VerificationCodeRequest, VerificationCodeResponse } from './types';
+import type {
+  VerificationCodeRequest,
+  VerificationCodeResponse,
+} from './types';
 
 export type {
   VerificationCodeRequest,

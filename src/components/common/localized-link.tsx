@@ -3,10 +3,7 @@ import { forwardRef, type ComponentProps } from 'react';
 
 import { localeFromPathname } from '#/i18n/routing';
 
-type LinkBaseProps = Omit<
-  ComponentProps<typeof Link>,
-  'to' | 'params'
->;
+type LinkBaseProps = Omit<ComponentProps<typeof Link>, 'to' | 'params'>;
 
 /**
  * Locale-aware `<Link>` wrapper.

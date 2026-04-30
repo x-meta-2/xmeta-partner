@@ -169,13 +169,7 @@ export function NotPartnerCard() {
   );
 }
 
-function Benefit({
-  icon,
-  label,
-}: {
-  icon: React.ReactNode;
-  label: string;
-}) {
+function Benefit({ icon, label }: { icon: React.ReactNode; label: string }) {
   return (
     <div className="flex items-center gap-2.5">
       {icon}

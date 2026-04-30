@@ -18,7 +18,7 @@ export const usePrivacyMode = () => {
       if (currentValue !== isHidden) {
         localStorage.setItem(PRIVACY_KEY, String(isHidden));
         window.dispatchEvent(
-          new CustomEvent('privacy-mode-change', { detail: isHidden })
+          new CustomEvent('privacy-mode-change', { detail: isHidden }),
         );
       }
     }

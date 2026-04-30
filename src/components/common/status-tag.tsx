@@ -34,12 +34,21 @@ const STATUS_VARIANT: Record<string, SemanticVariant> = {
 };
 
 interface StatusTagProps {
-  status: string;
+  status?: string | null;
   className?: string;
   size?: BadgeProps['size'];
 }
 
 export function StatusTag({ status, className, size }: StatusTagProps) {
+  // Defensive: backend rows occasionally return rows without a status
+  // (legacy data, optional fields). Render a muted "—" rather than throw.
+  if (!status) {
+    return (
+      <Badge variant="muted" size={size} className={className}>
+        —
+      </Badge>
+    );
+  }
   const variant = STATUS_VARIANT[status.toLowerCase()] ?? 'muted';
   return (
     <Badge

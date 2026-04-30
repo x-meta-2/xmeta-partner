@@ -29,12 +29,6 @@ export const dashboardMenuConfig: MenuConfig = [
     to: '/dashboard/links',
   },
   {
-    id: 'campaigns',
-    label: 'Campaigns',
-    icon: 'Megaphone',
-    to: '/dashboard/campaigns',
-  },
-  {
     id: 'performance',
     label: 'Performance',
     icon: 'BarChart3',

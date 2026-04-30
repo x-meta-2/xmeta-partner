@@ -28,7 +28,9 @@ export function ApplyPartnerForm({ prefill }: { prefill?: Prefill }) {
   const [facebookUrl, setFacebookUrl] = useState(prefill?.facebookUrl ?? '');
   const [instagramUrl, setInstagramUrl] = useState(prefill?.instagramUrl ?? '');
   const [audienceSize, setAudienceSize] = useState(prefill?.audienceSize ?? '');
-  const [promotionPlan, setPromotionPlan] = useState(prefill?.promotionPlan ?? '');
+  const [promotionPlan, setPromotionPlan] = useState(
+    prefill?.promotionPlan ?? '',
+  );
 
   const mutation = useMutation({
     mutationFn: applyForPartner,
@@ -68,7 +70,10 @@ export function ApplyPartnerForm({ prefill }: { prefill?: Prefill }) {
         </div>
 
         <Card className="gap-5 p-6">
-          <Field label="Company / Brand Name" hint="Optional — leave blank if individual">
+          <Field
+            label="Company / Brand Name"
+            hint="Optional — leave blank if individual"
+          >
             <Input
               value={companyName}
               onChange={(e) => setCompanyName(e.target.value)}

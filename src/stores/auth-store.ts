@@ -27,6 +27,12 @@ interface AuthSlice {
   application: PartnerApplication | undefined;
   authLoading: boolean;
   userLoading: boolean;
+  /**
+   * True after the first successful `/auth/status` response of this page
+   * load. Drives the dashboard pending screen so we never render onboarding
+   * cards from stale persisted data.
+   */
+  userLoaded: boolean;
   isAuthenticated: boolean;
 
   setAccessToken: (token: string) => void;
@@ -36,6 +42,7 @@ interface AuthSlice {
   setApplication: (application: PartnerApplication | undefined) => void;
   setAuthLoading: (loading: boolean) => void;
   setUserLoading: (loading: boolean) => void;
+  setUserLoaded: (loaded: boolean) => void;
   reset: () => void;
 }
 
@@ -51,6 +58,7 @@ const initialAuth = {
   application: undefined,
   authLoading: true,
   userLoading: false,
+  userLoaded: false,
   isAuthenticated: false,
 };
 
@@ -99,6 +107,11 @@ export const useAuthStore = create<AuthState>()(
             auth: { ...state.auth, userLoading },
           })),
 
+        setUserLoaded: (userLoaded) =>
+          set((state) => ({
+            auth: { ...state.auth, userLoaded },
+          })),
+
         reset: () =>
           set((state) => ({
             auth: {
@@ -111,11 +124,6 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'xmeta-auth-storage',
-      // Persist only the stable identity (user). Partner/application are
-      // server-authoritative state that changes (approve, suspend, reject)
-      // and MUST be refetched on every app boot — otherwise cached role data
-      // can let non-partners render partner-only pages before the fresh
-      // /status call completes.
       partialize: (state) => ({
         auth: {
           user: state.auth.user,
@@ -164,8 +172,6 @@ export const usePartner = () => {
     partner,
     loading: authLoading || userLoading || (isAuthenticated && !partner),
     refreshProfile: () =>
-      import('./auth-actions').then(({ loadUserProfile }) =>
-        loadUserProfile(),
-      ),
+      import('./auth-actions').then(({ loadUserProfile }) => loadUserProfile()),
   };
 };

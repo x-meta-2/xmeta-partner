@@ -14,9 +14,16 @@ import { Badge } from '#/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '#/components/ui/card';
 import { Progress } from '#/components/ui/progress';
 import { StatCard } from '#/features/partner/dashboard/stat-card';
-import { getDashboardSummary, getTierProgress } from '#/services/apis/partner/dashboard';
+import {
+  getDashboardSummary,
+  getTierProgress,
+} from '#/services/apis/partner/dashboard';
 import { getReferralStats } from '#/services/apis/partner/referrals';
-import { TIER_REQUIREMENTS, type TierName } from '#/services/apis/partner/types';
+import {
+  TIER_REQUIREMENTS,
+  type TierName,
+} from '#/services/apis/partner/types';
+import { formatCount } from '#/utils';
 
 const money = (v: number) =>
   v.toLocaleString('en-US', {
@@ -24,7 +31,6 @@ const money = (v: number) =>
     currency: 'USD',
     maximumFractionDigits: 0,
   });
-const num = (v: number) => v.toLocaleString('en-US');
 const vol = (v: number) => {
   if (v >= 1_000_000) return `$${(v / 1_000_000).toFixed(1)}M`;
   if (v >= 1_000) return `$${(v / 1_000).toFixed(0)}K`;
@@ -81,12 +87,12 @@ export function PerformanceStatisticsPage() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
           label="Total Referrals"
-          value={num(refStats?.total ?? 0)}
+          value={formatCount(refStats?.total ?? 0)}
           icon={Users}
         />
         <StatCard
           label="Active Clients"
-          value={num(activeClients)}
+          value={formatCount(activeClients)}
           icon={UserCheck}
           hint="Futures trade in last 120 days"
         />
@@ -112,8 +118,12 @@ export function PerformanceStatisticsPage() {
         <CardContent className="space-y-6">
           <div className="flex items-center gap-4">
             <div>
-              <span className="text-sm text-muted-foreground">Current Tier</span>
-              <div className={`text-2xl font-bold ${TIER_COLORS[currentTierName]}`}>
+              <span className="text-sm text-muted-foreground">
+                Current Tier
+              </span>
+              <div
+                className={`text-2xl font-bold ${TIER_COLORS[currentTierName]}`}
+              >
                 {currentTierName}
               </div>
               <Badge variant="outline" className="mt-1">
@@ -124,8 +134,12 @@ export function PerformanceStatisticsPage() {
               <>
                 <TrendingUp className="size-5 text-muted-foreground" />
                 <div>
-                  <span className="text-sm text-muted-foreground">Next Tier</span>
-                  <div className={`text-2xl font-bold ${TIER_COLORS[nextTierName]}`}>
+                  <span className="text-sm text-muted-foreground">
+                    Next Tier
+                  </span>
+                  <div
+                    className={`text-2xl font-bold ${TIER_COLORS[nextTierName]}`}
+                  >
                     {nextTierName}
                   </div>
                   <Badge variant="outline" className="mt-1">
@@ -171,7 +185,10 @@ export function PerformanceStatisticsPage() {
                   </span>
                 </div>
                 <Progress
-                  value={Math.min((totalVolume / nextReqs.minVolume) * 100, 100)}
+                  value={Math.min(
+                    (totalVolume / nextReqs.minVolume) * 100,
+                    100,
+                  )}
                 />
                 <p className="text-xs text-muted-foreground">
                   {volumeToNext > 0
@@ -191,7 +208,7 @@ export function PerformanceStatisticsPage() {
             Active Clients
           </div>
           <div className="mt-1 text-3xl font-bold text-success tabular-nums">
-            {num(activeClients)}
+            {formatCount(activeClients)}
           </div>
           <p className="mt-1 text-xs text-muted-foreground">
             Futures trade within last 120 days
@@ -203,7 +220,7 @@ export function PerformanceStatisticsPage() {
             Inactive Clients
           </div>
           <div className="mt-1 text-3xl font-bold text-destructive tabular-nums">
-            {num(refStats?.inactive ?? 0)}
+            {formatCount(refStats?.inactive ?? 0)}
           </div>
           <p className="mt-1 text-xs text-muted-foreground">
             No futures trade in last 120 days

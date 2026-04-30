@@ -1,22 +1,26 @@
 import { useState } from 'react';
-import { Card } from '#/components/ui/card';
-import { Button } from '#/components/ui/button';
-import { toast } from 'sonner';
 import { Check, Copy, Link2 } from 'lucide-react';
+
+import { Button } from '#/components/ui/button';
+import { Card } from '#/components/ui/card';
+import { copyToClipboard } from '#/utils/clipboard';
 
 interface ReferralLinkCardProps {
   code: string;
   referralCount: number;
 }
 
-export function ReferralLinkCard({ code, referralCount }: ReferralLinkCardProps) {
+export function ReferralLinkCard({
+  code,
+  referralCount,
+}: ReferralLinkCardProps) {
   const url = `https://x-meta.com/ref/${code}`;
   const [copied, setCopied] = useState(false);
 
   const copy = async () => {
-    await navigator.clipboard.writeText(url);
+    const ok = await copyToClipboard(url, 'Referral link copied');
+    if (!ok) return;
     setCopied(true);
-    toast.success('Referral link copied');
     setTimeout(() => setCopied(false), 2000);
   };
 
@@ -53,10 +57,7 @@ export function ReferralLinkCard({ code, referralCount }: ReferralLinkCardProps)
           <span className="font-semibold text-foreground">{referralCount}</span>
         </span>
         <span className="text-muted-foreground">
-          Code:{' '}
-          <span className="font-semibold text-primary">
-            {code}
-          </span>
+          Code: <span className="font-semibold text-primary">{code}</span>
         </span>
       </div>
     </Card>

@@ -11,13 +11,7 @@ import { Label } from '#/components/ui/label';
 import { Separator } from '#/components/ui/separator';
 import { getProfile, updateProfile } from '#/services/apis/partner/profile';
 import { loadUserProfile } from '#/stores/auth-actions';
-
-const formatDate = (iso: string) =>
-  new Date(iso).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
+import { formatLongDate } from '#/utils/date';
 
 export function PartnerSettingsPage() {
   const queryClient = useQueryClient();
@@ -29,16 +23,16 @@ export function PartnerSettingsPage() {
   const partner = partnerQuery.data;
 
   const [companyName, setCompanyName] = useState('');
-  const [phone, setPhone] = useState('');
-  const [country, setCountry] = useState('');
   const [website, setWebsite] = useState('');
+  const [facebook, setFacebook] = useState('');
+  const [instagram, setInstagram] = useState('');
 
   useEffect(() => {
     if (partner) {
       setCompanyName(partner.companyName ?? '');
-      setPhone(partner.phone ?? '');
-      setCountry(partner.country ?? '');
       setWebsite(partner.website ?? '');
+      setFacebook(partner.socialMedia?.facebook ?? '');
+      setInstagram(partner.socialMedia?.instagram ?? '');
     }
   }, [partner]);
 
@@ -55,7 +49,11 @@ export function PartnerSettingsPage() {
   });
 
   const save = () => {
-    updateMutation.mutate({ companyName, phone, country, website });
+    updateMutation.mutate({
+      companyName,
+      website,
+      socialMedia: { facebook, instagram },
+    });
   };
 
   return (
@@ -89,34 +87,36 @@ export function PartnerSettingsPage() {
         <div>
           <div className="text-base font-semibold">Partner Profile</div>
           <div className="text-xs text-muted-foreground">
-            Details specific to your partner account
+            Public details associated with your partner program account
           </div>
         </div>
         <div className="grid max-w-2xl gap-4 sm:grid-cols-2">
-          <Field label="Company Name">
+          <Field label="Company / Brand Name" hint="Optional">
             <Input
               value={companyName}
               onChange={(e) => setCompanyName(e.target.value)}
+              placeholder="e.g., Demo Trading"
             />
           </Field>
-          <Field label="Phone Number">
-            <Input
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="+976 xxxx xxxx"
-            />
-          </Field>
-          <Field label="Country">
-            <Input
-              value={country}
-              onChange={(e) => setCountry(e.target.value)}
-            />
-          </Field>
-          <Field label="Website">
+          <Field label="Website" hint="Optional">
             <Input
               value={website}
               onChange={(e) => setWebsite(e.target.value)}
               placeholder="https://…"
+            />
+          </Field>
+          <Field label="Facebook URL">
+            <Input
+              value={facebook}
+              onChange={(e) => setFacebook(e.target.value)}
+              placeholder="https://facebook.com/yourpage"
+            />
+          </Field>
+          <Field label="Instagram URL">
+            <Input
+              value={instagram}
+              onChange={(e) => setInstagram(e.target.value)}
+              placeholder="https://instagram.com/yourhandle"
             />
           </Field>
         </div>
@@ -146,7 +146,9 @@ export function PartnerSettingsPage() {
           </InfoRow>
           <Separator className="opacity-40" />
           <InfoRow label="Member Since">
-            <span>{partner?.createdAt ? formatDate(partner.createdAt) : '—'}</span>
+            <span>
+              {partner?.createdAt ? formatLongDate(partner.createdAt) : '—'}
+            </span>
           </InfoRow>
         </div>
       </Card>

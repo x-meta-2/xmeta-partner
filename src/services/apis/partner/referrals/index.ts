@@ -8,7 +8,8 @@ import type {
 import { unwrapPartner } from '../types';
 import type { Referral, ReferralStats } from './types';
 
-export type { KycStatus, Referral, ReferralStats, ReferralStatus } from './types';
+export { ReferralStatus } from './types';
+export type { Referral, ReferralStats, ReferredUser } from './types';
 
 export const listReferrals = async (params: PartnerPaginationInput = {}) =>
   unwrapPartner<PartnerPaginated<Referral>>(

@@ -14,9 +14,7 @@ export type {
   SubAffiliateStatus,
 } from './types';
 
-export const listSubAffiliates = async (
-  params: PartnerPaginationInput = {},
-) =>
+export const listSubAffiliates = async (params: PartnerPaginationInput = {}) =>
   unwrapPartner<PartnerPaginated<SubAffiliate>>(
     await baseService.post<PartnerResponse<PartnerPaginated<SubAffiliate>>>(
       `${api.partner.subAffiliates}/list`,
