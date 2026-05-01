@@ -22,15 +22,6 @@ export const earningsColumns: ColumnDef<Commission>[] = [
     ),
   },
   {
-    accessorKey: 'isOverride',
-    header: 'Source',
-    cell: ({ row }) => (
-      <span className="capitalize">
-        {row.original.isOverride ? 'Override' : 'Futures'}
-      </span>
-    ),
-  },
-  {
     accessorKey: 'tradeAmount',
     header: () => <div className="text-right">Volume</div>,
     cell: ({ row }) => (

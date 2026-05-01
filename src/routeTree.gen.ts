@@ -21,7 +21,6 @@ import { Route as LocaleauthSmsMfaRouteImport } from './routes/$locale/(auth)/sm
 import { Route as LocaleauthSelectMfaTypeRouteImport } from './routes/$locale/(auth)/select-mfa-type'
 import { Route as LocaleauthNewPasswordRequiredRouteImport } from './routes/$locale/(auth)/new-password-required'
 import { Route as LocaleauthLoginRouteImport } from './routes/$locale/(auth)/login'
-import { Route as LocaleAuthenticatedDashboardSubAffiliatesRouteImport } from './routes/$locale/_authenticated/dashboard/sub-affiliates'
 import { Route as LocaleAuthenticatedDashboardSettingsRouteImport } from './routes/$locale/_authenticated/dashboard/settings'
 import { Route as LocaleAuthenticatedDashboardReferralsRouteImport } from './routes/$locale/_authenticated/dashboard/referrals'
 import { Route as LocaleAuthenticatedDashboardPerformanceRouteImport } from './routes/$locale/_authenticated/dashboard/performance'
@@ -94,12 +93,6 @@ const LocaleauthLoginRoute = LocaleauthLoginRouteImport.update({
   path: '/$locale/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LocaleAuthenticatedDashboardSubAffiliatesRoute =
-  LocaleAuthenticatedDashboardSubAffiliatesRouteImport.update({
-    id: '/dashboard/sub-affiliates',
-    path: '/dashboard/sub-affiliates',
-    getParentRoute: () => LocaleAuthenticatedRouteRoute,
-  } as any)
 const LocaleAuthenticatedDashboardSettingsRoute =
   LocaleAuthenticatedDashboardSettingsRouteImport.update({
     id: '/dashboard/settings',
@@ -170,7 +163,6 @@ export interface FileRoutesByFullPath {
   '/$locale/dashboard/performance': typeof LocaleAuthenticatedDashboardPerformanceRoute
   '/$locale/dashboard/referrals': typeof LocaleAuthenticatedDashboardReferralsRoute
   '/$locale/dashboard/settings': typeof LocaleAuthenticatedDashboardSettingsRoute
-  '/$locale/dashboard/sub-affiliates': typeof LocaleAuthenticatedDashboardSubAffiliatesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -192,7 +184,6 @@ export interface FileRoutesByTo {
   '/$locale/dashboard/performance': typeof LocaleAuthenticatedDashboardPerformanceRoute
   '/$locale/dashboard/referrals': typeof LocaleAuthenticatedDashboardReferralsRoute
   '/$locale/dashboard/settings': typeof LocaleAuthenticatedDashboardSettingsRoute
-  '/$locale/dashboard/sub-affiliates': typeof LocaleAuthenticatedDashboardSubAffiliatesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -216,7 +207,6 @@ export interface FileRoutesById {
   '/$locale/_authenticated/dashboard/performance': typeof LocaleAuthenticatedDashboardPerformanceRoute
   '/$locale/_authenticated/dashboard/referrals': typeof LocaleAuthenticatedDashboardReferralsRoute
   '/$locale/_authenticated/dashboard/settings': typeof LocaleAuthenticatedDashboardSettingsRoute
-  '/$locale/_authenticated/dashboard/sub-affiliates': typeof LocaleAuthenticatedDashboardSubAffiliatesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -241,7 +231,6 @@ export interface FileRouteTypes {
     | '/$locale/dashboard/performance'
     | '/$locale/dashboard/referrals'
     | '/$locale/dashboard/settings'
-    | '/$locale/dashboard/sub-affiliates'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -263,7 +252,6 @@ export interface FileRouteTypes {
     | '/$locale/dashboard/performance'
     | '/$locale/dashboard/referrals'
     | '/$locale/dashboard/settings'
-    | '/$locale/dashboard/sub-affiliates'
   id:
     | '__root__'
     | '/'
@@ -286,7 +274,6 @@ export interface FileRouteTypes {
     | '/$locale/_authenticated/dashboard/performance'
     | '/$locale/_authenticated/dashboard/referrals'
     | '/$locale/_authenticated/dashboard/settings'
-    | '/$locale/_authenticated/dashboard/sub-affiliates'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -390,13 +377,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LocaleauthLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/$locale/_authenticated/dashboard/sub-affiliates': {
-      id: '/$locale/_authenticated/dashboard/sub-affiliates'
-      path: '/dashboard/sub-affiliates'
-      fullPath: '/$locale/dashboard/sub-affiliates'
-      preLoaderRoute: typeof LocaleAuthenticatedDashboardSubAffiliatesRouteImport
-      parentRoute: typeof LocaleAuthenticatedRouteRoute
-    }
     '/$locale/_authenticated/dashboard/settings': {
       id: '/$locale/_authenticated/dashboard/settings'
       path: '/dashboard/settings'
@@ -465,7 +445,6 @@ interface LocaleAuthenticatedRouteRouteChildren {
   LocaleAuthenticatedDashboardPerformanceRoute: typeof LocaleAuthenticatedDashboardPerformanceRoute
   LocaleAuthenticatedDashboardReferralsRoute: typeof LocaleAuthenticatedDashboardReferralsRoute
   LocaleAuthenticatedDashboardSettingsRoute: typeof LocaleAuthenticatedDashboardSettingsRoute
-  LocaleAuthenticatedDashboardSubAffiliatesRoute: typeof LocaleAuthenticatedDashboardSubAffiliatesRoute
 }
 
 const LocaleAuthenticatedRouteRouteChildren: LocaleAuthenticatedRouteRouteChildren =
@@ -486,8 +465,6 @@ const LocaleAuthenticatedRouteRouteChildren: LocaleAuthenticatedRouteRouteChildr
       LocaleAuthenticatedDashboardReferralsRoute,
     LocaleAuthenticatedDashboardSettingsRoute:
       LocaleAuthenticatedDashboardSettingsRoute,
-    LocaleAuthenticatedDashboardSubAffiliatesRoute:
-      LocaleAuthenticatedDashboardSubAffiliatesRoute,
   }
 
 const LocaleAuthenticatedRouteRouteWithChildren =

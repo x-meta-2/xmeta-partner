@@ -47,12 +47,6 @@ export const dashboardMenuConfig: MenuConfig = [
     to: '/dashboard/payouts',
   },
   {
-    id: 'sub-affiliates',
-    label: 'Sub-Affiliates',
-    icon: 'Network',
-    to: '/dashboard/sub-affiliates',
-  },
-  {
     id: 'settings',
     label: 'Settings',
     icon: 'Settings',

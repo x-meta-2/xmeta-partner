@@ -26,7 +26,6 @@ export const api = {
     links: `${PARTNER}/links`,
     commissions: `${PARTNER}/commissions`,
     payouts: `${PARTNER}/payouts`,
-    subAffiliates: `${PARTNER}/sub-affiliates`,
   },
 } as const;
 

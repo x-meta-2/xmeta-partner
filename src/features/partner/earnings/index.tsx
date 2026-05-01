@@ -3,13 +3,8 @@ import { CheckCircle, Clock, DollarSign, TrendingUp } from 'lucide-react';
 
 import { PageHeader } from '#/components/common/page-header';
 import { BaseTable, DataTableHeader } from '#/components/data-table';
-import { Card } from '#/components/ui/card';
 import { StatCard } from '#/features/partner/dashboard/stat-card';
-import type { CommissionBreakdown } from '#/services/apis/partner/commissions';
-import {
-  getCommissionBreakdown,
-  listCommissions,
-} from '#/services/apis/partner/commissions';
+import { listCommissions } from '#/services/apis/partner/commissions';
 import { getDashboardSummary } from '#/services/apis/partner/dashboard';
 import { getPendingPayouts } from '#/services/apis/partner/payouts';
 
@@ -34,10 +29,6 @@ export function PartnerEarningsPage() {
     queryKey: ['partner', 'payouts', 'pending'],
     queryFn: getPendingPayouts,
   });
-  const breakdownQuery = useQuery({
-    queryKey: ['partner', 'commissions', 'breakdown'],
-    queryFn: getCommissionBreakdown,
-  });
   const listQuery = useQuery({
     queryKey: ['partner', 'commissions', 'list'],
     queryFn: () => listCommissions({ current: 1, pageSize: 50 }),
@@ -45,14 +36,13 @@ export function PartnerEarningsPage() {
 
   const summary = summaryQuery.data;
   const pending = pendingQuery.data;
-  const breakdown = breakdownQuery.data;
   const rows = listQuery.data?.items ?? [];
 
   return (
     <div className="space-y-6">
       <PageHeader
         title="Earnings"
-        description="Direct futures commissions and sub-affiliate overrides"
+        description="Futures-trade commissions earned from your referred users"
       />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -85,8 +75,6 @@ export function PartnerEarningsPage() {
         />
       </div>
 
-      {breakdown && <BreakdownCard breakdown={breakdown} />}
-
       <BaseTable
         data={rows}
         columns={earningsColumns}
@@ -110,48 +98,3 @@ export function PartnerEarningsPage() {
   );
 }
 
-function BreakdownCard({ breakdown }: { breakdown: CommissionBreakdown }) {
-  const rows: Array<{
-    label: string;
-    key: 'futures' | 'override';
-    color: string;
-  }> = [
-    { label: 'Futures', key: 'futures', color: 'bg-chart-2' },
-    { label: 'Sub-affiliate override', key: 'override', color: 'bg-success' },
-  ];
-
-  return (
-    <Card className="gap-4 p-5">
-      <div className="flex items-center justify-between">
-        <div className="text-base font-medium">Earnings split</div>
-        <div className="text-sm text-muted-foreground">
-          Total {money(breakdown.total)}
-        </div>
-      </div>
-      <div className="space-y-3">
-        {rows.map((r) => {
-          const value = breakdown[r.key];
-          const pct = breakdown.total
-            ? Math.round((value / breakdown.total) * 100)
-            : 0;
-          return (
-            <div key={r.key} className="space-y-1.5">
-              <div className="flex items-center justify-between text-xs">
-                <span>{r.label}</span>
-                <span className="tabular-nums text-muted-foreground">
-                  {money(value)} · {pct}%
-                </span>
-              </div>
-              <div className="h-2 overflow-hidden rounded-full bg-muted">
-                <div
-                  className={`h-full rounded-full ${r.color}`}
-                  style={{ width: `${pct}%` }}
-                />
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </Card>
-  );
-}

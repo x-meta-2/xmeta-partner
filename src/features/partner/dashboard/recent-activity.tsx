@@ -13,10 +13,6 @@ function formatTime(iso: string) {
   return `${iso.slice(0, 10)} ${iso.slice(11, 16)}`;
 }
 
-function describe(c: Commission) {
-  return c.isOverride ? 'Sub-affiliate override' : 'Futures trading commission';
-}
-
 export function RecentActivity({ items }: { items: Commission[] }) {
   return (
     <Card className="gap-0 p-0">
@@ -39,7 +35,7 @@ export function RecentActivity({ items }: { items: Commission[] }) {
               </div>
               <div className="min-w-0 flex-1">
                 <div className="truncate text-sm font-medium">
-                  {describe(c)}
+                  Futures trading commission
                 </div>
                 <div className="text-xs text-muted-foreground">
                   {formatTime(c.createdAt)}

@@ -17,18 +17,15 @@ export interface Commission {
   commissionRate: number;
   commissionAmount: number;
   tierId: string | null;
-  isOverride: boolean;
-  overridePartnerId: string | null;
   status: CommissionStatus;
   payoutId: string | null;
   tradeDate: string;
   createdAt: string;
 }
 
-/** Futures-only commission split between direct earnings and sub-affiliate overrides. */
+/** Total commission earnings within an optional date window. Futures is the only trade type. */
 export interface CommissionBreakdown {
   futures: number;
-  override: number;
   total: number;
 }
 
