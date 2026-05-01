@@ -16,18 +16,18 @@
   --spacing-142: 35.5rem;
   --spacing-160: 40rem;
 
-  /* Light theme colors */
+  /* ── Light theme ─────────────────────────────── */
 
-  /* Brand */
-  --color-primary: #5b21d4;
+  /* Brand — X-Meta brand guideline */
+  --color-primary: #520ee5;
   --color-primary-foreground: #ffffff;
-  --color-primary-soft: #ede9fe;
-  --color-primary-hover: #4c1cb4;
+  --color-primary-soft: #ece8ff;
+  --color-primary-hover: #3a054f;
 
   --color-secondary: #f1f5f9;
   --color-secondary-foreground: #0f172a;
 
-  /* Status — semantic */
+  /* Status */
   --color-destructive: #dc2626;
   --color-destructive-foreground: #ffffff;
   --color-destructive-soft: #fee2e2;
@@ -40,9 +40,9 @@
   --color-warning-foreground: #ffffff;
   --color-warning-soft: #fef3c7;
 
-  --color-info: #2563eb;
+  --color-info: #0790ff;
   --color-info-foreground: #ffffff;
-  --color-info-soft: #dbeafe;
+  --color-info-soft: #cde1ff;
 
   /* Surface */
   --color-muted: #f1f5f9;
@@ -57,15 +57,15 @@
   --color-foreground: #0f172a;
   --color-border: #eef0f5;
   --color-input: #e4e8ef;
-  --color-ring: #5b21d4;
+  --color-ring: #520ee5;
   --color-footer-text: #475569;
 
-  /* Charts */
+  /* Charts — brand palette */
   --color-chart-1: #520ee5;
-  --color-chart-2: #7c3aed;
+  --color-chart-2: #0790ff;
   --color-chart-3: #f59e0b;
   --color-chart-4: #10b981;
-  --color-chart-5: #3b82f6;
+  --color-chart-5: #0b0a7c;
 
   --animate-collapsible-down: collapsible-down 0.2s ease-out;
   --animate-collapsible-up: collapsible-up 0.2s ease-out;
@@ -88,27 +88,18 @@
   }
 }
 
-/* Dark mode theme overrides */
 /*
- * Dark palette — deep indigo with layered surfaces.
+ * Dark palette — X-Meta brand deep navy/indigo with layered surfaces.
  *
- * Hierarchy (from deepest to brightest):
- *   background  #0e1020   app shell
- *   card        #171a30   raised panels (stat cards, tables)
- *   muted       #20243f   hover/inset surfaces
- *   border      #2b2f4e   subtle dividers
- *   border-strong #3a3f63 emphasised outlines
- *
- *   primary     #8b5cf6   violet-500, brand accent
- *   primary-soft #1f1946  subtle violet bg (badge/hover)
+ * Derived from brand gradient: #00000a → #0b0a7c → #323765 → #cdcfff
  */
 .dark {
-  --color-primary: #8b5cf6;
+  --color-primary: #520ee5;
   --color-primary-foreground: #ffffff;
-  --color-primary-soft: #1f1946;
-  --color-primary-hover: #a78bfa;
+  --color-primary-soft: #1a0f4a;
+  --color-primary-hover: #7c4dff;
 
-  --color-secondary: #20243f;
+  --color-secondary: #1a1c3a;
   --color-secondary-foreground: #e4e7f1;
 
   --color-destructive: #f87171;
@@ -123,39 +114,32 @@
   --color-warning-foreground: #1a1400;
   --color-warning-soft: #2e2305;
 
-  --color-info: #60a5fa;
-  --color-info-foreground: #07142b;
-  --color-info-soft: #162342;
+  --color-info: #0790ff;
+  --color-info-foreground: #071e3b;
+  --color-info-soft: #0c2a52;
 
-  --color-muted: #20243f;
+  --color-muted: #1a1c3a;
   --color-muted-foreground: #9ca0b8;
-  --color-accent: #20243f;
+  --color-accent: #1a1c3a;
   --color-accent-foreground: #e4e7f1;
-  --color-popover: #171a30;
+  --color-popover: #101228;
   --color-popover-foreground: #e4e7f1;
-  --color-card: #171a30;
+  --color-card: #101228;
   --color-card-foreground: #e4e7f1;
-  --color-background: #0e1020;
+  --color-background: #060816;
   --color-foreground: #e4e7f1;
-  --color-border: #262a44;
-  --color-input: #262a44;
-  --color-ring: #8b5cf6;
+  --color-border: #252854;
+  --color-input: #252854;
+  --color-ring: #520ee5;
   --color-footer-text: #9ca0b8;
 
-  --color-chart-1: #8b5cf6;
-  --color-chart-2: #a78bfa;
+  --color-chart-1: #520ee5;
+  --color-chart-2: #0790ff;
   --color-chart-3: #facc15;
   --color-chart-4: #4ade80;
-  --color-chart-5: #60a5fa;
+  --color-chart-5: #cdc1ff;
 }
 
-/*
- * Default border color for every element. Tailwind v4 dropped the v3 base
- * rule that mapped raw `border-*` utilities to `gray-200` automatically —
- * without this layer, `border-l` / `border-b` etc. inherit `currentColor`
- * and surface as near-black (light) or near-white (dark) lines. Routing
- * them through the design token keeps dividers calm and theme-aware.
- */
 @layer base {
   *,
   ::after,
@@ -164,6 +148,7 @@
   ::file-selector-button {
     border-color: var(--color-border);
   }
+
 }
 
 .scrollbar-hide::-webkit-scrollbar {
