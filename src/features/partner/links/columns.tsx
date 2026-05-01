@@ -63,15 +63,6 @@ export const linksColumns: ColumnDef<ReferralLink>[] = [
     ),
   },
   {
-    accessorKey: 'clicks',
-    header: () => <div className="text-right">Clicks</div>,
-    cell: ({ row }) => (
-      <div className="text-right tabular-nums">
-        {formatCount(row.original.clicks)}
-      </div>
-    ),
-  },
-  {
     accessorKey: 'registrations',
     header: () => <div className="text-right">Registrations</div>,
     cell: ({ row }) => (

@@ -1,11 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import {
-  AlertCircle,
-  Link2,
-  MousePointerClick,
-  Plus,
-  UserPlus,
-} from 'lucide-react';
+import { AlertCircle, Link2, Plus, UserPlus } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { PageHeader } from '#/components/common/page-header';
@@ -61,7 +55,6 @@ export function PartnerLinksPage() {
     },
   });
 
-  const totalClicks = links.reduce((a, l) => a + l.clicks, 0);
   const totalReg = links.reduce((a, l) => a + l.registrations, 0);
   const canCreate = links.length < REFERRAL_CODE_MAX_COUNT;
 
@@ -154,17 +147,11 @@ export function PartnerLinksPage() {
     <div className="space-y-6">
       <PageHeader title="Links" description="Manage your referral links" />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <StatCard
           label="Total Links"
           value={`${links.length} / ${REFERRAL_CODE_MAX_COUNT}`}
           icon={Link2}
-          isLoading={linksQuery.isLoading}
-        />
-        <StatCard
-          label="Total Clicks"
-          value={formatCount(totalClicks)}
-          icon={MousePointerClick}
           isLoading={linksQuery.isLoading}
         />
         <StatCard
