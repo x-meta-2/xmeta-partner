@@ -43,22 +43,20 @@ export const referralsColumns: ColumnDef<Referral>[] = [
   {
     id: 'kycLevel',
     accessorFn: (row) => row.referredUser?.kycLevel ?? 0,
-    header: () => <div className="text-right">KYC</div>,
-    cell: ({ row }) => (
-      <div className="text-right tabular-nums">
-        {row.original.referredUser?.kycLevel ?? 0}
-      </div>
-    ),
+    header: () => <div className="text-center">KYC</div>,
+    cell: ({ row }) => {
+      const verified = (row.original.referredUser?.kycLevel ?? 0) > 0;
+      return (
+        <div className={`text-center text-xs font-medium ${verified ? 'text-emerald-600' : 'text-muted-foreground'}`}>
+          {verified ? 'Yes' : 'No'}
+        </div>
+      );
+    },
   },
   {
     accessorKey: 'startedAt',
     header: 'Linked',
     cell: ({ row }) => formatDate(row.original.startedAt),
-  },
-  {
-    accessorKey: 'firstDepositAt',
-    header: 'First deposit',
-    cell: ({ row }) => formatDate(row.original.firstDepositAt),
   },
   {
     accessorKey: 'firstTradeAt',

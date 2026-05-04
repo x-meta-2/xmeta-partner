@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Activity, Calendar, Mail, Shield, Wallet } from 'lucide-react';
+import { Activity, Calendar, Mail, Shield } from 'lucide-react';
 
 import { StatusTag } from '#/components/common/status-tag';
 import { Separator } from '#/components/ui/separator';
@@ -110,9 +110,6 @@ function LifecycleCard({ referral }: { referral: Referral }) {
       <div className="grid grid-cols-1 gap-1 sm:grid-cols-2">
         <Row icon={<Calendar className="size-4" />} label="Registered">
           {formatDate(referral.registeredAt)}
-        </Row>
-        <Row icon={<Wallet className="size-4" />} label="First deposit">
-          {formatDate(referral.firstDepositAt)}
         </Row>
         <Row icon={<Activity className="size-4" />} label="First trade">
           {formatDate(referral.firstTradeAt)}

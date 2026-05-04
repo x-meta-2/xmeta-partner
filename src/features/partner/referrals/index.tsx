@@ -51,8 +51,8 @@ export function PartnerReferralsPage() {
           isLoading={statsQuery.isLoading}
         />
         <StatCard
-          label="Deposited"
-          value={(stats?.deposited ?? 0).toString()}
+          label="Registered"
+          value={(stats?.registered ?? 0).toString()}
           icon={UserCheck}
           isLoading={statsQuery.isLoading}
         />
