@@ -2,49 +2,37 @@ import type { ColumnDef } from '@tanstack/react-table';
 
 import { StatusTag } from '#/components/common/status-tag';
 import type { Commission } from '#/services/apis/partner/commissions';
+import { formatUSD } from '#/utils';
 
-const money = (v: number) =>
-  v.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
-
-const percent = (v: number) => `${(v * 100).toFixed(2)}%`;
 
 export const earningsColumns: ColumnDef<Commission>[] = [
   {
     accessorKey: 'tradeDate',
     header: 'Date',
-    cell: ({ row }) => row.original.tradeDate.slice(0, 10),
+    cell: ({ row }) => row.original.tradeDate?.slice(0, 10) ?? '-',
   },
   {
-    accessorKey: 'tradeId',
-    header: 'Trade',
+    accessorKey: 'marketId',
+    header: 'Market',
     cell: ({ row }) => (
-      <span className="font-mono text-xs">{row.original.tradeId}</span>
-    ),
-  },
-  {
-    accessorKey: 'tradeAmount',
-    header: () => <div className="text-right">Volume</div>,
-    cell: ({ row }) => (
-      <div className="text-right tabular-nums">
-        {money(row.original.tradeAmount)}
-      </div>
-    ),
-  },
-  {
-    accessorKey: 'commissionRate',
-    header: () => <div className="text-right">Rate</div>,
-    cell: ({ row }) => (
-      <div className="text-right tabular-nums">
-        {percent(row.original.commissionRate)}
-      </div>
+      <span className="font-mono text-xs">{row.original.marketId}</span>
     ),
   },
   {
     accessorKey: 'commissionAmount',
-    header: () => <div className="text-right">Amount</div>,
+    header: () => <div className="text-right">Commission</div>,
+    cell: ({ row }) => (
+      <div className="text-right tabular-nums">
+        {formatUSD(row.original.commissionAmount ?? 0)}
+      </div>
+    ),
+  },
+  {
+    accessorKey: 'rebateAmount',
+    header: () => <div className="text-right">Rebate</div>,
     cell: ({ row }) => (
       <div className="text-right font-semibold tabular-nums text-primary">
-        {money(row.original.commissionAmount)}
+        {formatUSD(row.original.rebateAmount ?? 0)}
       </div>
     ),
   },

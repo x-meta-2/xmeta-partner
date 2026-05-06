@@ -10,6 +10,7 @@ import {
 } from '#/components/ui/popover';
 import { signOutAndReset } from '#/stores/auth-actions';
 import { useAuthStore } from '#/stores/auth-store';
+import { formatRate } from '#/utils/tier';
 
 export function ProfileMenu() {
   const partner = useAuthStore((s) => s.auth.partner);
@@ -64,7 +65,7 @@ export function ProfileMenu() {
             {partner?.tier && (
               <Badge variant="default">
                 {partner.tier.name} ·{' '}
-                {`${(partner.tier.commissionRate * 100).toFixed(0)}%`}
+                {formatRate(partner.tier.commissionRate)}
               </Badge>
             )}
           </div>

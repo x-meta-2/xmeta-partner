@@ -7,15 +7,17 @@ export const CommissionStatus = {
 export type CommissionStatus =
   (typeof CommissionStatus)[keyof typeof CommissionStatus];
 
-/** Mirrors the Go `database.Commission` struct returned by the API. */
 export interface Commission {
   id: string;
   partnerId: string;
   referredUserId: string;
-  tradeId: string;
-  tradeAmount: number;
-  commissionRate: number;
+  positionId: string;
+  marketId: string;
+  asset: string;
   commissionAmount: number;
+  volumeUsd: number;
+  commissionRate: number;
+  rebateAmount: number;
   tierId: string | null;
   status: CommissionStatus;
   payoutId: string | null;
@@ -31,6 +33,7 @@ export interface CommissionBreakdown {
 
 export interface DailyCommission {
   date: string;
-  amount: number;
+  rebateAmount: number;
+  tradeVolume: number;
   count: number;
 }

@@ -9,7 +9,7 @@ import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import type { ChartPoint } from '#/services/apis/partner/dashboard';
 
 const chartConfig = {
-  amount: {
+  commissions: {
     label: 'Commission',
     color: 'var(--color-primary)',
   },
@@ -35,12 +35,12 @@ export function EarningsChart({ data }: { data: ChartPoint[] }) {
             <linearGradient id="earnings-fill" x1="0" y1="0" x2="0" y2="1">
               <stop
                 offset="5%"
-                stopColor="var(--color-amount)"
+                stopColor="var(--color-commissions)"
                 stopOpacity={0.35}
               />
               <stop
                 offset="95%"
-                stopColor="var(--color-amount)"
+                stopColor="var(--color-commissions)"
                 stopOpacity={0}
               />
             </linearGradient>
@@ -65,10 +65,10 @@ export function EarningsChart({ data }: { data: ChartPoint[] }) {
             content={<ChartTooltipContent indicator="line" />}
           />
           <Area
-            dataKey="amount"
+            dataKey="commissions"
             type="monotone"
             fill="url(#earnings-fill)"
-            stroke="var(--color-amount)"
+            stroke="var(--color-commissions)"
             strokeWidth={2}
           />
         </AreaChart>

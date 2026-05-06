@@ -12,6 +12,7 @@ import { Separator } from '#/components/ui/separator';
 import { getProfile, updateProfile } from '#/services/apis/partner/profile';
 import { loadUserProfile } from '#/stores/auth-actions';
 import { formatLongDate } from '#/utils/date';
+import { formatRate } from '#/utils/tier';
 
 export function PartnerSettingsPage() {
   const queryClient = useQueryClient();
@@ -140,7 +141,7 @@ export function PartnerSettingsPage() {
           <InfoRow label="Current Tier">
             <span className="font-medium">
               {partner?.tier
-                ? `${partner.tier.name} · ${(partner.tier.commissionRate * 100).toFixed(0)}%`
+                ? `${partner.tier.name} · ${formatRate(partner.tier.commissionRate)}`
                 : '—'}
             </span>
           </InfoRow>

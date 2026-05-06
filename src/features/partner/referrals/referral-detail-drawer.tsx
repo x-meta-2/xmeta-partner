@@ -1,7 +1,10 @@
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Activity, Calendar, Mail, Shield } from 'lucide-react';
+import { Activity, Calendar, ChevronLeft, ChevronRight, Mail, Shield } from 'lucide-react';
 
 import { StatusTag } from '#/components/common/status-tag';
+import { truncateFloor } from '#/utils';
+import { Button } from '#/components/ui/button';
 import { Separator } from '#/components/ui/separator';
 import {
   Sheet,
@@ -127,24 +130,32 @@ function LifecycleCard({ referral }: { referral: Referral }) {
   );
 }
 
+const PAGE_SIZE = 10;
+
 function TradeHistorySection({
   trades,
   isLoading,
 }: {
   trades: Array<{
     id: string;
-    tradeId: string;
-    tradeAmount: number;
-    commissionAmount: number;
+    marketId: string;
+    volumeUsd: number;
+    rebateAmount: number;
     status: string;
     tradeDate: string;
   }>;
   isLoading: boolean;
 }) {
+  const [page, setPage] = useState(0);
+  const totalPages = Math.ceil(trades.length / PAGE_SIZE);
+  const paged = trades.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+
   return (
     <div className="overflow-hidden rounded-xl border bg-card shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
       <div className="border-b bg-muted/40 px-5 py-3">
-        <div className="text-sm font-semibold">Trade history</div>
+        <div className="text-sm font-semibold">
+          Trade history{trades.length > 0 && ` (${trades.length})`}
+        </div>
         <div className="text-xs text-muted-foreground">
           One row = one trade. Commission is what you earned.
         </div>
@@ -160,12 +171,12 @@ function TradeHistorySection({
         <div>
           <div className="grid grid-cols-[1fr_auto_auto_auto] gap-4 border-b bg-muted/20 px-5 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
             <span>Date</span>
-            <span className="text-right">Trade amount</span>
+            <span className="text-right">Volume</span>
             <span className="text-right">Commission</span>
             <span>Status</span>
           </div>
           <div className="divide-y">
-            {trades.map((t) => (
+            {paged.map((t) => (
               <div
                 key={t.id}
                 className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-4 px-5 py-3 text-sm transition-colors hover:bg-muted/30"
@@ -175,13 +186,13 @@ function TradeHistorySection({
                 </span>
                 <span className="text-right tabular-nums">
                   $
-                  {t.tradeAmount.toLocaleString(undefined, {
+                  {truncateFloor(t.volumeUsd ?? 0, 2).toLocaleString(undefined, {
                     maximumFractionDigits: 2,
                   })}
                 </span>
                 <span className="text-right font-medium tabular-nums text-success">
                   +$
-                  {t.commissionAmount.toLocaleString(undefined, {
+                  {truncateFloor(t.rebateAmount ?? 0, 4).toLocaleString(undefined, {
                     maximumFractionDigits: 4,
                   })}
                 </span>
@@ -189,6 +200,33 @@ function TradeHistorySection({
               </div>
             ))}
           </div>
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between border-t px-5 py-2.5">
+              <span className="text-xs text-muted-foreground">
+                Page {page + 1} of {totalPages}
+              </span>
+              <div className="flex items-center gap-1">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="size-7"
+                  disabled={page === 0}
+                  onClick={() => setPage((p) => p - 1)}
+                >
+                  <ChevronLeft className="size-3.5" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="size-7"
+                  disabled={page >= totalPages - 1}
+                  onClick={() => setPage((p) => p + 1)}
+                >
+                  <ChevronRight className="size-3.5" />
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

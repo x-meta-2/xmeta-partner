@@ -10,14 +10,12 @@ import {
 } from '#/services/apis/partner/dashboard';
 import { getProfile, PartnerStatus } from '#/services/apis/partner/profile';
 import { useAuthStore } from '#/stores/auth-store';
+import { formatUSD } from '#/utils';
 import { EarningsChart } from './earnings-chart';
 import { RecentActivity } from './recent-activity';
 import { ReferralLinkCard } from './referral-link-card';
 import { StatCard } from './stat-card';
 import { TierProgressCard } from './tier-progress-card';
-
-const money = (v: number) =>
-  v.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 
 export function PartnerDashboardPage() {
   // Defensive: dashboard queries hit partner-only endpoints. PartnerGate
@@ -68,29 +66,27 @@ export function PartnerDashboardPage() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
-          label="Total Commission"
-          value={money(summary?.totalCommission ?? 0)}
-          trend={summary?.commissionTrend}
+          label="Total Earnings"
+          value={formatUSD(summary?.totalEarnings ?? 0)}
           icon={DollarSign}
-          hint="vs. last 30 days"
           isLoading={summaryQuery.isLoading}
         />
         <StatCard
           label="This Month"
-          value={money(summary?.thisMonthCommission ?? 0)}
+          value={formatUSD(summary?.monthEarnings ?? 0)}
           icon={TrendingUp}
           isLoading={summaryQuery.isLoading}
         />
         <StatCard
           label="Active Referrals"
-          value={(summary?.activeReferrals ?? 0).toString()}
-          trend={summary?.referralsTrend}
+          value={`${summary?.activeReferrals ?? 0} / ${summary?.totalReferrals ?? 0}`}
           icon={Users}
+          hint={`${Math.floor(summary?.conversionRate ?? 0)}% conversion`}
           isLoading={summaryQuery.isLoading}
         />
         <StatCard
-          label="Referred Volume"
-          value={money(summary?.referredVolume ?? 0)}
+          label="Total Volume"
+          value={formatUSD(summary?.totalVolume ?? 0)}
           icon={BarChart3}
           isLoading={summaryQuery.isLoading}
         />

@@ -1,19 +1,14 @@
 import { Card } from '#/components/ui/card';
 import { Trophy } from 'lucide-react';
 import type { TierProgress } from '#/services/apis/partner/dashboard';
-
-const vol = (v: number) => {
-  if (v >= 1_000_000) return `$${(v / 1_000_000).toFixed(1)}M`;
-  if (v >= 1_000) return `$${(v / 1_000).toFixed(0)}K`;
-  return `$${v}`;
-};
+import { formatRate, formatVolume } from '#/utils/tier';
 
 export function TierProgressCard({ progress }: { progress: TierProgress }) {
   const clientsPct = Math.min(
     100,
-    Math.round(progress.activeClientsProgress * 100),
+    Math.floor(progress.activeClientsProgress * 100),
   );
-  const volPct = Math.min(100, Math.round(progress.volumeProgress * 100));
+  const volPct = Math.min(100, Math.floor(progress.volumeProgress * 100));
   const { currentTier, nextTier } = progress;
 
   return (
@@ -25,7 +20,7 @@ export function TierProgressCard({ progress }: { progress: TierProgress }) {
             <Trophy className="size-5 text-amber-500" />
             <span className="text-xl font-semibold">{currentTier.name}</span>
             <span className="text-sm text-muted-foreground">
-              · {(currentTier.commissionRate * 100).toFixed(0)}% commission
+              · {formatRate(currentTier.commissionRate)} commission
             </span>
           </div>
         </div>
@@ -33,7 +28,7 @@ export function TierProgressCard({ progress }: { progress: TierProgress }) {
           <div className="text-right">
             <div className="text-xs text-muted-foreground">Next</div>
             <div className="text-sm font-medium">
-              {nextTier.name} · {(nextTier.commissionRate * 100).toFixed(0)}%
+              {nextTier.name} · {formatRate(nextTier.commissionRate)}
             </div>
           </div>
         )}
@@ -46,7 +41,7 @@ export function TierProgressCard({ progress }: { progress: TierProgress }) {
             pct={clientsPct}
           />
           <ProgressRow
-            label={`Volume (${vol(progress.totalVolume)} / ${vol(nextTier.minVolume)})`}
+            label={`Volume (${formatVolume(progress.totalVolume)} / ${formatVolume(nextTier.minVolume)})`}
             pct={volPct}
           />
         </>

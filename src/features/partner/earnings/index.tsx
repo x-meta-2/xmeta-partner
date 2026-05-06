@@ -8,10 +8,8 @@ import { listCommissions } from '#/services/apis/partner/commissions';
 import { getDashboardSummary } from '#/services/apis/partner/dashboard';
 import { getPendingPayouts } from '#/services/apis/partner/payouts';
 
+import { formatUSD } from '#/utils';
 import { earningsColumns } from './columns';
-
-const money = (v: number) =>
-  v.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 
 const STATUS_OPTIONS = [
   { label: 'Pending', value: 'pending' },
@@ -48,28 +46,27 @@ export function PartnerEarningsPage() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           label="Total Earned"
-          value={money(summary?.totalCommission ?? 0)}
-          trend={summary?.commissionTrend}
+          value={formatUSD(summary?.totalEarnings ?? 0)}
           icon={DollarSign}
           isLoading={summaryQuery.isLoading}
         />
         <StatCard
           label="Pending"
-          value={money(pending?.pendingBalance ?? 0)}
+          value={formatUSD(pending?.pendingBalance ?? 0)}
           icon={Clock}
           hint="awaiting payout"
           isLoading={pendingQuery.isLoading}
         />
         <StatCard
           label="Paid Out"
-          value={money(pending?.totalPaid ?? 0)}
+          value={formatUSD(pending?.totalPaid ?? 0)}
           icon={CheckCircle}
           hint="lifetime"
           isLoading={pendingQuery.isLoading}
         />
         <StatCard
           label="This Month"
-          value={money(summary?.thisMonthCommission ?? 0)}
+          value={formatUSD(summary?.monthEarnings ?? 0)}
           icon={TrendingUp}
           isLoading={summaryQuery.isLoading}
         />
@@ -87,8 +84,8 @@ export function PartnerEarningsPage() {
           />
         }
         toolbar={{
-          searchKey: 'tradeId',
-          searchPlaceholder: 'Search by trade ID…',
+          searchKey: 'marketId',
+          searchPlaceholder: 'Search by market…',
           filters: [
             { columnId: 'status', title: 'Status', options: STATUS_OPTIONS },
           ],

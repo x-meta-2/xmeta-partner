@@ -2,10 +2,8 @@ import type { ColumnDef } from '@tanstack/react-table';
 
 import { StatusTag } from '#/components/common/status-tag';
 import type { Payout } from '#/services/apis/partner/payouts';
+import { formatUSD } from '#/utils';
 import { formatDate, formatDateTime } from '#/utils/date';
-
-const money = (v: number) =>
-  v.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 
 export const payoutsColumns: ColumnDef<Payout>[] = [
   {
@@ -25,7 +23,7 @@ export const payoutsColumns: ColumnDef<Payout>[] = [
     header: () => <div className="text-right">Amount</div>,
     cell: ({ row }) => (
       <div className="text-right font-semibold tabular-nums">
-        {money(row.original.amount)} {row.original.currency}
+        {formatUSD(row.original.amount)} {row.original.currency}
       </div>
     ),
   },

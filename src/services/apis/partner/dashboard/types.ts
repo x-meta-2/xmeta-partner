@@ -1,12 +1,13 @@
 import type { PartnerTier } from '../types';
 
 export interface DashboardSummary {
-  totalCommission: number;
-  thisMonthCommission: number;
+  totalEarnings: number;
+  monthEarnings: number;
+  pendingCommission: number;
+  totalReferrals: number;
   activeReferrals: number;
-  referredVolume: number;
-  commissionTrend: number;
-  referralsTrend: number;
+  totalVolume: number;
+  conversionRate: number;
 }
 
 export interface TierProgress {
@@ -20,12 +21,13 @@ export interface TierProgress {
 
 export interface ChartPoint {
   date: string;
-  amount: number;
+  commissions: number;
+  tradeVolume: number;
 }
 
 export interface ReferralChartPoint {
   date: string;
-  count: number;
+  signups: number;
 }
 
 export type ChartPeriod = '7d' | '30d' | '90d' | '1y';

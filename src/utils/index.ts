@@ -18,7 +18,8 @@ export function formatCount(value: number): string {
 
 export function formatThousandSeparator(value?: number | string) {
   if (!value) return '0';
-  return value.toLocaleString(undefined, {
+  const num = typeof value === 'string' ? parseFloat(value) : value;
+  return truncateFloor(num, 2).toLocaleString(undefined, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
@@ -52,7 +53,7 @@ export function formatMoney(value?: string | number, currency?: string | null) {
   const numValue =
     typeof value === 'string' ? Number.parseFloat(value) : Number(value);
   if (Number.isNaN(numValue)) return '0.00';
-  const formatted = numValue.toLocaleString(undefined, {
+  const formatted = truncateFloor(numValue, 2).toLocaleString(undefined, {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
@@ -74,6 +75,18 @@ export function formatMoneyWithCoin(
     maximumFractionDigits: fractionDigits,
   });
   return currency + ' ' + formatted;
+}
+
+export function truncateFloor(v: number, decimals: number): number {
+  const f = 10 ** decimals;
+  return Math.floor(v * f) / f;
+}
+
+export function formatUSD(v: number): string {
+  return truncateFloor(v, 2).toLocaleString('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  });
 }
 
 export const cutDecimal = (number: number, count: number) => {

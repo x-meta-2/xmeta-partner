@@ -1,49 +1,18 @@
 import { useQuery } from '@tanstack/react-query';
-import {
-  Award,
-  BarChart3,
-  DollarSign,
-  TrendingUp,
-  UserCheck,
-  Users,
-  UserX,
-} from 'lucide-react';
+import { Award, BarChart3, DollarSign, UserCheck, Users } from 'lucide-react';
 
 import { PageHeader } from '#/components/common/page-header';
 import { Badge } from '#/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '#/components/ui/card';
-import { Progress } from '#/components/ui/progress';
 import { StatCard } from '#/features/partner/dashboard/stat-card';
 import {
   getDashboardSummary,
   getTierProgress,
 } from '#/services/apis/partner/dashboard';
 import { getReferralStats } from '#/services/apis/partner/referrals';
-import {
-  TIER_REQUIREMENTS,
-  type TierName,
-} from '#/services/apis/partner/types';
-import { formatCount } from '#/utils';
-
-const money = (v: number) =>
-  v.toLocaleString('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    maximumFractionDigits: 0,
-  });
-const vol = (v: number) => {
-  if (v >= 1_000_000) return `$${(v / 1_000_000).toFixed(1)}M`;
-  if (v >= 1_000) return `$${(v / 1_000).toFixed(0)}K`;
-  return `$${v}`;
-};
-
-const TIER_COLORS: Record<TierName, string> = {
-  Standard: 'text-muted-foreground',
-  Bronze: 'text-amber-700',
-  Silver: 'text-slate-400',
-  Gold: 'text-yellow-500',
-  Diamond: 'text-cyan-400',
-};
+import { getPublicTiers } from '#/services/apis/public';
+import { formatCount, formatUSD } from '#/utils';
+import { formatRate, formatVolume, formatVolumeRange } from '#/utils/tier';
 
 export function PerformanceStatisticsPage() {
   const summaryQuery = useQuery({
@@ -58,24 +27,39 @@ export function PerformanceStatisticsPage() {
     queryKey: ['partner', 'referrals', 'stats'],
     queryFn: getReferralStats,
   });
+  const tiersQuery = useQuery({
+    queryKey: ['public-tiers'],
+    queryFn: getPublicTiers,
+    staleTime: 5 * 60 * 1000,
+  });
 
   const summary = summaryQuery.data;
   const tier = tierQuery.data;
   const refStats = refStatsQuery.data;
+  const allTiers = [...(tiersQuery.data ?? [])].sort(
+    (a, b) => a.level - b.level,
+  );
 
-  const currentTierName = (tier?.currentTier.name ?? 'Standard') as TierName;
-  const nextTierName = tier?.nextTier?.name as TierName | undefined;
-  const currentReqs = TIER_REQUIREMENTS[currentTierName];
-  const nextReqs = nextTierName ? TIER_REQUIREMENTS[nextTierName] : null;
-
+  const currentTier = tier?.currentTier ?? null;
   const activeClients = tier?.activeClients ?? 0;
   const totalVolume = tier?.totalVolume ?? 0;
-  const activeClientsToNext = nextReqs
-    ? Math.max(0, nextReqs.minActiveClients - activeClients)
-    : 0;
-  const volumeToNext = nextReqs
-    ? Math.max(0, nextReqs.minVolume - totalVolume)
-    : 0;
+
+  const nextTier = (() => {
+    if (tier?.nextTier) return tier.nextTier;
+    if (!currentTier || allTiers.length === 0) return null;
+    return allTiers.find((t) => t.level > currentTier.level) ?? null;
+  })();
+
+  const clientsPct = nextTier
+    ? Math.min(
+        Math.floor((activeClients / nextTier.minActiveClients) * 100),
+        100,
+      )
+    : 100;
+
+  const volPct = nextTier
+    ? Math.min(Math.floor((totalVolume / nextTier.minVolume) * 100), 100)
+    : 100;
 
   return (
     <div className="space-y-6">
@@ -98,135 +82,74 @@ export function PerformanceStatisticsPage() {
         />
         <StatCard
           label="Total Volume"
-          value={vol(totalVolume)}
+          value={formatVolume(totalVolume)}
           icon={BarChart3}
         />
         <StatCard
           label="Total Commission"
-          value={money(summary?.totalCommission ?? 0)}
+          value={formatUSD(summary?.totalEarnings ?? 0)}
           icon={DollarSign}
         />
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Award className="size-5" />
-            Tier Progress
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="flex items-center gap-4">
-            <div>
-              <span className="text-sm text-muted-foreground">
-                Current Tier
-              </span>
-              <div
-                className={`text-2xl font-bold ${TIER_COLORS[currentTierName]}`}
+      <Card className="gap-5 p-5">
+        <div className="flex items-center gap-2">
+          <Award className="size-5 text-amber-500" />
+          <span className="text-base font-semibold">Tier Progress</span>
+        </div>
+
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-sm text-muted-foreground">Current Tier</div>
+            <div className="mt-1 flex items-center gap-2">
+              <span
+                className="text-xl font-bold"
+                style={{ color: currentTier?.color || undefined }}
               >
-                {currentTierName}
-              </div>
-              <Badge variant="outline" className="mt-1">
-                {(currentReqs.commission * 100).toFixed(0)}% commission
+                {currentTier?.name ?? 'Standard'}
+              </span>
+              <Badge variant="outline" className="text-xs">
+                {formatRate(currentTier?.commissionRate ?? 0)} commission
               </Badge>
             </div>
-            {nextTierName && nextReqs && (
-              <>
-                <TrendingUp className="size-5 text-muted-foreground" />
-                <div>
-                  <span className="text-sm text-muted-foreground">
-                    Next Tier
-                  </span>
-                  <div
-                    className={`text-2xl font-bold ${TIER_COLORS[nextTierName]}`}
-                  >
-                    {nextTierName}
-                  </div>
-                  <Badge variant="outline" className="mt-1">
-                    {(nextReqs.commission * 100).toFixed(0)}% commission
-                  </Badge>
-                </div>
-              </>
-            )}
           </div>
-
-          {nextReqs && (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="flex items-center gap-1.5">
-                    <UserCheck className="size-4 text-primary" />
-                    Active Clients
-                  </span>
-                  <span className="font-medium tabular-nums">
-                    {activeClients} / {nextReqs.minActiveClients}
-                  </span>
-                </div>
-                <Progress
-                  value={Math.min(
-                    (activeClients / nextReqs.minActiveClients) * 100,
-                    100,
-                  )}
-                />
-                <p className="text-xs text-muted-foreground">
-                  {activeClientsToNext > 0
-                    ? `${activeClientsToNext} more active clients needed`
-                    : 'Requirement met'}
-                </p>
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="flex items-center gap-1.5">
-                    <BarChart3 className="size-4 text-primary" />
-                    Trading Volume
-                  </span>
-                  <span className="font-medium tabular-nums">
-                    {vol(totalVolume)} / {vol(nextReqs.minVolume)}
-                  </span>
-                </div>
-                <Progress
-                  value={Math.min(
-                    (totalVolume / nextReqs.minVolume) * 100,
-                    100,
-                  )}
-                />
-                <p className="text-xs text-muted-foreground">
-                  {volumeToNext > 0
-                    ? `${vol(volumeToNext)} more volume needed`
-                    : 'Requirement met'}
-                </p>
+          {nextTier && (
+            <div className="text-right">
+              <div className="text-sm text-muted-foreground">Next Tier</div>
+              <div className="mt-1 flex items-center justify-end gap-2">
+                <span
+                  className="text-xl font-bold"
+                  style={{ color: nextTier.color || undefined }}
+                >
+                  {nextTier.name}
+                </span>
+                <Badge variant="outline" className="text-xs">
+                  {formatRate(nextTier.commissionRate)}
+                </Badge>
               </div>
             </div>
           )}
-        </CardContent>
-      </Card>
+        </div>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <Card className="p-5">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <UserCheck className="size-4 text-success" />
-            Active Clients
+        {nextTier && (
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <ProgressRow
+              icon={<UserCheck className="size-4 text-primary" />}
+              label="Active Clients"
+              current={activeClients}
+              target={nextTier.minActiveClients}
+              pct={clientsPct}
+            />
+            <ProgressRow
+              icon={<BarChart3 className="size-4 text-primary" />}
+              label="Trading Volume"
+              current={formatVolume(totalVolume)}
+              target={formatVolume(nextTier.minVolume)}
+              pct={volPct}
+            />
           </div>
-          <div className="mt-1 text-3xl font-bold text-success tabular-nums">
-            {formatCount(activeClients)}
-          </div>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Futures trade within last 120 days
-          </p>
-        </Card>
-        <Card className="p-5">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <UserX className="size-4 text-destructive" />
-            Inactive Clients
-          </div>
-          <div className="mt-1 text-3xl font-bold text-destructive tabular-nums">
-            {formatCount(refStats?.inactive ?? 0)}
-          </div>
-          <p className="mt-1 text-xs text-muted-foreground">
-            No futures trade in last 120 days
-          </p>
-        </Card>
-      </div>
+        )}
+      </Card>
 
       <Card>
         <CardHeader>
@@ -244,37 +167,34 @@ export function PerformanceStatisticsPage() {
                 </tr>
               </thead>
               <tbody>
-                {(
-                  Object.entries(TIER_REQUIREMENTS) as [
-                    TierName,
-                    (typeof TIER_REQUIREMENTS)[TierName],
-                  ][]
-                ).map(([name, req]) => (
+                {allTiers.map((t) => (
                   <tr
-                    key={name}
+                    key={t.id}
                     className={`border-b last:border-0 ${
-                      name === currentTierName ? 'bg-primary/5' : ''
+                      t.name === currentTier?.name ? 'bg-primary/5' : ''
                     }`}
                   >
                     <td className="py-3">
-                      <span className={`font-semibold ${TIER_COLORS[name]}`}>
-                        {name}
+                      <span
+                        className="font-semibold"
+                        style={{ color: t.color || undefined }}
+                      >
+                        {t.name}
                       </span>
-                      {name === currentTierName && (
+                      {t.name === currentTier?.name && (
                         <Badge variant="secondary" className="ml-2 text-[10px]">
                           Current
                         </Badge>
                       )}
                     </td>
                     <td className="py-3 font-medium tabular-nums">
-                      {(req.commission * 100).toFixed(0)}%
+                      {formatRate(t.commissionRate)}
                     </td>
                     <td className="py-3 tabular-nums">
-                      {'>='} {req.minActiveClients}
+                      {'>='} {t.minActiveClients}
                     </td>
                     <td className="py-3 tabular-nums">
-                      {vol(req.minVolume)}
-                      {req.maxVolume ? ` – ${vol(req.maxVolume)}` : '+'}
+                      {formatVolumeRange(t.minVolume, t.maxVolume)}
                     </td>
                   </tr>
                 ))}
@@ -283,6 +203,43 @@ export function PerformanceStatisticsPage() {
           </div>
         </CardContent>
       </Card>
+    </div>
+  );
+}
+
+function ProgressRow({
+  icon,
+  label,
+  current,
+  target,
+  pct,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  current: string | number;
+  target: string | number;
+  pct: number;
+}) {
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between text-sm">
+        <span className="flex items-center gap-1.5">
+          {icon}
+          {label}
+        </span>
+        <span className="font-medium tabular-nums">
+          {current} / {target}
+        </span>
+      </div>
+      <div className="h-2 overflow-hidden rounded-full bg-muted">
+        <div
+          className="h-full rounded-full bg-gradient-to-r from-primary to-primary-hover transition-all"
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+      <p className="text-xs text-muted-foreground">
+        {pct >= 100 ? 'Requirement met' : `${100 - pct}% remaining`}
+      </p>
     </div>
   );
 }

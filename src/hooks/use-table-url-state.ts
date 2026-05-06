@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import type {
   ColumnFiltersState,
   OnChangeFn,
@@ -106,28 +106,45 @@ export function useTableUrlState(
   const [columnFilters, setColumnFilters] =
     useState<ColumnFiltersState>(initialColumnFilters);
 
-  const pagination: PaginationState = useMemo(() => {
+  const [pagination, setPagination] = useState<PaginationState>(() => {
     const rawPage = search[pageKey];
     const rawPageSize = search[pageSizeKey];
     const pageNum = typeof rawPage === 'number' ? rawPage : defaultPage;
     const pageSizeNum =
       typeof rawPageSize === 'number' ? rawPageSize : defaultPageSize;
     return { pageIndex: Math.max(0, pageNum - 1), pageSize: pageSizeNum };
+  });
+
+  useEffect(() => {
+    const rawPage = search[pageKey];
+    const rawPageSize = search[pageSizeKey];
+    if (typeof rawPage === 'number' || typeof rawPageSize === 'number') {
+      const pageNum = typeof rawPage === 'number' ? rawPage : defaultPage;
+      const pageSizeNum =
+        typeof rawPageSize === 'number' ? rawPageSize : defaultPageSize;
+      setPagination({ pageIndex: Math.max(0, pageNum - 1), pageSize: pageSizeNum });
+    }
   }, [search, pageKey, pageSizeKey, defaultPage, defaultPageSize]);
 
-  const onPaginationChange: OnChangeFn<PaginationState> = (updater) => {
-    const next = typeof updater === 'function' ? updater(pagination) : updater;
-    const nextPage = next.pageIndex + 1;
-    const nextPageSize = next.pageSize;
-    navigate({
-      search: (prev) => ({
-        ...prev,
-        [pageKey]: nextPage <= defaultPage ? undefined : nextPage,
-        [pageSizeKey]:
-          nextPageSize === defaultPageSize ? undefined : nextPageSize,
-      }),
-    });
-  };
+  const onPaginationChange: OnChangeFn<PaginationState> = useCallback(
+    (updater) => {
+      setPagination((prev) => {
+        const next = typeof updater === 'function' ? updater(prev) : updater;
+        const nextPage = next.pageIndex + 1;
+        const nextPageSize = next.pageSize;
+        navigate({
+          search: (prevSearch) => ({
+            ...prevSearch,
+            [pageKey]: nextPage <= defaultPage ? undefined : nextPage,
+            [pageSizeKey]:
+              nextPageSize === defaultPageSize ? undefined : nextPageSize,
+          }),
+        });
+        return next;
+      });
+    },
+    [navigate, pageKey, pageSizeKey, defaultPage, defaultPageSize],
+  );
 
   const [globalFilter, setGlobalFilter] = useState<string | undefined>(() => {
     if (!globalFilterEnabled) return undefined;
@@ -185,22 +202,29 @@ export function useTableUrlState(
     });
   };
 
-  const ensurePageInRange = (
-    pageCount: number,
-    opts: { resetTo?: 'first' | 'last' } = { resetTo: 'first' },
-  ) => {
-    const currentPage = search[pageKey];
-    const pageNum = typeof currentPage === 'number' ? currentPage : defaultPage;
-    if (pageCount > 0 && pageNum > pageCount) {
-      navigate({
-        replace: true,
-        search: (prev) => ({
-          ...prev,
-          [pageKey]: opts.resetTo === 'last' ? pageCount : undefined,
-        }),
+  const ensurePageInRange = useCallback(
+    (
+      pageCount: number,
+      opts: { resetTo?: 'first' | 'last' } = { resetTo: 'first' },
+    ) => {
+      setPagination((prev) => {
+        const pageNum = prev.pageIndex + 1;
+        if (pageCount > 0 && pageNum > pageCount) {
+          const resetPage = opts.resetTo === 'last' ? pageCount : defaultPage;
+          navigate({
+            replace: true,
+            search: (prevSearch) => ({
+              ...prevSearch,
+              [pageKey]: resetPage <= defaultPage ? undefined : resetPage,
+            }),
+          });
+          return { ...prev, pageIndex: Math.max(0, resetPage - 1) };
+        }
+        return prev;
       });
-    }
-  };
+    },
+    [navigate, pageKey, defaultPage],
+  );
 
   return {
     globalFilter: globalFilterEnabled ? (globalFilter ?? '') : undefined,

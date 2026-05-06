@@ -3,7 +3,6 @@ import { Button } from '#/components/ui/button';
 import { EmailAutocomplete } from '#/components/ui/email-autocomplete';
 import { Field, FieldGroup, FieldLabel } from '#/components/ui/field';
 import { Separator } from '#/components/ui/separator';
-import { AuthCarousel } from '#/features/auth/components/auth-carousel';
 import QrLogin from '#/features/auth/components/QrLogin';
 import { useAuthActions } from '#/hooks/use-auth-actions.ts';
 import { useBoolean } from '#/hooks/use-boolean';
@@ -69,11 +68,8 @@ export const LoginPage = () => {
           />
         </div>
       </CustomDialogForm>
-      <div className="flex">
-        <div className="w-2/5 p-3 hidden lg:block">
-          <AuthCarousel />
-        </div>
-        <div className="w-full lg:w-3/5 flex flex-col justify-center mb-14 h-[80vh] max-w-sm mx-auto px-4 sm:px-0">
+      <div className="flex justify-center">
+        <div className="w-full flex flex-col justify-center mb-14 h-[80vh] max-w-sm mx-auto px-4 sm:px-0">
           <div className="flex justify-between items-center w-full mb-4">
             <h1 className="text-center text-2xl font-bold">
               {t('auth:login.title')}
@@ -89,7 +85,7 @@ export const LoginPage = () => {
           </div>
           <div className="flex items-center justify-center border border-border rounded-full p-1.5 mb-4 gap-4">
             <img src="/assets/logo/lock-green.svg" alt="Lock" />
-            <span>https://www.x-meta.com</span>
+            <span>https://partners.x-meta.com/</span>
           </div>
           <p className="text-center text-sm text-muted-foreground mb-3">
             {t('auth:login.subtitle')}

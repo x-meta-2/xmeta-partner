@@ -1,9 +1,7 @@
 import { ArrowUpRight } from 'lucide-react';
 import { Card } from '#/components/ui/card';
 import type { Commission } from '#/services/apis/partner/commissions';
-
-const money = (v: number) =>
-  v.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+import { formatUSD } from '#/utils';
 
 /**
  * Locale-stable `YYYY-MM-DD HH:mm` (UTC) — avoids SSR hydration mismatches
@@ -42,7 +40,7 @@ export function RecentActivity({ items }: { items: Commission[] }) {
                 </div>
               </div>
               <div className="shrink-0 text-sm font-semibold text-primary">
-                +{money(c.commissionAmount)}
+                +{formatUSD(c.rebateAmount)}
               </div>
             </li>
           ))}
