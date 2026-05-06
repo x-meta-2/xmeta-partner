@@ -8,7 +8,6 @@ import { getErrorMessage } from '#/utils/get-error-message';
 import { useForm } from '@tanstack/react-form';
 import { confirmSignIn } from 'aws-amplify/auth';
 import { toast } from 'sonner';
-import { AuthCarousel } from '../components/auth-carousel';
 import { useLocalizedNavigate } from '#/hooks/use-localized-navigate';
 
 export const NewPasswordRequiredPage = () => {
@@ -31,12 +30,8 @@ export const NewPasswordRequiredPage = () => {
 
   return (
     <>
-      <div className="flex">
-        <div className="w-2/5 p-3 hidden lg:block">
-          <AuthCarousel />
-        </div>
-
-        <div className="w-full lg:w-3/5 flex flex-col justify-center mb-14 h-[80vh] max-w-sm mx-auto px-4 sm:px-0">
+      <div className="flex justify-center">
+        <div className="w-full flex flex-col justify-center mb-14 h-[80vh] max-w-sm mx-auto px-4 sm:px-0">
           <h1 className="text-center text-2xl font-bold mb-3">
             {t('auth:new-password.title', 'Update Password')}
           </h1>
@@ -48,7 +43,7 @@ export const NewPasswordRequiredPage = () => {
           </p>
           <div className="flex items-center justify-center border border-border rounded-full p-1.5 mb-6 gap-4">
             <img src="/assets/logo/lock-green.svg" alt="Lock" />
-            <span>https://www.x-meta.com</span>
+            <span>https://partners.x-meta.com/</span>
           </div>
           <Separator className="my-4" />
 

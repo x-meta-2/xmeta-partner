@@ -1,4 +1,3 @@
-import { AuthCarousel } from '#/features/auth/components/auth-carousel';
 import { Button } from '#/components/ui/button';
 import { Field, FieldGroup, FieldLabel } from '#/components/ui/field';
 import { Separator } from '#/components/ui/separator';
@@ -27,12 +26,8 @@ export const SoftwareTokenMfaPage = () => {
   });
 
   return (
-    <div className="flex">
-      <div className="w-2/5 p-3 hidden lg:block">
-        <AuthCarousel />
-      </div>
-
-      <div className="w-full lg:w-3/5 flex flex-col justify-center mb-14 h-[80vh] max-w-sm mx-auto px-4 sm:px-0">
+    <div className="flex justify-center">
+      <div className="w-full flex flex-col justify-center mb-14 h-[80vh] max-w-sm mx-auto px-4 sm:px-0">
         <h1 className="text-center text-2xl font-bold mb-3">
           {t('auth:totp-mfa.title', 'Authenticator App')}
         </h1>
@@ -44,7 +39,7 @@ export const SoftwareTokenMfaPage = () => {
         </p>
         <div className="flex items-center justify-center border border-border rounded-full p-1.5 mb-6 gap-4">
           <img src="/assets/logo/lock-green.svg" alt="Lock" />
-          <span>https://www.x-meta.com</span>
+          <span>https://partners.x-meta.com/</span>
         </div>
         <Separator className="my-4" />
 
