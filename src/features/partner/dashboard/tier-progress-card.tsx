@@ -4,11 +4,8 @@ import type { TierProgress } from '#/services/apis/partner/dashboard';
 import { formatRate, formatVolume } from '#/utils/tier';
 
 export function TierProgressCard({ progress }: { progress: TierProgress }) {
-  const clientsPct = Math.min(
-    100,
-    Math.floor(progress.activeClientsProgress * 100),
-  );
-  const volPct = Math.min(100, Math.floor(progress.volumeProgress * 100));
+  const clientsPct = Math.min(100, progress.activeClientsProgress * 100);
+  const volPct = Math.min(100, progress.volumeProgress * 100);
   const { currentTier, nextTier } = progress;
 
   return (
@@ -51,16 +48,17 @@ export function TierProgressCard({ progress }: { progress: TierProgress }) {
 }
 
 function ProgressRow({ label, pct }: { label: string; pct: number }) {
+  const display = pct >= 100 ? '100' : pct < 1 && pct > 0 ? '< 1' : String(Math.floor(pct));
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between text-xs">
         <span className="text-muted-foreground">{label}</span>
-        <span className="font-medium">{pct}%</span>
+        <span className="font-medium">{display}%</span>
       </div>
       <div className="h-2 overflow-hidden rounded-full bg-muted">
         <div
           className="h-full rounded-full bg-gradient-to-r from-primary to-primary-hover transition-all"
-          style={{ width: `${pct}%` }}
+          style={{ width: `${Math.max(pct, pct > 0 ? 1 : 0)}%` }}
         />
       </div>
     </div>

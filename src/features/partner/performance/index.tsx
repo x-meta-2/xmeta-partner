@@ -4,6 +4,7 @@ import { Award, BarChart3, DollarSign, UserCheck, Users } from 'lucide-react';
 import { PageHeader } from '#/components/common/page-header';
 import { Badge } from '#/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '#/components/ui/card';
+import { Skeleton } from '#/components/ui/skeleton';
 import { StatCard } from '#/features/partner/dashboard/stat-card';
 import {
   getDashboardSummary,
@@ -33,6 +34,12 @@ export function PerformanceStatisticsPage() {
     staleTime: 5 * 60 * 1000,
   });
 
+  const isLoading =
+    summaryQuery.isLoading ||
+    tierQuery.isLoading ||
+    refStatsQuery.isLoading ||
+    tiersQuery.isLoading;
+
   const summary = summaryQuery.data;
   const tier = tierQuery.data;
   const refStats = refStatsQuery.data;
@@ -51,14 +58,11 @@ export function PerformanceStatisticsPage() {
   })();
 
   const clientsPct = nextTier
-    ? Math.min(
-        Math.floor((activeClients / nextTier.minActiveClients) * 100),
-        100,
-      )
+    ? Math.min((activeClients / nextTier.minActiveClients) * 100, 100)
     : 100;
 
   const volPct = nextTier
-    ? Math.min(Math.floor((totalVolume / nextTier.minVolume) * 100), 100)
+    ? Math.min((totalVolume / nextTier.minVolume) * 100, 100)
     : 100;
 
   return (
@@ -73,22 +77,26 @@ export function PerformanceStatisticsPage() {
           label="Total Referrals"
           value={formatCount(refStats?.total ?? 0)}
           icon={Users}
+          isLoading={isLoading}
         />
         <StatCard
           label="Active Clients"
           value={formatCount(activeClients)}
           icon={UserCheck}
           hint="Futures trade in last 120 days"
+          isLoading={isLoading}
         />
         <StatCard
           label="Total Volume"
           value={formatVolume(totalVolume)}
           icon={BarChart3}
+          isLoading={isLoading}
         />
         <StatCard
           label="Total Commission"
           value={formatUSD(summary?.totalEarnings ?? 0)}
           icon={DollarSign}
+          isLoading={isLoading}
         />
       </div>
 
@@ -98,56 +106,83 @@ export function PerformanceStatisticsPage() {
           <span className="text-base font-semibold">Tier Progress</span>
         </div>
 
-        <div className="flex items-center justify-between">
-          <div>
-            <div className="text-sm text-muted-foreground">Current Tier</div>
-            <div className="mt-1 flex items-center gap-2">
-              <span
-                className="text-xl font-bold"
-                style={{ color: currentTier?.color || undefined }}
-              >
-                {currentTier?.name ?? 'Standard'}
-              </span>
-              <Badge variant="outline" className="text-xs">
-                {formatRate(currentTier?.commissionRate ?? 0)} commission
-              </Badge>
-            </div>
-          </div>
-          {nextTier && (
-            <div className="text-right">
-              <div className="text-sm text-muted-foreground">Next Tier</div>
-              <div className="mt-1 flex items-center justify-end gap-2">
-                <span
-                  className="text-xl font-bold"
-                  style={{ color: nextTier.color || undefined }}
-                >
-                  {nextTier.name}
-                </span>
-                <Badge variant="outline" className="text-xs">
-                  {formatRate(nextTier.commissionRate)}
-                </Badge>
+        {isLoading ? (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-20" />
+                <Skeleton className="h-7 w-32" />
+              </div>
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-20" />
+                <Skeleton className="h-7 w-32" />
               </div>
             </div>
-          )}
-        </div>
-
-        {nextTier && (
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-            <ProgressRow
-              icon={<UserCheck className="size-4 text-primary" />}
-              label="Active Clients"
-              current={activeClients}
-              target={nextTier.minActiveClients}
-              pct={clientsPct}
-            />
-            <ProgressRow
-              icon={<BarChart3 className="size-4 text-primary" />}
-              label="Trading Volume"
-              current={formatVolume(totalVolume)}
-              target={formatVolume(nextTier.minVolume)}
-              pct={volPct}
-            />
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-2 w-full rounded-full" />
+              </div>
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-2 w-full rounded-full" />
+              </div>
+            </div>
           </div>
+        ) : (
+          <>
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-sm text-muted-foreground">Current Tier</div>
+                <div className="mt-1 flex items-center gap-2">
+                  <span
+                    className="text-xl font-bold"
+                    style={{ color: currentTier?.color || undefined }}
+                  >
+                    {currentTier?.name ?? 'Standard'}
+                  </span>
+                  <Badge variant="outline" className="text-xs">
+                    {formatRate(currentTier?.commissionRate ?? 0)} commission
+                  </Badge>
+                </div>
+              </div>
+              {nextTier && (
+                <div className="text-right">
+                  <div className="text-sm text-muted-foreground">Next Tier</div>
+                  <div className="mt-1 flex items-center justify-end gap-2">
+                    <span
+                      className="text-xl font-bold"
+                      style={{ color: nextTier.color || undefined }}
+                    >
+                      {nextTier.name}
+                    </span>
+                    <Badge variant="outline" className="text-xs">
+                      {formatRate(nextTier.commissionRate)}
+                    </Badge>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {nextTier && (
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+                <ProgressRow
+                  icon={<UserCheck className="size-4 text-primary" />}
+                  label="Active Clients"
+                  current={activeClients}
+                  target={nextTier.minActiveClients}
+                  pct={clientsPct}
+                />
+                <ProgressRow
+                  icon={<BarChart3 className="size-4 text-primary" />}
+                  label="Trading Volume"
+                  current={formatVolume(totalVolume)}
+                  target={formatVolume(nextTier.minVolume)}
+                  pct={volPct}
+                />
+              </div>
+            )}
+          </>
         )}
       </Card>
 
@@ -167,37 +202,57 @@ export function PerformanceStatisticsPage() {
                 </tr>
               </thead>
               <tbody>
-                {allTiers.map((t) => (
-                  <tr
-                    key={t.id}
-                    className={`border-b last:border-0 ${
-                      t.name === currentTier?.name ? 'bg-primary/5' : ''
-                    }`}
-                  >
-                    <td className="py-3">
-                      <span
-                        className="font-semibold"
-                        style={{ color: t.color || undefined }}
+                {isLoading
+                  ? Array.from({ length: 4 }).map((_, i) => (
+                      <tr key={i} className="border-b last:border-0">
+                        <td className="py-3">
+                          <Skeleton className="h-5 w-20" />
+                        </td>
+                        <td className="py-3">
+                          <Skeleton className="h-5 w-12" />
+                        </td>
+                        <td className="py-3">
+                          <Skeleton className="h-5 w-14" />
+                        </td>
+                        <td className="py-3">
+                          <Skeleton className="h-5 w-28" />
+                        </td>
+                      </tr>
+                    ))
+                  : allTiers.map((t) => (
+                      <tr
+                        key={t.id}
+                        className={`border-b last:border-0 ${
+                          t.name === currentTier?.name ? 'bg-primary/5' : ''
+                        }`}
                       >
-                        {t.name}
-                      </span>
-                      {t.name === currentTier?.name && (
-                        <Badge variant="secondary" className="ml-2 text-[10px]">
-                          Current
-                        </Badge>
-                      )}
-                    </td>
-                    <td className="py-3 font-medium tabular-nums">
-                      {formatRate(t.commissionRate)}
-                    </td>
-                    <td className="py-3 tabular-nums">
-                      {'>='} {t.minActiveClients}
-                    </td>
-                    <td className="py-3 tabular-nums">
-                      {formatVolumeRange(t.minVolume, t.maxVolume)}
-                    </td>
-                  </tr>
-                ))}
+                        <td className="py-3">
+                          <span
+                            className="font-semibold"
+                            style={{ color: t.color || undefined }}
+                          >
+                            {t.name}
+                          </span>
+                          {t.name === currentTier?.name && (
+                            <Badge
+                              variant="secondary"
+                              className="ml-2 text-[10px]"
+                            >
+                              Current
+                            </Badge>
+                          )}
+                        </td>
+                        <td className="py-3 font-medium tabular-nums">
+                          {formatRate(t.commissionRate)}
+                        </td>
+                        <td className="py-3 tabular-nums">
+                          {'>='} {t.minActiveClients}
+                        </td>
+                        <td className="py-3 tabular-nums">
+                          {formatVolumeRange(t.minVolume, t.maxVolume)}
+                        </td>
+                      </tr>
+                    ))}
               </tbody>
             </table>
           </div>
@@ -234,11 +289,15 @@ function ProgressRow({
       <div className="h-2 overflow-hidden rounded-full bg-muted">
         <div
           className="h-full rounded-full bg-gradient-to-r from-primary to-primary-hover transition-all"
-          style={{ width: `${pct}%` }}
+          style={{ width: `${Math.max(pct, pct > 0 ? 1 : 0)}%` }}
         />
       </div>
       <p className="text-xs text-muted-foreground">
-        {pct >= 100 ? 'Requirement met' : `${100 - pct}% remaining`}
+        {pct >= 100
+          ? 'Requirement met'
+          : pct < 1 && pct > 0
+            ? '< 1% complete'
+            : `${Math.floor(pct)}% complete`}
       </p>
     </div>
   );
