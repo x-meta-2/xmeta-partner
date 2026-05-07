@@ -6,9 +6,15 @@ import type {
   PartnerResponse,
 } from '../types';
 import { unwrapPartner } from '../types';
-import type { Payout, PayoutSummary } from './types';
+import type { Payout, PayoutDetail, PayoutSummary } from './types';
 
-export type { Payout, PayoutStatus, PayoutSummary } from './types';
+export type {
+  Payout,
+  PayoutDetail,
+  PayoutItem,
+  PayoutStatus,
+  PayoutSummary,
+} from './types';
 
 export const listPayouts = async (params: PartnerPaginationInput = {}) =>
   unwrapPartner<PartnerPaginated<Payout>>(
@@ -19,8 +25,8 @@ export const listPayouts = async (params: PartnerPaginationInput = {}) =>
   );
 
 export const getPayout = async (id: string) =>
-  unwrapPartner<Payout>(
-    await baseService.get<PartnerResponse<Payout>>(
+  unwrapPartner<PayoutDetail>(
+    await baseService.get<PartnerResponse<PayoutDetail>>(
       `${api.partner.payouts}/detail/${id}`,
     ),
   );
@@ -32,13 +38,9 @@ export const getPendingPayouts = async () =>
     ),
   );
 
-export const requestPayout = async (payload: {
-  amount: number;
-  walletAddress: string;
-}) =>
+export const requestPayout = async () =>
   unwrapPartner<Payout>(
     await baseService.post<PartnerResponse<Payout>>(
       `${api.partner.payouts}/request`,
-      payload,
     ),
   );

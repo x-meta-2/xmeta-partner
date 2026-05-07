@@ -1,5 +1,6 @@
 import type { ColumnDef } from '@tanstack/react-table';
 
+import { MarketCell } from '#/components/common/market-cell';
 import { StatusTag } from '#/components/common/status-tag';
 import type { Commission } from '#/services/apis/partner/commissions';
 import { formatUSD } from '#/utils';
@@ -14,9 +15,7 @@ export const earningsColumns: ColumnDef<Commission>[] = [
   {
     accessorKey: 'marketId',
     header: 'Market',
-    cell: ({ row }) => (
-      <span className="font-mono text-xs">{row.original.marketId}</span>
-    ),
+    cell: ({ row }) => <MarketCell marketId={row.original.marketId} />,
   },
   {
     accessorKey: 'commissionAmount',

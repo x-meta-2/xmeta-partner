@@ -167,7 +167,9 @@ export function BaseTable<TData extends object>({
   });
 
   const pageCount =
-    total && pagination.pageSize ? Math.ceil(total / pagination.pageSize) : -1;
+    total != null && pagination.pageSize
+      ? Math.ceil(total / pagination.pageSize)
+      : undefined;
 
   const tableColumns: ColumnDef<TData, unknown>[] = [
     ...columns,
@@ -225,7 +227,7 @@ export function BaseTable<TData extends object>({
   });
 
   useEffect(() => {
-    if (pageCount > 0) ensurePageInRange(pageCount);
+    if (pageCount != null && pageCount > 0) ensurePageInRange(pageCount);
   }, [pageCount, ensurePageInRange]);
 
   return (

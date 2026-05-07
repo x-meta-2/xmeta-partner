@@ -10,13 +10,13 @@ export const payoutsColumns: ColumnDef<Payout>[] = [
     accessorKey: 'id',
     header: 'ID',
     cell: ({ row }) => (
-      <span className="font-mono text-xs">{row.original.id}</span>
+      <span className="font-mono text-xs">{row.original.id.slice(0, 8)}…</span>
     ),
   },
   {
-    accessorKey: 'requestedAt',
+    accessorKey: 'createdAt',
     header: 'Requested',
-    cell: ({ row }) => formatDate(row.original.requestedAt),
+    cell: ({ row }) => formatDate(row.original.createdAt),
   },
   {
     accessorKey: 'amount',
@@ -25,6 +25,13 @@ export const payoutsColumns: ColumnDef<Payout>[] = [
       <div className="text-right font-semibold tabular-nums">
         {formatUSD(row.original.amount)} {row.original.currency}
       </div>
+    ),
+  },
+  {
+    accessorKey: 'commissionCount',
+    header: 'Trades',
+    cell: ({ row }) => (
+      <span className="tabular-nums">{row.original.commissionCount}</span>
     ),
   },
   {
@@ -39,17 +46,17 @@ export const payoutsColumns: ColumnDef<Payout>[] = [
     header: 'Transaction ID',
     cell: ({ row }) => (
       <span className="font-mono text-xs text-muted-foreground">
-        {row.original.transactionId ?? '—'}
+        {row.original.transactionId || '—'}
       </span>
     ),
   },
   {
-    accessorKey: 'completedAt',
+    accessorKey: 'processedAt',
     header: 'Completed',
     cell: ({ row }) => (
       <span className="text-muted-foreground">
-        {row.original.completedAt
-          ? formatDateTime(row.original.completedAt)
+        {row.original.processedAt
+          ? formatDateTime(row.original.processedAt)
           : '—'}
       </span>
     ),

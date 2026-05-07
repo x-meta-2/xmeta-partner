@@ -8,6 +8,7 @@ export { CustomDialogForm } from './custom-dialog-form';
 export { EmptyContent } from './empty-content';
 export { ErrorBoundary } from './error-boundary';
 export { LocalizedLink } from './localized-link';
+export { MarketCell } from './market-cell';
 export { PageHeader } from './page-header';
 export { StatusTag } from './status-tag';
 

@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 import { Award, BarChart3, DollarSign, UserCheck, Users } from 'lucide-react';
-
 import { PageHeader } from '#/components/common/page-header';
 import { Badge } from '#/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '#/components/ui/card';
@@ -133,7 +132,9 @@ export function PerformanceStatisticsPage() {
           <>
             <div className="flex items-center justify-between">
               <div>
-                <div className="text-sm text-muted-foreground">Current Tier</div>
+                <div className="text-sm text-muted-foreground">
+                  Current Tier
+                </div>
                 <div className="mt-1 flex items-center gap-2">
                   <span
                     className="text-xl font-bold"

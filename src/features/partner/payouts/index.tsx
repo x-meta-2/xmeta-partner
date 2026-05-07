@@ -1,21 +1,28 @@
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { CheckCircle, Clock, DollarSign, Wallet } from 'lucide-react';
-import { toast } from 'sonner';
+import { CheckCircle, Clock, DollarSign, Eye, Wallet } from 'lucide-react';
 
 import { PageHeader } from '#/components/common/page-header';
 import { BaseTable, DataTableHeader } from '#/components/data-table';
 import { Button } from '#/components/ui/button';
 import { Card } from '#/components/ui/card';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '#/components/ui/tooltip';
 import { StatCard } from '#/features/partner/dashboard/stat-card';
 import {
   getPendingPayouts,
   listPayouts,
+  type Payout,
 } from '#/services/apis/partner/payouts';
+import { formatUSD } from '#/utils';
 
 import { payoutsColumns } from './columns';
-
-const money = (v: number) =>
-  v.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+import { PayoutDetailSheet } from './payout-detail-sheet';
+import { RequestPayoutDialog } from './request-payout-dialog';
 
 const STATUS_OPTIONS = [
   { label: 'Pending', value: 'pending' },
@@ -25,6 +32,9 @@ const STATUS_OPTIONS = [
 ];
 
 export function PartnerPayoutsPage() {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedPayout, setSelectedPayout] = useState<Payout | null>(null);
+
   const summaryQuery = useQuery({
     queryKey: ['partner', 'payouts', 'pending'],
     queryFn: getPendingPayouts,
@@ -38,8 +48,15 @@ export function PartnerPayoutsPage() {
   const payouts = listQuery.data?.items ?? [];
 
   const pendingBalance = summary?.pendingBalance ?? 0;
-  const minAmount = summary?.minPayoutAmount ?? 0;
-  const disabled = pendingBalance < minAmount;
+  const minAmount = summary?.minPayoutAmount ?? 10;
+  const belowMin = pendingBalance < minAmount;
+
+  const payoutButton = (
+    <Button disabled={belowMin} onClick={() => setDialogOpen(true)}>
+      <DollarSign className="size-4" />
+      Request Payout
+    </Button>
+  );
 
   return (
     <div className="space-y-6">
@@ -59,33 +76,54 @@ export function PartnerPayoutsPage() {
                 Available for Payout
               </div>
               <div className="text-3xl font-semibold tracking-tight text-primary">
-                {money(pendingBalance)}
+                {formatUSD(pendingBalance)}
               </div>
               <div className="text-xs text-muted-foreground">
-                Minimum payout: {money(minAmount)}
+                Minimum payout: {formatUSD(minAmount)}
               </div>
             </div>
           </div>
-          <Button
-            disabled={disabled}
-            onClick={() => toast.info('Payout request coming soon')}
-          >
-            <DollarSign className="size-4" />
-            Request Payout
-          </Button>
+          {belowMin ? (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span tabIndex={0}>{payoutButton}</span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Minimum payout amount is {formatUSD(minAmount)}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          ) : (
+            payoutButton
+          )}
         </div>
       </Card>
+
+      <RequestPayoutDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        pendingBalance={pendingBalance}
+        pendingCount={summary?.pendingCount ?? 0}
+      />
+
+      <PayoutDetailSheet
+        payout={selectedPayout}
+        onOpenChange={(open) => {
+          if (!open) setSelectedPayout(null);
+        }}
+      />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <StatCard
           label="Total Paid"
-          value={money(summary?.totalPaid ?? 0)}
+          value={formatUSD(summary?.totalPaid ?? 0)}
           icon={CheckCircle}
           isLoading={summaryQuery.isLoading}
         />
         <StatCard
           label="Pending Balance"
-          value={money(pendingBalance)}
+          value={formatUSD(pendingBalance)}
           icon={Clock}
           isLoading={summaryQuery.isLoading}
         />
@@ -115,6 +153,15 @@ export function PartnerPayoutsPage() {
             { columnId: 'status', title: 'Status', options: STATUS_OPTIONS },
           ],
         }}
+        rowActions={(row) => (
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            onClick={() => setSelectedPayout(row)}
+          >
+            <Eye className="size-4" />
+          </Button>
+        )}
       />
     </div>
   );
