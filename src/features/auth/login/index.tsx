@@ -3,17 +3,10 @@ import { Button } from '#/components/ui/button';
 import { EmailAutocomplete } from '#/components/ui/email-autocomplete';
 import { Field, FieldGroup, FieldLabel } from '#/components/ui/field';
 import { Separator } from '#/components/ui/separator';
-import QrLogin from '#/features/auth/components/QrLogin';
 import { useAuthActions } from '#/hooks/use-auth-actions.ts';
 import { useBoolean } from '#/hooks/use-boolean';
 import { useI18n } from '#/i18n/context';
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from '#/components/ui/hover-card';
 import { useForm } from '@tanstack/react-form';
-import { QrCodeIcon } from 'lucide-react';
 import { useRef } from 'react';
 import Turnstile from 'react-turnstile';
 
@@ -70,19 +63,9 @@ export const LoginPage = () => {
       </CustomDialogForm>
       <div className="flex justify-center">
         <div className="w-full flex flex-col justify-center mb-14 h-[80vh] max-w-sm mx-auto px-4 sm:px-0">
-          <div className="flex justify-between items-center w-full mb-4">
-            <h1 className="text-center text-2xl font-bold">
-              {t('auth:login.title')}
-            </h1>
-            <HoverCard openDelay={10} closeDelay={100}>
-              <HoverCardTrigger asChild className="cursor-pointer">
-                <QrCodeIcon />
-              </HoverCardTrigger>
-              <HoverCardContent className="w-fit rounded-4xl">
-                <QrLogin />
-              </HoverCardContent>
-            </HoverCard>
-          </div>
+          <h1 className="text-center text-2xl font-bold mb-4">
+            {t('auth:login.title')}
+          </h1>
           <div className="flex items-center justify-center border border-border rounded-full p-1.5 mb-4 gap-4">
             <img src="/assets/logo/lock-green.svg" alt="Lock" />
             <span>https://partners.x-meta.com/</span>
