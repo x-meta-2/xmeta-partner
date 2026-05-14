@@ -9,12 +9,14 @@ import { Card } from '#/components/ui/card';
 import { Input } from '#/components/ui/input';
 import { Label } from '#/components/ui/label';
 import { Separator } from '#/components/ui/separator';
+import { useI18n } from '#/i18n/context';
 import { getProfile, updateProfile } from '#/services/apis/partner/profile';
 import { loadUserProfile } from '#/stores/auth-actions';
 import { formatLongDate } from '#/utils/date';
 import { formatRate } from '#/utils/tier';
 
 export function PartnerSettingsPage() {
+  const { t } = useI18n();
   const queryClient = useQueryClient();
 
   const partnerQuery = useQuery({
@@ -60,25 +62,25 @@ export function PartnerSettingsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Settings"
-        description="Manage your partner account settings"
+        title={t('partner:settings.title')}
+        description={t('partner:settings.description')}
       />
 
       <Card className="gap-5 p-6">
         <div>
-          <div className="text-base font-semibold">Identity</div>
+          <div className="text-base font-semibold">{t('partner:settings.identity.title')}</div>
           <div className="text-xs text-muted-foreground">
-            Name and email are managed from your xmeta account.
+            {t('partner:settings.identity.description')}
           </div>
         </div>
         <div className="grid max-w-2xl gap-4 sm:grid-cols-2">
-          <Field label="First Name">
+          <Field label={t('partner:settings.identity.firstName')}>
             <Input value={partner?.user?.firstName ?? ''} disabled />
           </Field>
-          <Field label="Last Name">
+          <Field label={t('partner:settings.identity.lastName')}>
             <Input value={partner?.user?.lastName ?? ''} disabled />
           </Field>
-          <Field label="Email">
+          <Field label={t('partner:settings.identity.email')}>
             <Input value={partner?.user?.email ?? ''} disabled />
           </Field>
         </div>
@@ -86,34 +88,34 @@ export function PartnerSettingsPage() {
 
       <Card className="gap-5 p-6">
         <div>
-          <div className="text-base font-semibold">Partner Profile</div>
+          <div className="text-base font-semibold">{t('partner:settings.profile.title')}</div>
           <div className="text-xs text-muted-foreground">
-            Public details associated with your partner program account
+            {t('partner:settings.profile.description')}
           </div>
         </div>
         <div className="grid max-w-2xl gap-4 sm:grid-cols-2">
-          <Field label="Company / Brand Name" hint="Optional">
+          <Field label={t('partner:settings.profile.company')} hint={t('partner:settings.profile.optional')}>
             <Input
               value={companyName}
               onChange={(e) => setCompanyName(e.target.value)}
               placeholder="e.g., Demo Trading"
             />
           </Field>
-          <Field label="Website" hint="Optional">
+          <Field label={t('partner:settings.profile.website')} hint={t('partner:settings.profile.optional')}>
             <Input
               value={website}
               onChange={(e) => setWebsite(e.target.value)}
               placeholder="https://…"
             />
           </Field>
-          <Field label="Facebook URL">
+          <Field label={t('partner:settings.profile.facebook')}>
             <Input
               value={facebook}
               onChange={(e) => setFacebook(e.target.value)}
               placeholder="https://facebook.com/yourpage"
             />
           </Field>
-          <Field label="Instagram URL">
+          <Field label={t('partner:settings.profile.instagram')}>
             <Input
               value={instagram}
               onChange={(e) => setInstagram(e.target.value)}
@@ -125,20 +127,20 @@ export function PartnerSettingsPage() {
 
       <Card className="gap-0 p-0">
         <div className="p-6 pb-3">
-          <div className="text-base font-semibold">Partner Account</div>
+          <div className="text-base font-semibold">{t('partner:settings.account.title')}</div>
         </div>
         <div className="space-y-3 px-6 pb-6 text-sm">
-          <InfoRow label="Partner ID">
+          <InfoRow label={t('partner:settings.account.partnerId')}>
             <span className="font-mono">{partner?.id ?? '—'}</span>
           </InfoRow>
           <Separator className="opacity-40" />
-          <InfoRow label="Referral Code">
+          <InfoRow label={t('partner:settings.account.referralCode')}>
             <span className="font-mono font-semibold text-primary">
               {partner?.referralCode ?? '—'}
             </span>
           </InfoRow>
           <Separator className="opacity-40" />
-          <InfoRow label="Current Tier">
+          <InfoRow label={t('partner:settings.account.currentTier')}>
             <span className="font-medium">
               {partner?.tier
                 ? `${partner.tier.name} · ${formatRate(partner.tier.commissionRate)}`
@@ -146,7 +148,7 @@ export function PartnerSettingsPage() {
             </span>
           </InfoRow>
           <Separator className="opacity-40" />
-          <InfoRow label="Member Since">
+          <InfoRow label={t('partner:settings.account.memberSince')}>
             <span>
               {partner?.createdAt ? formatLongDate(partner.createdAt) : '—'}
             </span>
@@ -157,7 +159,7 @@ export function PartnerSettingsPage() {
       <div className="flex justify-end">
         <Button onClick={save} disabled={updateMutation.isPending}>
           <Save className="size-4" />
-          {updateMutation.isPending ? 'Saving…' : 'Save Changes'}
+          {updateMutation.isPending ? t('partner:settings.saving') : t('partner:settings.save')}
         </Button>
       </div>
     </div>

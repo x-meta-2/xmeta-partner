@@ -9,6 +9,8 @@ import { copyToClipboard } from '#/utils/clipboard';
 import { formatDate } from '#/utils/date';
 import { formatCount } from '#/utils';
 
+type TranslateFn = (key: string, defaultValue?: string) => string;
+
 function LinkActions({ link }: { link: ReferralLink }) {
   const [copied, setCopied] = useState(false);
 
@@ -36,10 +38,10 @@ function LinkActions({ link }: { link: ReferralLink }) {
   );
 }
 
-export const linksColumns: ColumnDef<ReferralLink>[] = [
+export const getLinksColumns = (t: TranslateFn): ColumnDef<ReferralLink>[] => [
   {
     accessorKey: 'code',
-    header: 'Code',
+    header: t('partner:links.col.code'),
     cell: ({ row }) => (
       <div className="flex items-center gap-2">
         <span className="font-mono text-xs font-semibold text-primary">
@@ -47,7 +49,7 @@ export const linksColumns: ColumnDef<ReferralLink>[] = [
         </span>
         {!row.original?.isActive && (
           <Badge variant="secondary" className="text-[10px]">
-            Inactive
+            {t('partner:status.inactive')}
           </Badge>
         )}
       </div>
@@ -55,7 +57,7 @@ export const linksColumns: ColumnDef<ReferralLink>[] = [
   },
   {
     accessorKey: 'url',
-    header: 'URL',
+    header: t('partner:links.col.url'),
     cell: ({ row }) => (
       <span className="block max-w-xs truncate font-mono text-xs text-muted-foreground">
         {row.original.url}
@@ -64,7 +66,7 @@ export const linksColumns: ColumnDef<ReferralLink>[] = [
   },
   {
     accessorKey: 'registrations',
-    header: () => <div className="text-right">Registrations</div>,
+    header: () => <div className="text-right">{t('partner:links.col.registrations')}</div>,
     cell: ({ row }) => (
       <div className="text-right tabular-nums">
         {formatCount(row.original.registrations)}
@@ -73,7 +75,7 @@ export const linksColumns: ColumnDef<ReferralLink>[] = [
   },
   {
     accessorKey: 'createdAt',
-    header: 'Created',
+    header: t('partner:links.col.created'),
     cell: ({ row }) => (
       <span className="text-muted-foreground">
         {formatDate(row.original.createdAt)}

@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Activity, Calendar, ChevronLeft, ChevronRight, Mail, Shield } from 'lucide-react';
 
 import { StatusTag } from '#/components/common/status-tag';
+import { useI18n } from '#/i18n/context';
 import { truncateFloor } from '#/utils';
 import { Button } from '#/components/ui/button';
 import { Separator } from '#/components/ui/separator';
@@ -26,6 +27,7 @@ export function ReferralDetailDrawer({
   referral,
   onClose,
 }: ReferralDetailDrawerProps) {
+  const { t } = useI18n();
   const open = referral !== null;
 
   // Trade history = commissions earned from this referred user. Each
@@ -50,18 +52,19 @@ export function ReferralDetailDrawer({
         {referral && (
           <>
             <SheetHeader>
-              <SheetTitle>Referral details</SheetTitle>
+              <SheetTitle>{t('partner:referrals.detail.title')}</SheetTitle>
               <SheetDescription>
-                Activity history for the referred user
+                {t('partner:referrals.detail.description')}
               </SheetDescription>
             </SheetHeader>
 
             <div className="flex flex-col gap-5 px-6 py-6">
-              <UserCard referral={referral} />
-              <LifecycleCard referral={referral} />
+              <UserCard referral={referral} t={t} />
+              <LifecycleCard referral={referral} t={t} />
               <TradeHistorySection
                 trades={trades}
                 isLoading={tradesQuery.isLoading}
+                t={t}
               />
             </div>
           </>
@@ -71,7 +74,7 @@ export function ReferralDetailDrawer({
   );
 }
 
-function UserCard({ referral }: { referral: Referral }) {
+function UserCard({ referral, t }: { referral: Referral; t: (key: string, defaultValue?: string, values?: Record<string, string | number>) => string }) {
   const u = referral.referredUser;
   const name = u ? `${u.firstName} ${u.lastInitial}`.trim() : '-';
   const initials =
@@ -95,10 +98,10 @@ function UserCard({ referral }: { referral: Referral }) {
       </div>
       <Separator className="my-4" />
       <div className="grid grid-cols-1 gap-1 sm:grid-cols-2">
-        <Row icon={<Mail className="size-4" />} label="Email">
+        <Row icon={<Mail className="size-4" />} label={t('partner:referrals.detail.email')}>
           <span className="font-mono text-xs">{u?.maskedEmail ?? '-'}</span>
         </Row>
-        <Row icon={<Shield className="size-4" />} label="KYC level">
+        <Row icon={<Shield className="size-4" />} label={t('partner:referrals.detail.kycLevel')}>
           {u?.kycLevel ?? 0}
         </Row>
       </div>
@@ -106,22 +109,22 @@ function UserCard({ referral }: { referral: Referral }) {
   );
 }
 
-function LifecycleCard({ referral }: { referral: Referral }) {
+function LifecycleCard({ referral, t }: { referral: Referral; t: (key: string, defaultValue?: string, values?: Record<string, string | number>) => string }) {
   return (
     <div className="rounded-xl border bg-card p-5 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
-      <div className="mb-4 text-sm font-semibold">Lifecycle</div>
+      <div className="mb-4 text-sm font-semibold">{t('partner:referrals.detail.lifecycle')}</div>
       <div className="grid grid-cols-1 gap-1 sm:grid-cols-2">
-        <Row icon={<Calendar className="size-4" />} label="Registered">
+        <Row icon={<Calendar className="size-4" />} label={t('partner:referrals.detail.registered')}>
           {formatDate(referral.registeredAt)}
         </Row>
-        <Row icon={<Activity className="size-4" />} label="First trade">
+        <Row icon={<Activity className="size-4" />} label={t('partner:referrals.detail.firstTrade')}>
           {formatDate(referral.firstTradeAt)}
         </Row>
-        <Row icon={<Calendar className="size-4" />} label="Linked at">
+        <Row icon={<Calendar className="size-4" />} label={t('partner:referrals.detail.linkedAt')}>
           {formatDate(referral.startedAt)}
         </Row>
         {referral.endedAt && (
-          <Row icon={<Calendar className="size-4" />} label="Unlinked at">
+          <Row icon={<Calendar className="size-4" />} label={t('partner:referrals.detail.unlinkedAt')}>
             {formatDate(referral.endedAt)}
           </Row>
         )}
@@ -135,6 +138,7 @@ const PAGE_SIZE = 10;
 function TradeHistorySection({
   trades,
   isLoading,
+  t,
 }: {
   trades: Array<{
     id: string;
@@ -145,6 +149,7 @@ function TradeHistorySection({
     tradeDate: string;
   }>;
   isLoading: boolean;
+  t: (key: string, defaultValue?: string, values?: Record<string, string | number>) => string;
 }) {
   const [page, setPage] = useState(0);
   const totalPages = Math.ceil(trades.length / PAGE_SIZE);
@@ -154,56 +159,56 @@ function TradeHistorySection({
     <div className="overflow-hidden rounded-xl border bg-card shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
       <div className="border-b bg-muted/40 px-5 py-3">
         <div className="text-sm font-semibold">
-          Trade history{trades.length > 0 && ` (${trades.length})`}
+          {t('partner:referrals.detail.tradeHistory')}{trades.length > 0 && ` (${trades.length})`}
         </div>
         <div className="text-xs text-muted-foreground">
-          One row = one trade. Commission is what you earned.
+          {t('partner:referrals.detail.tradeHistoryDescription')}
         </div>
       </div>
 
       {isLoading ? (
-        <div className="px-5 py-6 text-sm text-muted-foreground">Loading…</div>
+        <div className="px-5 py-6 text-sm text-muted-foreground">{t('partner:referrals.detail.loading')}</div>
       ) : trades.length === 0 ? (
         <div className="px-5 py-10 text-center text-sm text-muted-foreground">
-          No trades yet.
+          {t('partner:referrals.detail.noTrades')}
         </div>
       ) : (
         <div>
           <div className="grid grid-cols-[1fr_auto_auto_auto] gap-4 border-b bg-muted/20 px-5 py-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-            <span>Date</span>
-            <span className="text-right">Volume</span>
-            <span className="text-right">Commission</span>
-            <span>Status</span>
+            <span>{t('partner:referrals.detail.col.date')}</span>
+            <span className="text-right">{t('partner:referrals.detail.col.volume')}</span>
+            <span className="text-right">{t('partner:referrals.detail.col.commission')}</span>
+            <span>{t('partner:referrals.detail.col.status')}</span>
           </div>
           <div className="divide-y">
-            {paged.map((t) => (
+            {paged.map((row) => (
               <div
-                key={t.id}
+                key={row.id}
                 className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-4 px-5 py-3 text-sm transition-colors hover:bg-muted/30"
               >
                 <span className="font-mono text-xs text-muted-foreground">
-                  {formatDateTime(t.tradeDate)}
+                  {formatDateTime(row.tradeDate)}
                 </span>
                 <span className="text-right tabular-nums">
                   $
-                  {truncateFloor(t.volumeUsd ?? 0, 2).toLocaleString(undefined, {
+                  {truncateFloor(row.volumeUsd ?? 0, 2).toLocaleString(undefined, {
                     maximumFractionDigits: 2,
                   })}
                 </span>
                 <span className="text-right font-medium tabular-nums text-success">
                   +$
-                  {truncateFloor(t.rebateAmount ?? 0, 4).toLocaleString(undefined, {
+                  {truncateFloor(row.rebateAmount ?? 0, 4).toLocaleString(undefined, {
                     maximumFractionDigits: 4,
                   })}
                 </span>
-                <StatusTag status={t.status} size="sm" />
+                <StatusTag status={row.status} size="sm" />
               </div>
             ))}
           </div>
           {totalPages > 1 && (
             <div className="flex items-center justify-between border-t px-5 py-2.5">
               <span className="text-xs text-muted-foreground">
-                Page {page + 1} of {totalPages}
+                {t('partner:referrals.detail.page', undefined, { current: page + 1, total: totalPages })}
               </span>
               <div className="flex items-center gap-1">
                 <Button

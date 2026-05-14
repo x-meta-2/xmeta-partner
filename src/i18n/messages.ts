@@ -12,6 +12,8 @@ type Namespaces = {
   home: Messages;
   dashboard: Messages;
   security: Messages;
+  landing: Messages;
+  partner: Messages;
 };
 
 export type I18nMessages = Record<Locale, Namespaces>;

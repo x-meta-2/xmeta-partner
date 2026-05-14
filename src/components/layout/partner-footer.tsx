@@ -1,9 +1,12 @@
+import { useI18n } from '#/i18n/context';
+
 export function PartnerFooter() {
-  const year = new Date().getFullYear();
+  const { t } = useI18n();
+
   return (
     <footer className="mt-10 border-t bg-background/60">
       <div className="mx-auto flex max-w-[1440px] flex-col items-center justify-between gap-2 px-4 py-4 text-xs text-muted-foreground sm:flex-row xl:px-8">
-        <span>© {year} X-Meta Partner Program</span>
+        <span>{t('landing:footer.copyright')}</span>
         <div className="flex items-center gap-4">
           <a
             href="https://support.x-meta.com"
@@ -11,7 +14,7 @@ export function PartnerFooter() {
             rel="noreferrer"
             className="hover:text-foreground"
           >
-            Help Center
+            {t('landing:footer.help')}
           </a>
           <a
             href="https://x-meta.com/terms"
@@ -19,7 +22,7 @@ export function PartnerFooter() {
             rel="noreferrer"
             className="hover:text-foreground"
           >
-            Terms
+            {t('landing:footer.terms')}
           </a>
           <a
             href="https://x-meta.com/privacy"
@@ -27,7 +30,7 @@ export function PartnerFooter() {
             rel="noreferrer"
             className="hover:text-foreground"
           >
-            Privacy
+            {t('landing:footer.privacy')}
           </a>
         </div>
       </div>

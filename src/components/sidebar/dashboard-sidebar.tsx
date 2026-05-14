@@ -17,17 +17,18 @@ import {
   CollapsibleTrigger,
 } from '#/components/ui/collapsible';
 import * as Icons from 'lucide-react';
-import { dashboardMenuConfig } from '#/config/dashboard-menu';
+import { getDashboardMenuConfig } from '#/config/dashboard-menu';
 import { cn } from '#/lib/utils';
 import { useI18n } from '#/i18n/context';
 import { stripLocalePrefix } from '#/i18n/routing';
 import { useSidebarHover } from '#/components/layout/sidebar-hover-context';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 
 export function DashboardSidebar() {
   const location = useLocation();
   const currentPath = location.pathname;
   const { t } = useI18n();
+  const dashboardMenuConfig = useMemo(() => getDashboardMenuConfig(t), [t]);
   const normalizedPath = stripLocalePrefix(currentPath);
 
   const { state, toggleSidebar } = useSidebar();
@@ -128,7 +129,7 @@ export function DashboardSidebar() {
                                 )}
                                 {isEffectivelyExpanded && (
                                   <span className="font-medium text-[16px] whitespace-nowrap animate-in fade-in duration-300">
-                                    {t(`dashboard:menu.${menu.id}`, menu.label)}
+                                    {menu.label}
                                   </span>
                                 )}
                               </div>
@@ -168,10 +169,7 @@ export function DashboardSidebar() {
                                           className="flex items-center gap-3 pl-14 pr-6"
                                         >
                                           <span className="text-[15px] whitespace-nowrap">
-                                            {t(
-                                              `dashboard:${child.id}`,
-                                              child.label,
-                                            )}
+                                            {child.label}
                                           </span>
                                         </LocalizedLink>
                                       </SidebarMenuSubButton>
@@ -219,7 +217,7 @@ export function DashboardSidebar() {
                               )}
                               {isEffectivelyExpanded && (
                                 <span className="font-medium text-[16px] whitespace-nowrap animate-in fade-in duration-300">
-                                  {t(`dashboard:menu.${menu.id}`, menu.label)}
+                                  {menu.label}
                                 </span>
                               )}
                             </div>

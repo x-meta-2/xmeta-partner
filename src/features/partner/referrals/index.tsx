@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { PageHeader } from '#/components/common/page-header';
 import { BaseTable, DataTableHeader } from '#/components/data-table';
 import { Button } from '#/components/ui/button';
+import { useI18n } from '#/i18n/context';
 import { StatCard } from '#/features/partner/dashboard/stat-card';
 import {
   getReferralStats,
@@ -12,15 +13,11 @@ import {
   type Referral,
 } from '#/services/apis/partner/referrals';
 
-import { referralsColumns } from './columns';
+import { getReferralsColumns } from './columns';
 import { ReferralDetailDrawer } from './referral-detail-drawer';
 
-const STATUS_OPTIONS = [
-  { label: 'Active', value: 'active' },
-  { label: 'Inactive', value: 'inactive' },
-];
-
 export function PartnerReferralsPage() {
+  const { t } = useI18n();
   const [selected, setSelected] = useState<Referral | null>(null);
 
   const statsQuery = useQuery({
@@ -34,36 +31,35 @@ export function PartnerReferralsPage() {
 
   const stats = statsQuery.data;
   const referrals = listQuery.data?.items ?? [];
-  const total = listQuery.data?.total ?? 0;
 
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Referrals"
-        description="Track your referred users and their activity"
+        title={t('partner:referrals.title')}
+        description={t('partner:referrals.description')}
       />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
-          label="Total Referrals"
+          label={t('partner:referrals.total')}
           value={(stats?.total ?? 0).toString()}
           icon={Users}
           isLoading={statsQuery.isLoading}
         />
         <StatCard
-          label="Registered"
+          label={t('partner:referrals.deposit')}
           value={(stats?.registered ?? 0).toString()}
           icon={UserCheck}
           isLoading={statsQuery.isLoading}
         />
         <StatCard
-          label="Active"
+          label={t('partner:referrals.active')}
           value={(stats?.active ?? 0).toString()}
           icon={Activity}
           isLoading={statsQuery.isLoading}
         />
         <StatCard
-          label="Inactive"
+          label={t('partner:referrals.inactive')}
           value={(stats?.inactive ?? 0).toString()}
           icon={Target}
           isLoading={statsQuery.isLoading}
@@ -72,7 +68,7 @@ export function PartnerReferralsPage() {
 
       <BaseTable
         data={referrals}
-        columns={referralsColumns}
+        columns={getReferralsColumns(t)}
         rowKey="id"
         isLoading={listQuery.isLoading}
         rowActions={(row) => (
@@ -80,22 +76,25 @@ export function PartnerReferralsPage() {
             size="icon-sm"
             variant="ghost"
             onClick={() => setSelected(row)}
-            aria-label="View referral details"
+            aria-label={t('partner:referrals.view')}
           >
             <Eye className="h-4 w-4" />
           </Button>
         )}
         header={
           <DataTableHeader
-            title={`All Referrals (${total})`}
-            description="Search and filter your referred users"
+            title={t('partner:referrals.allTitle')}
+            description={t('partner:referrals.allDescription')}
           />
         }
         toolbar={{
           searchKey: 'userId',
-          searchPlaceholder: 'Search by user ID...',
+          searchPlaceholder: t('partner:referrals.search'),
           filters: [
-            { columnId: 'status', title: 'Status', options: STATUS_OPTIONS },
+            { columnId: 'status', title: t('partner:referrals.col.status'), options: [
+              { label: t('partner:status.active'), value: 'active' },
+              { label: t('partner:status.inactive'), value: 'inactive' },
+            ] },
           ],
         }}
       />

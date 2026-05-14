@@ -5,6 +5,7 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from '#/components/ui/chart';
+import { useI18n } from '#/i18n/context';
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import type { ChartPoint } from '#/services/apis/partner/dashboard';
 
@@ -16,13 +17,14 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function EarningsChart({ data }: { data: ChartPoint[] }) {
+  const { t } = useI18n();
   return (
     <Card className="gap-4 p-5">
       <div className="flex items-center justify-between">
         <div>
-          <div className="text-base font-medium">Commission (Last 30 days)</div>
+          <div className="text-base font-medium">{t('partner:dashboard.chart.title')}</div>
           <div className="text-xs text-muted-foreground">
-            Daily commission earned
+            {t('partner:dashboard.chart.description')}
           </div>
         </div>
       </div>

@@ -2,15 +2,11 @@ import { LocalizedLink } from '#/components/common/localized-link';
 import { ThemeToggle } from '#/components/common/theme-toggle';
 import { LanguageToggle } from '#/components/layout/language-toggle';
 import { Button } from '#/components/ui/button';
+import { useI18n } from '#/i18n/context';
 import { useAuthStore } from '#/stores/auth-store';
 
-/**
- * Public landing-page header.
- *
- * Minimal: logo + language + theme + "Log In". No profile dropdown or
- * notifications — that's reserved for the authenticated topbar.
- */
 export function LandingTopBar() {
+  const { t } = useI18n();
   const isAuthenticated = useAuthStore((s) => s.auth.isAuthenticated);
 
   return (
@@ -39,11 +35,11 @@ export function LandingTopBar() {
           <ThemeToggle />
           {isAuthenticated ? (
             <LocalizedLink to="/dashboard/overview">
-              <Button size="sm">Dashboard</Button>
+              <Button size="sm">{t('landing:topbar.dashboard')}</Button>
             </LocalizedLink>
           ) : (
             <LocalizedLink to="/login">
-              <Button size="sm">Log In</Button>
+              <Button size="sm">{t('landing:topbar.login')}</Button>
             </LocalizedLink>
           )}
         </div>

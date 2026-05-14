@@ -33,13 +33,10 @@ export const NewPasswordRequiredPage = () => {
       <div className="flex justify-center">
         <div className="w-full flex flex-col justify-center mb-14 h-[80vh] max-w-sm mx-auto px-4 sm:px-0">
           <h1 className="text-center text-2xl font-bold mb-3">
-            {t('auth:new-password.title', 'Update Password')}
+            {t('partner:auth.updatePassword')}
           </h1>
           <p className="text-center text-sm text-muted-foreground mb-4">
-            {t(
-              'auth:new-password.subtitle',
-              'A new password is required to continue.',
-            )}
+            {t('partner:auth.newPasswordRequired')}
           </p>
           <div className="flex items-center justify-center border border-border rounded-full p-1.5 mb-6 gap-4">
             <img src="/assets/logo/lock-green.svg" alt="Lock" />
@@ -58,9 +55,9 @@ export const NewPasswordRequiredPage = () => {
                 name="newPassword"
                 validators={{
                   onBlur: ({ value }) => {
-                    if (!value) return 'Password is required';
+                    if (!value) return t('partner:auth.passwordRequired');
                     if (value.length < 8)
-                      return 'Must be at least 8 characters';
+                      return t('partner:auth.passwordMinLength');
                     return undefined;
                   },
                 }}
@@ -68,11 +65,11 @@ export const NewPasswordRequiredPage = () => {
                 {(field) => (
                   <Field>
                     <FieldLabel htmlFor="form-new-password">
-                      {t('auth:new-password.label', 'New Password')}
+                      {t('partner:auth.newPassword')}
                     </FieldLabel>
                     <PasswordAutocomplete
                       id="form-new-password"
-                      placeholder="Enter new password"
+                      placeholder={t('partner:auth.enterNewPassword')}
                       required
                       hideRequirements
                       value={field.state.value}
@@ -97,7 +94,7 @@ export const NewPasswordRequiredPage = () => {
                       disabled={isSubmitting}
                     >
                       {isSubmitting
-                        ? t('auth:new-password.submitting', 'Updating...')
+                        ? t('partner:auth.updating')
                         : t('auth:login.button')}
                     </Button>
                   )}
@@ -111,7 +108,7 @@ export const NewPasswordRequiredPage = () => {
                   className="w-full"
                   onClick={() => void navigate('/auth/login')}
                 >
-                  {t('auth:cancel', 'Cancel')}
+                  {t('partner:common.cancel')}
                 </Button>
               </div>
             </FieldGroup>

@@ -8,6 +8,7 @@ import { Button } from '#/components/ui/button';
 import { Card } from '#/components/ui/card';
 import { Separator } from '#/components/ui/separator';
 import { useLocalizedNavigate } from '#/hooks/use-localized-navigate';
+import { useI18n } from '#/i18n/context';
 import { motion } from 'framer-motion';
 import {
   Award,
@@ -22,26 +23,9 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-const FAQ_ITEMS = [
-  {
-    id: 'q1',
-    q: 'How do I become a partner?',
-    a: 'Submit an application with your company and promotion details. Our team reviews every application within 2-3 business days.',
-  },
-  {
-    id: 'q2',
-    q: 'What commission do I earn?',
-    a: 'Bronze tier starts at 20% commission. As your referral volume grows you unlock Silver (25%), Gold (30%) and Diamond (35%) tiers.',
-  },
-  {
-    id: 'q3',
-    q: 'How often am I paid?',
-    a: 'Payouts are processed monthly in USDT. The minimum payout threshold is $10.',
-  },
-];
-
 export function NotPartnerCard() {
   const navigate = useLocalizedNavigate();
+  const { t } = useI18n();
   const [expandedId, setExpandedId] = useState<string | undefined>(undefined);
   const [isXl, setIsXl] = useState(false);
 
@@ -66,13 +50,11 @@ export function NotPartnerCard() {
                   size={24}
                 />
               </div>
-              <h3 className="text-xl font-semibold">Become a Partner</h3>
+              <h3 className="text-xl font-semibold">{t('partner:onboarding.become.title')}</h3>
             </div>
 
             <p className="leading-relaxed text-muted-foreground">
-              You are not a partner yet. Submit an application to start earning
-              commissions by referring users to xmeta — up to 35% of their
-              trading fees.
+              {t('partner:onboarding.become.description')}
             </p>
 
             <Button
@@ -80,47 +62,46 @@ export function NotPartnerCard() {
               className="w-fit px-6 py-5.5 text-base"
               onClick={() => navigate('/dashboard/apply')}
             >
-              Apply to become a Partner
+              {t('partner:onboarding.become.apply')}
               <LucideMoveRight className="ml-2" />
             </Button>
 
             <Separator className="my-2" />
 
             <div className="flex flex-col gap-2">
-              <h3 className="text-md font-medium">What you&apos;ll need</h3>
+              <h3 className="text-md font-medium">{t('partner:onboarding.become.whatYouNeed')}</h3>
               <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
                 <ShieldCheck className="size-3.5" />
-                Your application is reviewed within 2-3 business days
+                {t('partner:onboarding.become.reviewTime')}
               </p>
             </div>
 
             <div className="flex flex-col gap-3">
               <h4 className="flex items-center gap-3 text-[13.5px] text-muted-foreground">
-                <Users className="size-5" /> Company or personal brand details
+                <Users className="size-5" /> {t('partner:onboarding.become.companyDetails')}
               </h4>
               <h4 className="flex items-center gap-3 text-[13.5px] text-muted-foreground">
-                <Award className="size-5" /> Social presence (Facebook /
-                Instagram)
+                <Award className="size-5" /> {t('partner:onboarding.become.socialPresence')}
               </h4>
               <h4 className="flex items-center gap-3 text-[13.5px] text-muted-foreground">
-                <TrendingUp className="size-5" /> A short promotion plan
+                <TrendingUp className="size-5" /> {t('partner:onboarding.become.promotionPlan')}
               </h4>
             </div>
 
             <div className="mt-auto pt-4">
-              <h4 className="mb-3 font-medium">Benefits</h4>
+              <h4 className="mb-3 font-medium">{t('partner:onboarding.become.benefits')}</h4>
               <div className="flex flex-col gap-3">
                 <Benefit
                   icon={<DollarSign className="size-4 text-primary" />}
-                  label="Earn 20-35% of your referrals' trading fees"
+                  label={t('partner:onboarding.become.benefitEarn')}
                 />
                 <Benefit
                   icon={<Award className="size-4 text-primary" />}
-                  label="Unlock higher tiers as your network grows"
+                  label={t('partner:onboarding.become.benefitTiers')}
                 />
                 <Benefit
                   icon={<TrendingUp className="size-4 text-primary" />}
-                  label="Track performance with real-time analytics"
+                  label={t('partner:onboarding.become.benefitAnalytics')}
                 />
               </div>
             </div>
@@ -137,7 +118,7 @@ export function NotPartnerCard() {
           className="h-full w-full xl:w-fit"
         >
           <Card className="h-full w-full p-6 xl:w-fit">
-            <h3 className="mb-2 text-xl font-semibold">FAQ</h3>
+            <h3 className="mb-2 text-xl font-semibold">{t('partner:onboarding.become.faqTitle')}</h3>
             <Accordion
               type="single"
               collapsible
@@ -145,19 +126,19 @@ export function NotPartnerCard() {
               value={expandedId}
               onValueChange={setExpandedId}
             >
-              {FAQ_ITEMS.map((item) => (
+              {[1, 2, 3].map((n) => (
                 <AccordionItem
-                  key={item.id}
-                  value={item.id}
+                  key={`q${n}`}
+                  value={`q${n}`}
                   className="border-b border-gray-100 last:border-0 dark:border-gray-800"
                 >
                   <AccordionTrigger className="group/trigger py-4 text-left text-[14.5px] font-medium text-gray-700 hover:no-underline dark:text-gray-200">
-                    <span className="pr-4">{item.q}</span>
+                    <span className="pr-4">{t(`partner:onboarding.become.faq.q${n}`)}</span>
                     <Plus className="size-5 shrink-0 text-gray-400 group-aria-expanded/trigger:hidden" />
                     <Minus className="hidden size-5 shrink-0 text-gray-400 group-aria-expanded/trigger:block" />
                   </AccordionTrigger>
                   <AccordionContent className="pb-6 pr-4 text-[14px] leading-relaxed text-muted-foreground">
-                    {item.a}
+                    {t(`partner:onboarding.become.faq.a${n}`)}
                   </AccordionContent>
                 </AccordionItem>
               ))}

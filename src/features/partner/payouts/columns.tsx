@@ -5,22 +5,24 @@ import type { Payout } from '#/services/apis/partner/payouts';
 import { formatUSD } from '#/utils';
 import { formatDate, formatDateTime } from '#/utils/date';
 
-export const payoutsColumns: ColumnDef<Payout>[] = [
+type TranslateFn = (key: string, defaultValue?: string) => string;
+
+export const getPayoutsColumns = (t: TranslateFn): ColumnDef<Payout>[] => [
   {
     accessorKey: 'id',
-    header: 'ID',
+    header: t('partner:payouts.col.id'),
     cell: ({ row }) => (
       <span className="font-mono text-xs">{row.original.id.slice(0, 8)}…</span>
     ),
   },
   {
     accessorKey: 'createdAt',
-    header: 'Requested',
+    header: t('partner:payouts.col.requested'),
     cell: ({ row }) => formatDate(row.original.createdAt),
   },
   {
     accessorKey: 'amount',
-    header: () => <div className="text-right">Amount</div>,
+    header: () => <div className="text-right">{t('partner:payouts.col.amount')}</div>,
     cell: ({ row }) => (
       <div className="text-right font-semibold tabular-nums">
         {formatUSD(row.original.amount)} {row.original.currency}
@@ -36,14 +38,14 @@ export const payoutsColumns: ColumnDef<Payout>[] = [
   },
   {
     accessorKey: 'status',
-    header: 'Status',
+    header: t('partner:payouts.col.status'),
     cell: ({ row }) => <StatusTag status={row.original.status} />,
     filterFn: (row, _id, value: string[]) =>
       value.length === 0 || value.includes(row.original.status),
   },
   {
     accessorKey: 'transactionId',
-    header: 'Transaction ID',
+    header: t('partner:payouts.col.transactionId'),
     cell: ({ row }) => (
       <span className="font-mono text-xs text-muted-foreground">
         {row.original.transactionId || '—'}
@@ -52,7 +54,7 @@ export const payoutsColumns: ColumnDef<Payout>[] = [
   },
   {
     accessorKey: 'processedAt',
-    header: 'Completed',
+    header: t('partner:payouts.col.completed'),
     cell: ({ row }) => (
       <span className="text-muted-foreground">
         {row.original.processedAt

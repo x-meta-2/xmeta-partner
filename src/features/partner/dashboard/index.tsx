@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { BarChart3, DollarSign, TrendingUp, Users } from 'lucide-react';
 
 import { PageHeader } from '#/components/common/page-header';
+import { useI18n } from '#/i18n/context';
 import { listCommissions } from '#/services/apis/partner/commissions';
 import {
   getDashboardSummary,
@@ -18,6 +19,7 @@ import { StatCard } from './stat-card';
 import { TierProgressCard } from './tier-progress-card';
 
 export function PartnerDashboardPage() {
+  const { t } = useI18n();
   // Defensive: dashboard queries hit partner-only endpoints. PartnerGate
   // should already prevent mounting this component for non-partners, but
   // `enabled` here guarantees no request escapes if the gate ever misfires.
@@ -60,32 +62,32 @@ export function PartnerDashboardPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Dashboard"
-        description="Overview of your partner performance"
+        title={t('partner:dashboard.title')}
+        description={t('partner:dashboard.description')}
       />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
-          label="Total Earnings"
+          label={t('partner:dashboard.totalCommission')}
           value={formatUSD(summary?.totalEarnings ?? 0)}
           icon={DollarSign}
           isLoading={summaryQuery.isLoading}
         />
         <StatCard
-          label="This Month"
+          label={t('partner:dashboard.thisMonth')}
           value={formatUSD(summary?.monthEarnings ?? 0)}
           icon={TrendingUp}
           isLoading={summaryQuery.isLoading}
         />
         <StatCard
-          label="Active Referrals"
+          label={t('partner:dashboard.activeReferrals')}
           value={`${summary?.activeReferrals ?? 0} / ${summary?.totalReferrals ?? 0}`}
           icon={Users}
-          hint={`${Math.floor(summary?.conversionRate ?? 0)}% conversion`}
+          hint={t('partner:dashboard.conversion', undefined, { rate: String(Math.floor(summary?.conversionRate ?? 0)) })}
           isLoading={summaryQuery.isLoading}
         />
         <StatCard
-          label="Total Volume"
+          label={t('partner:dashboard.referredVolume')}
           value={formatUSD(summary?.totalVolume ?? 0)}
           icon={BarChart3}
           isLoading={summaryQuery.isLoading}

@@ -4,11 +4,13 @@ import { StatusTag } from '#/components/common/status-tag';
 import type { Referral } from '#/services/apis/partner/referrals';
 import { formatDate } from '#/utils/date';
 
-export const referralsColumns: ColumnDef<Referral>[] = [
+type TranslateFn = (key: string, defaultValue?: string) => string;
+
+export const getReferralsColumns = (t: TranslateFn): ColumnDef<Referral>[] => [
   {
     id: 'email',
     accessorFn: (row) => row.referredUser?.maskedEmail ?? '',
-    header: 'Email',
+    header: t('partner:referrals.col.email'),
     cell: ({ row }) => (
       <span className="text-xs">
         {row.original.referredUser?.maskedEmail ?? '-'}
@@ -27,7 +29,7 @@ export const referralsColumns: ColumnDef<Referral>[] = [
       row.referredUser
         ? `${row.referredUser.firstName} ${row.referredUser.lastInitial}`.trim()
         : '',
-    header: 'Name',
+    header: t('partner:referrals.col.name'),
     cell: ({ row }) => {
       const u = row.original.referredUser;
       return <span>{u ? `${u.firstName} ${u.lastInitial}`.trim() : '-'}</span>;
@@ -35,7 +37,7 @@ export const referralsColumns: ColumnDef<Referral>[] = [
   },
   {
     accessorKey: 'status',
-    header: 'Status',
+    header: t('partner:referrals.col.status'),
     cell: ({ row }) => <StatusTag status={row.original.status} />,
     filterFn: (row, _id, value: string[]) =>
       value.length === 0 || value.includes(row.original.status),
@@ -43,7 +45,7 @@ export const referralsColumns: ColumnDef<Referral>[] = [
   {
     id: 'kycLevel',
     accessorFn: (row) => row.referredUser?.kycLevel ?? 0,
-    header: () => <div className="text-center">KYC</div>,
+    header: () => <div className="text-center">{t('partner:referrals.col.kyc')}</div>,
     cell: ({ row }) => {
       const verified = (row.original.referredUser?.kycLevel ?? 0) > 0;
       return (
@@ -55,12 +57,12 @@ export const referralsColumns: ColumnDef<Referral>[] = [
   },
   {
     accessorKey: 'startedAt',
-    header: 'Linked',
+    header: t('partner:referrals.col.startedAt'),
     cell: ({ row }) => formatDate(row.original.startedAt),
   },
   {
     accessorKey: 'firstTradeAt',
-    header: 'First trade',
+    header: t('partner:referrals.col.firstTrade'),
     cell: ({ row }) => formatDate(row.original.firstTradeAt),
   },
 ];

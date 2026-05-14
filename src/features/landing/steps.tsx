@@ -2,23 +2,26 @@ import { ArrowRight } from 'lucide-react';
 import { Card } from '#/components/ui/card';
 import { Button } from '#/components/ui/button';
 import { LocalizedLink } from '#/components/common/localized-link';
-import { landingSteps } from './data';
+import { useI18n } from '#/i18n/context';
+import { getLandingSteps } from './data';
 
 export function LandingSteps() {
+  const { t } = useI18n();
+  const steps = getLandingSteps(t);
+
   return (
     <section className="mx-auto max-w-[1200px] px-4 py-20 xl:py-24">
       <div className="mb-12 text-center">
         <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-          Become an X-Meta Partner in Three Steps
+          {t('landing:join.subtitle')}
         </h2>
         <p className="mt-3 text-base text-muted-foreground">
-          Partner with us to build trusted trading experiences and unlock
-          long-term rewards.
+          {t('landing:join.description')}
         </p>
       </div>
 
       <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
-        {landingSteps.map((s) => (
+        {steps.map((s) => (
           <Card key={s.number} className="gap-4 p-6">
             <div className="font-mono text-4xl font-bold text-primary/30">
               {s.number}
@@ -34,7 +37,7 @@ export function LandingSteps() {
       <div className="mt-10 flex justify-center">
         <LocalizedLink to="/login">
           <Button size="lg" className="h-12 gap-2 px-8">
-            Apply Now <ArrowRight className="size-4" />
+            {t('landing:hero.apply')} <ArrowRight className="size-4" />
           </Button>
         </LocalizedLink>
       </div>

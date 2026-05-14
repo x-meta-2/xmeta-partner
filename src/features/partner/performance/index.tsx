@@ -4,6 +4,7 @@ import { PageHeader } from '#/components/common/page-header';
 import { Badge } from '#/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '#/components/ui/card';
 import { Skeleton } from '#/components/ui/skeleton';
+import { useI18n } from '#/i18n/context';
 import { StatCard } from '#/features/partner/dashboard/stat-card';
 import {
   getDashboardSummary,
@@ -15,6 +16,7 @@ import { formatCount, formatUSD } from '#/utils';
 import { formatRate, formatVolume, formatVolumeRange } from '#/utils/tier';
 
 export function PerformanceStatisticsPage() {
+  const { t } = useI18n();
   const summaryQuery = useQuery({
     queryKey: ['partner', 'dashboard', 'summary'],
     queryFn: getDashboardSummary,
@@ -53,7 +55,7 @@ export function PerformanceStatisticsPage() {
   const nextTier = (() => {
     if (tier?.nextTier) return tier.nextTier;
     if (!currentTier || allTiers.length === 0) return null;
-    return allTiers.find((t) => t.level > currentTier.level) ?? null;
+    return allTiers.find((tier) => tier.level > currentTier.level) ?? null;
   })();
 
   const clientsPct = nextTier
@@ -67,32 +69,32 @@ export function PerformanceStatisticsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Performance Statistics"
-        description="Track your referral performance and tier progress"
+        title={t('partner:performance.title')}
+        description={t('partner:performance.description')}
       />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
-          label="Total Referrals"
+          label={t('partner:performance.totalReferrals')}
           value={formatCount(refStats?.total ?? 0)}
           icon={Users}
           isLoading={isLoading}
         />
         <StatCard
-          label="Active Clients"
+          label={t('partner:performance.activeClients')}
           value={formatCount(activeClients)}
           icon={UserCheck}
-          hint="Futures trade in last 120 days"
+          hint={t('partner:performance.activeClientsNote')}
           isLoading={isLoading}
         />
         <StatCard
-          label="Total Volume"
+          label={t('partner:performance.totalVolume')}
           value={formatVolume(totalVolume)}
           icon={BarChart3}
           isLoading={isLoading}
         />
         <StatCard
-          label="Total Commission"
+          label={t('partner:performance.totalCommission')}
           value={formatUSD(summary?.totalEarnings ?? 0)}
           icon={DollarSign}
           isLoading={isLoading}
@@ -102,7 +104,7 @@ export function PerformanceStatisticsPage() {
       <Card className="gap-5 p-5">
         <div className="flex items-center gap-2">
           <Award className="size-5 text-amber-500" />
-          <span className="text-base font-semibold">Tier Progress</span>
+          <span className="text-base font-semibold">{t('partner:performance.tierProgress')}</span>
         </div>
 
         {isLoading ? (
@@ -133,7 +135,7 @@ export function PerformanceStatisticsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-sm text-muted-foreground">
-                  Current Tier
+                  {t('partner:performance.currentTier')}
                 </div>
                 <div className="mt-1 flex items-center gap-2">
                   <span
@@ -149,7 +151,7 @@ export function PerformanceStatisticsPage() {
               </div>
               {nextTier && (
                 <div className="text-right">
-                  <div className="text-sm text-muted-foreground">Next Tier</div>
+                  <div className="text-sm text-muted-foreground">{t('partner:performance.nextTier')}</div>
                   <div className="mt-1 flex items-center justify-end gap-2">
                     <span
                       className="text-xl font-bold"
@@ -169,17 +171,19 @@ export function PerformanceStatisticsPage() {
               <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                 <ProgressRow
                   icon={<UserCheck className="size-4 text-primary" />}
-                  label="Active Clients"
+                  label={t('partner:performance.activeClients')}
                   current={activeClients}
                   target={nextTier.minActiveClients}
                   pct={clientsPct}
+                  requirementMetLabel={t('partner:performance.requirementMet')}
                 />
                 <ProgressRow
                   icon={<BarChart3 className="size-4 text-primary" />}
-                  label="Trading Volume"
+                  label={t('partner:performance.tradingVolume')}
                   current={formatVolume(totalVolume)}
                   target={formatVolume(nextTier.minVolume)}
                   pct={volPct}
+                  requirementMetLabel={t('partner:performance.requirementMet')}
                 />
               </div>
             )}
@@ -189,17 +193,17 @@ export function PerformanceStatisticsPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle>Commission Tiers</CardTitle>
+          <CardTitle>{t('partner:performance.commissionTiers')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b text-left text-muted-foreground">
-                  <th className="pb-3 font-medium">Tier</th>
-                  <th className="pb-3 font-medium">Commission</th>
-                  <th className="pb-3 font-medium">Active Clients</th>
-                  <th className="pb-3 font-medium">Trading Volume</th>
+                  <th className="pb-3 font-medium">{t('partner:performance.col.tier')}</th>
+                  <th className="pb-3 font-medium">{t('partner:performance.col.commission')}</th>
+                  <th className="pb-3 font-medium">{t('partner:performance.col.activeClients')}</th>
+                  <th className="pb-3 font-medium">{t('partner:performance.col.tradingVolume')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -220,37 +224,37 @@ export function PerformanceStatisticsPage() {
                         </td>
                       </tr>
                     ))
-                  : allTiers.map((t) => (
+                  : allTiers.map((tier) => (
                       <tr
-                        key={t.id}
+                        key={tier.id}
                         className={`border-b last:border-0 ${
-                          t.name === currentTier?.name ? 'bg-primary/5' : ''
+                          tier.name === currentTier?.name ? 'bg-primary/5' : ''
                         }`}
                       >
                         <td className="py-3">
                           <span
                             className="font-semibold"
-                            style={{ color: t.color || undefined }}
+                            style={{ color: tier.color || undefined }}
                           >
-                            {t.name}
+                            {tier.name}
                           </span>
-                          {t.name === currentTier?.name && (
+                          {tier.name === currentTier?.name && (
                             <Badge
                               variant="secondary"
                               className="ml-2 text-[10px]"
                             >
-                              Current
+                              {t('partner:performance.current')}
                             </Badge>
                           )}
                         </td>
                         <td className="py-3 font-medium tabular-nums">
-                          {formatRate(t.commissionRate)}
+                          {formatRate(tier.commissionRate)}
                         </td>
                         <td className="py-3 tabular-nums">
-                          {'>='} {t.minActiveClients}
+                          {'>='} {tier.minActiveClients}
                         </td>
                         <td className="py-3 tabular-nums">
-                          {formatVolumeRange(t.minVolume, t.maxVolume)}
+                          {formatVolumeRange(tier.minVolume, tier.maxVolume)}
                         </td>
                       </tr>
                     ))}
@@ -269,12 +273,14 @@ function ProgressRow({
   current,
   target,
   pct,
+  requirementMetLabel,
 }: {
   icon: React.ReactNode;
   label: string;
   current: string | number;
   target: string | number;
   pct: number;
+  requirementMetLabel: string;
 }) {
   return (
     <div className="space-y-2">
@@ -295,7 +301,7 @@ function ProgressRow({
       </div>
       <p className="text-xs text-muted-foreground">
         {pct >= 100
-          ? 'Requirement met'
+          ? requirementMetLabel
           : pct < 1 && pct > 0
             ? '< 1% complete'
             : `${Math.floor(pct)}% complete`}

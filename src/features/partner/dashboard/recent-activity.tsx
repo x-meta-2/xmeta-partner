@@ -1,5 +1,6 @@
 import { ArrowUpRight } from 'lucide-react';
 import { Card } from '#/components/ui/card';
+import { useI18n } from '#/i18n/context';
 import type { Commission } from '#/services/apis/partner/commissions';
 import { formatUSD } from '#/utils';
 
@@ -12,17 +13,18 @@ function formatTime(iso: string) {
 }
 
 export function RecentActivity({ items }: { items: Commission[] }) {
+  const { t } = useI18n();
   return (
     <Card className="gap-0 p-0">
       <div className="border-b p-5">
-        <div className="text-base font-medium">Recent Activity</div>
+        <div className="text-base font-medium">{t('partner:dashboard.activity.title')}</div>
         <div className="text-xs text-muted-foreground">
-          Latest commission events
+          {t('partner:dashboard.activity.description')}
         </div>
       </div>
       {items.length === 0 ? (
         <div className="p-8 text-center text-sm text-muted-foreground">
-          No recent activity.
+          {t('partner:dashboard.activity.empty')}
         </div>
       ) : (
         <ul className="divide-y">
@@ -33,7 +35,7 @@ export function RecentActivity({ items }: { items: Commission[] }) {
               </div>
               <div className="min-w-0 flex-1">
                 <div className="truncate text-sm font-medium">
-                  Futures trading commission
+                  {t('partner:dashboard.activity.commission')}
                 </div>
                 <div className="text-xs text-muted-foreground">
                   {formatTime(c.createdAt)}

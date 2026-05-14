@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '#/components/ui/select';
+import { useI18n } from '#/i18n/context';
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>;
@@ -32,6 +33,7 @@ export function DataTablePagination<TData>({
   total,
   className,
 }: DataTablePaginationProps<TData>) {
+  const { t } = useI18n();
   const currentPage = table.getState().pagination.pageIndex + 1;
   const totalPages = table.getPageCount();
   const pageNumbers = getPageNumbers(currentPage, totalPages);
@@ -46,15 +48,11 @@ export function DataTablePagination<TData>({
       <div className="flex items-center gap-4 text-sm text-muted-foreground">
         {total !== undefined && (
           <span>
-            Total:{' '}
-            <span className="font-semibold text-foreground">
-              {total.toLocaleString()}
-            </span>{' '}
-            records
+            {t('partner:table.total', undefined, { count: total.toLocaleString() })}
           </span>
         )}
         <div className="flex items-center gap-2">
-          <span className="hidden sm:inline">Rows per page</span>
+          <span className="hidden sm:inline">{t('partner:table.rowsPerPage')}</span>
           <Select
             value={`${table.getState().pagination.pageSize}`}
             onValueChange={(v) => table.setPageSize(Number(v))}
@@ -75,7 +73,7 @@ export function DataTablePagination<TData>({
 
       <div className="flex items-center gap-2">
         <span className="text-sm font-medium text-muted-foreground">
-          Page {currentPage} of {totalPages || 1}
+          {t('partner:table.page', undefined, { current: currentPage, total: totalPages || 1 })}
         </span>
         <div className="flex items-center gap-1">
           <Button

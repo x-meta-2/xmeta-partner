@@ -3,6 +3,7 @@ import { Check, Copy, Link2 } from 'lucide-react';
 
 import { Button } from '#/components/ui/button';
 import { Card } from '#/components/ui/card';
+import { useI18n } from '#/i18n/context';
 import { copyToClipboard } from '#/utils/clipboard';
 
 interface ReferralLinkCardProps {
@@ -14,6 +15,7 @@ export function ReferralLinkCard({
   code,
   referralCount,
 }: ReferralLinkCardProps) {
+  const { t } = useI18n();
   const url = `https://x-meta.com/ref/${code}`;
   const [copied, setCopied] = useState(false);
 
@@ -28,10 +30,10 @@ export function ReferralLinkCard({
     <Card className="gap-4 p-5">
       <div className="flex items-center gap-2">
         <Link2 className="size-4 text-muted-foreground" />
-        <div className="text-base font-medium">Your Referral Link</div>
+        <div className="text-base font-medium">{t('partner:dashboard.referralLink.title')}</div>
       </div>
       <p className="text-xs text-muted-foreground">
-        Share this link with your audience to start earning commission.
+        {t('partner:dashboard.referralLink.description')}
       </p>
 
       <div className="flex gap-2">
@@ -41,11 +43,11 @@ export function ReferralLinkCard({
         <Button variant="outline" onClick={copy}>
           {copied ? (
             <>
-              <Check className="size-4" /> Copied
+              <Check className="size-4" /> {t('partner:dashboard.referralLink.copied')}
             </>
           ) : (
             <>
-              <Copy className="size-4" /> Copy
+              <Copy className="size-4" /> {t('partner:dashboard.referralLink.copy')}
             </>
           )}
         </Button>
@@ -53,11 +55,11 @@ export function ReferralLinkCard({
 
       <div className="flex items-center gap-4 text-xs">
         <span className="text-muted-foreground">
-          Referrals:{' '}
+          {t('partner:dashboard.referralLink.referrals')}{' '}
           <span className="font-semibold text-foreground">{referralCount}</span>
         </span>
         <span className="text-muted-foreground">
-          Code: <span className="font-semibold text-primary">{code}</span>
+          {t('partner:dashboard.referralLink.code')} <span className="font-semibold text-primary">{code}</span>
         </span>
       </div>
     </Card>

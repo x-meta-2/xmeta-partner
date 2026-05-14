@@ -1,21 +1,24 @@
 import { Card } from '#/components/ui/card';
-import { landingBenefits } from './data';
+import { useI18n } from '#/i18n/context';
+import { getLandingBenefits } from './data';
 
 export function LandingBenefits() {
+  const { t } = useI18n();
+  const benefits = getLandingBenefits(t);
+
   return (
     <section className="mx-auto max-w-[1200px] px-4 py-20 xl:py-24">
       <div className="mb-12 text-center">
         <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-          Exclusive Benefits for X-Meta Partners
+          {t('landing:benefits.title')}
         </h2>
         <p className="mt-3 text-base text-muted-foreground">
-          Everything you need to turn your audience into a recurring revenue
-          stream.
+          {t('landing:benefits.description')}
         </p>
       </div>
 
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {landingBenefits.map((b) => (
+        {benefits.map((b) => (
           <Card
             key={b.title}
             className="group gap-4 p-6 transition-colors hover:border-primary/40"

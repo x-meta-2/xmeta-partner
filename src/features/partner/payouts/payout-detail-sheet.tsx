@@ -18,6 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from '#/components/ui/table';
+import { useI18n } from '#/i18n/context';
 import { getPayout, type Payout } from '#/services/apis/partner/payouts';
 import { formatUSD } from '#/utils';
 import { formatDate } from '#/utils/date';
@@ -31,6 +32,7 @@ export function PayoutDetailSheet({
   payout,
   onOpenChange,
 }: PayoutDetailSheetProps) {
+  const { t } = useI18n();
   const detailQuery = useQuery({
     queryKey: ['partner', 'payouts', 'detail', payout?.id],
     queryFn: () => getPayout(payout!.id),
@@ -43,7 +45,7 @@ export function PayoutDetailSheet({
     <Sheet open={!!payout} onOpenChange={onOpenChange}>
       <SheetContent className="overflow-y-auto">
         <SheetHeader>
-          <SheetTitle>Payout Detail</SheetTitle>
+          <SheetTitle>{t('partner:payouts.detail.title')}</SheetTitle>
           <SheetDescription>
             {payout && (
               <span className="flex items-center gap-2">
@@ -57,11 +59,11 @@ export function PayoutDetailSheet({
         <div className="flex-1 space-y-4 px-6 py-4">
           {payout && (
             <div className="grid grid-cols-2 gap-3 text-sm">
-              <div className="text-muted-foreground">Requested</div>
+              <div className="text-muted-foreground">{t('partner:payouts.detail.requested')}</div>
               <div>{formatDate(payout.createdAt)}</div>
-              <div className="text-muted-foreground">Trades</div>
+              <div className="text-muted-foreground">{t('partner:payouts.detail.trades')}</div>
               <div>{payout.commissionCount}</div>
-              <div className="text-muted-foreground">Transaction ID</div>
+              <div className="text-muted-foreground">{t('partner:payouts.detail.transactionId')}</div>
               <div className="font-mono text-xs">
                 {payout.transactionId || '—'}
               </div>
@@ -70,7 +72,7 @@ export function PayoutDetailSheet({
 
           <div className="space-y-2">
             <h4 className="text-sm font-medium">
-              Commissions ({items.length})
+              {t('partner:payouts.detail.commissions')} ({items.length})
             </h4>
 
             {detailQuery.isLoading ? (
@@ -81,22 +83,22 @@ export function PayoutDetailSheet({
               </div>
             ) : items.length === 0 ? (
               <p className="py-4 text-center text-sm text-muted-foreground">
-                No commission items
+                {t('partner:payouts.detail.noItems')}
               </p>
             ) : (
               <div className="overflow-hidden rounded-lg border border-border">
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="h-9 px-3 text-xs">Date</TableHead>
+                      <TableHead className="h-9 px-3 text-xs">{t('partner:payouts.detail.col.date')}</TableHead>
                       <TableHead className="h-9 px-3 text-xs">
-                        Market
+                        {t('partner:payouts.detail.col.market')}
                       </TableHead>
                       <TableHead className="h-9 px-3 text-right text-xs">
-                        Fee
+                        {t('partner:payouts.detail.col.fee')}
                       </TableHead>
                       <TableHead className="h-9 px-3 text-right text-xs">
-                        Rebate
+                        {t('partner:payouts.detail.col.rebate')}
                       </TableHead>
                     </TableRow>
                   </TableHeader>

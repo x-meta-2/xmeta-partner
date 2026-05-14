@@ -4,15 +4,19 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '#/components/ui/accordion';
-import { landingFaqs } from './data';
+import { useI18n } from '#/i18n/context';
+import { getLandingFaqs } from './data';
 
 export function LandingFaq() {
+  const { t } = useI18n();
+  const faqs = getLandingFaqs(t);
+
   return (
     <section className="border-t border-border/40 bg-muted/20">
       <div className="mx-auto max-w-[860px] px-4 py-20 xl:py-24">
         <div className="mb-10 text-center">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-            Frequently Asked Questions
+            {t('landing:faq.title')}
           </h2>
         </div>
 
@@ -22,7 +26,7 @@ export function LandingFaq() {
           className="rounded-2xl border border-border bg-card px-6"
           defaultValue="q-0"
         >
-          {landingFaqs.map((f, i) => (
+          {faqs.map((f, i) => (
             <AccordionItem key={f.question} value={`q-${i}`}>
               <AccordionTrigger>{f.question}</AccordionTrigger>
               <AccordionContent>

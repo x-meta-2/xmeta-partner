@@ -29,13 +29,10 @@ export const SmsMfaPage = () => {
     <div className="flex justify-center">
       <div className="w-full flex flex-col justify-center mb-14 h-[80vh] max-w-sm mx-auto px-4 sm:px-0">
         <h1 className="text-center text-2xl font-bold mb-3">
-          {t('auth:sms-mfa.title', 'SMS Verification')}
+          {t('partner:auth.smsVerification')}
         </h1>
         <p className="text-center text-sm text-muted-foreground mb-4">
-          {t(
-            'auth:sms-mfa.subtitle',
-            'A verification code has been sent to your phone number.',
-          )}
+          {t('partner:auth.smsDescription')}
         </p>
         <div className="flex items-center justify-center border border-border rounded-full p-1.5 mb-6 gap-4">
           <img src="/assets/logo/lock-green.svg" alt="Lock" />
@@ -54,8 +51,8 @@ export const SmsMfaPage = () => {
               name="token"
               validators={{
                 onBlur: ({ value }) => {
-                  if (!value) return 'Verification code is required';
-                  if (value.length < 6) return 'Must be at least 6 characters';
+                  if (!value) return t('partner:auth.codeRequired');
+                  if (value.length < 6) return t('partner:auth.codeMinLength');
                   return undefined;
                 },
               }}
@@ -63,7 +60,7 @@ export const SmsMfaPage = () => {
               {(field) => (
                 <Field>
                   <FieldLabel htmlFor="form-token">
-                    {t('auth:sms-mfa.code', 'Verification Code')}
+                    {t('partner:auth.verificationCode')}
                   </FieldLabel>
                   <InputOTP
                     maxLength={6}
@@ -110,7 +107,7 @@ export const SmsMfaPage = () => {
                     disabled={isSubmitting}
                   >
                     {isSubmitting
-                      ? t('auth:sms-mfa.submitting', 'Verifying...')
+                      ? t('partner:auth.verifying')
                       : t('auth:login.button')}
                   </Button>
                 )}
@@ -124,7 +121,7 @@ export const SmsMfaPage = () => {
                 className="w-full"
                 onClick={() => void navigate('/login')}
               >
-                {t('auth:cancel', 'Cancel')}
+                {t('partner:common.cancel')}
               </Button>
             </div>
           </FieldGroup>

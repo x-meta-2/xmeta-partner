@@ -16,19 +16,20 @@ import {
   DialogTrigger,
 } from '#/components/ui/dialog';
 import { Input } from '#/components/ui/input';
+import { useI18n } from '#/i18n/context';
 import { StatCard } from '#/features/partner/dashboard/stat-card';
 import {
   REFERRAL_CODE_MAX_COUNT,
   REFERRAL_CODE_MAX_LENGTH,
-  REFERRAL_CODE_MIN_LENGTH,
   createReferralLink,
   listReferralLinks,
   validateReferralCode,
 } from '#/services/apis/partner/links';
 import { formatCount } from '#/utils';
-import { linksColumns } from './columns';
+import { getLinksColumns } from './columns';
 
 export function PartnerLinksPage() {
+  const { t } = useI18n();
   const queryClient = useQueryClient();
   const linksQuery = useQuery({
     queryKey: ['partner', 'links'],
@@ -86,76 +87,83 @@ export function PartnerLinksPage() {
     >
       <DialogTrigger asChild>
         <Button>
-          <Plus className="size-4" /> Create Link
+          <Plus className="size-4" /> {t('partner:links.createButton')}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Create Referral Link</DialogTitle>
+          <DialogTitle>{t('partner:links.create.title')}</DialogTitle>
           <DialogDescription>
-            Enter a unique code ({REFERRAL_CODE_MIN_LENGTH}-
-            {REFERRAL_CODE_MAX_LENGTH} uppercase characters). You can create up
-            to {REFERRAL_CODE_MAX_COUNT} links.
+            {t('partner:links.create.description', undefined, {
+              max: String(REFERRAL_CODE_MAX_COUNT),
+            })}
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-3 py-2">
-          <label className="text-sm font-medium">Link Code</label>
+          <label className="text-sm font-medium">
+            {t('partner:links.create.label')}
+          </label>
           <Input
             value={code}
             onChange={(e) => handleCodeChange(e.target.value)}
-            placeholder="e.g., TRADE1"
+            placeholder={t('partner:links.create.placeholder')}
             maxLength={REFERRAL_CODE_MAX_LENGTH}
           />
           {codeError && <p className="text-xs text-destructive">{codeError}</p>}
           <div className="text-xs text-muted-foreground">
-            Your link will be:{' '}
+            {t('partner:links.create.preview')}{' '}
             <span className="font-mono text-foreground">
               https://x-meta.com/ref/{code || 'CODE'}
             </span>
           </div>
           <Alert variant="destructive" className="border-destructive/40">
             <AlertCircle className="size-4" />
-            <AlertTitle>Double-check your code before saving</AlertTitle>
+            <AlertTitle>{t('partner:links.create.warning.title')}</AlertTitle>
             <AlertDescription className="text-xs">
-              Once created, this referral link{' '}
-              <strong>cannot be edited or deleted</strong>. The code you choose
-              is permanent and will keep tracking referrals as long as it&apos;s
-              shared.
+              {t('partner:links.create.warning.description')}
             </AlertDescription>
           </Alert>
         </div>
         <DialogFooter>
           <Button variant="outline" onClick={() => setOpen(false)}>
-            Cancel
+            {t('partner:links.create.cancel')}
           </Button>
           <Button
             onClick={submit}
             disabled={!code || !!codeError || createMutation.isPending}
           >
-            {createMutation.isPending ? 'Creating…' : 'Create Link'}
+            {createMutation.isPending
+              ? t('partner:links.create.submitting')
+              : t('partner:links.create.submit')}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   ) : (
     <Button disabled>
-      <Plus className="size-4" /> Max {REFERRAL_CODE_MAX_COUNT} Links
+      <Plus className="size-4" />{' '}
+      {t('partner:links.maxLinks', undefined, {
+        max: String(REFERRAL_CODE_MAX_COUNT),
+      })}
     </Button>
   );
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Links" description="Manage your referral links" />
+      <PageHeader
+        title={t('partner:links.title')}
+        description={t('partner:links.description')}
+      />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <StatCard
-          label="Total Links"
+          label={t('partner:links.totalLinks')}
           value={`${links.length} / ${REFERRAL_CODE_MAX_COUNT}`}
           icon={Link2}
           isLoading={linksQuery.isLoading}
         />
         <StatCard
-          label="Total Registrations"
+          label={t('partner:links.totalRegistrations')}
           value={formatCount(totalReg)}
           icon={UserPlus}
           isLoading={linksQuery.isLoading}
@@ -164,19 +172,19 @@ export function PartnerLinksPage() {
 
       <BaseTable
         data={links}
-        columns={linksColumns}
+        columns={getLinksColumns(t)}
         rowKey="id"
         isLoading={linksQuery.isLoading}
         header={
           <DataTableHeader
-            title="Referral Links"
-            description={`Links are permanent — create up to ${REFERRAL_CODE_MAX_COUNT} unique codes`}
+            title={t('partner:links.subtitle')}
+            description={t('partner:links.permanent')}
             action={createButton}
           />
         }
         toolbar={{
           searchKey: 'code',
-          searchPlaceholder: 'Search by code…',
+          searchPlaceholder: t('partner:links.search'),
         }}
       />
     </div>

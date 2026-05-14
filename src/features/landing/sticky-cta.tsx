@@ -2,12 +2,10 @@ import { useEffect, useState } from 'react';
 import { Gift, X } from 'lucide-react';
 import { Button } from '#/components/ui/button';
 import { LocalizedLink } from '#/components/common/localized-link';
+import { useI18n } from '#/i18n/context';
 
-/**
- * Sticky bottom CTA — appears after scrolling past the hero.
- * Dismissable; stays hidden for the rest of the session.
- */
 export function LandingStickyCta() {
+  const { t } = useI18n();
   const [visible, setVisible] = useState(false);
   const [dismissed, setDismissed] = useState(false);
 
@@ -29,15 +27,15 @@ export function LandingStickyCta() {
         </div>
         <div className="min-w-0 flex-1">
           <div className="truncate text-sm font-semibold">
-            Sign up now and claim your 10,000 USDT partner bonus
+            {t('landing:cta.title')}
           </div>
           <div className="truncate text-xs text-muted-foreground">
-            Limited time — available for the first 1,000 approved partners
+            {t('landing:cta.subtitle')}
           </div>
         </div>
         <LocalizedLink to="/login">
           <Button size="sm" className="shrink-0">
-            Sign Up
+            {t('landing:cta.button')}
           </Button>
         </LocalizedLink>
         <button

@@ -1,13 +1,13 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '#/components/ui/tabs';
 import { LocalizedLink } from '#/components/common/localized-link';
-import { dashboardMenuConfig } from '#/config/dashboard-menu';
+import { getDashboardMenuConfig } from '#/config/dashboard-menu';
 import { useI18n } from '#/i18n/context';
 import { stripLocalePrefix } from '#/i18n/routing';
 import { cn } from '#/lib/utils';
 import { useLocation } from '@tanstack/react-router';
 import * as Icons from 'lucide-react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 export function DashboardSidebarMobile() {
   const location = useLocation();
@@ -16,6 +16,7 @@ export function DashboardSidebarMobile() {
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
   const { t } = useI18n();
+  const dashboardMenuConfig = useMemo(() => getDashboardMenuConfig(t), [t]);
   const normalizedPath = stripLocalePrefix(currentPath);
 
   const getActiveMenu = () => {
@@ -118,7 +119,7 @@ export function DashboardSidebarMobile() {
                   <>
                     {Icon && <Icon className="size-5" strokeWidth={1.8} />}
                     <span className="text-[15px] font-medium whitespace-nowrap">
-                      {t(`dashboard:menu.${menu.id}`, menu.label)}
+                      {menu.label}
                     </span>
                     {menu.badge && (
                       <span className="bg-[#e0f1e2] text-[#16a34a] text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full">
@@ -180,7 +181,7 @@ export function DashboardSidebarMobile() {
                             : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-900 dark:hover:text-slate-100',
                         )}
                       >
-                        {t(`dashboard:${child.id}`, child.label)}
+                        {child.label}
                       </LocalizedLink>
                     );
                   })}

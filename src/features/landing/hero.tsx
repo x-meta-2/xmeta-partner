@@ -1,12 +1,13 @@
 import { ArrowRight, LogIn } from 'lucide-react';
 import { Button } from '#/components/ui/button';
 import { LocalizedLink } from '#/components/common/localized-link';
-import { landingStats } from './data';
+import { useI18n } from '#/i18n/context';
 
 export function LandingHero() {
+  const { t } = useI18n();
+
   return (
     <section className="relative overflow-hidden border-b border-border/40">
-      {/* Background glow */}
       <div
         className="pointer-events-none absolute inset-0 -z-10 opacity-70"
         aria-hidden="true"
@@ -18,47 +19,31 @@ export function LandingHero() {
       <div className="mx-auto flex max-w-[1200px] flex-col items-center gap-10 px-4 py-24 text-center xl:py-32">
         <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-card/60 px-4 py-1.5 text-xs font-medium text-muted-foreground backdrop-blur">
           <span className="size-1.5 rounded-full bg-success animate-pulse" />
-          Partner Program is now open
+          {t('landing:hero.title')}
         </span>
 
         <div className="space-y-5">
-          <h1 className="mx-auto max-w-[20ch] text-4xl font-bold tracking-tight sm:text-5xl xl:text-6xl">
-            Become an X-Meta Partner and earn up to{' '}
-            <span className="bg-gradient-to-r from-primary to-chart-2 bg-clip-text text-transparent">
-              40% commission
-            </span>{' '}
-            for life.
+          <h1 className="mx-auto max-w-[28ch] text-4xl font-bold tracking-tight sm:text-5xl xl:text-6xl">
+            {t('landing:hero.subtitle')}
           </h1>
           <p className="mx-auto max-w-[56ch] text-base text-muted-foreground sm:text-lg">
-            Industry-leading commission rates, lifetime earnings and a dedicated
-            team to help you grow the world&apos;s fastest crypto community.
+            {t('landing:hero.description')}
           </p>
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row">
           <LocalizedLink to="/login">
             <Button size="lg" className="h-12 gap-2 px-6">
-              Apply Now <ArrowRight className="size-4" />
+              {t('landing:hero.apply')} <ArrowRight className="size-4" />
             </Button>
           </LocalizedLink>
           <LocalizedLink to="/login">
             <Button size="lg" variant="outline" className="h-12 gap-2 px-6">
-              <LogIn className="size-4" /> Partner Log In
+              <LogIn className="size-4" /> {t('landing:hero.login')}
             </Button>
           </LocalizedLink>
         </div>
 
-        {/* Stats strip */}
-        <dl className="mt-6 grid w-full max-w-3xl grid-cols-1 gap-8 border-t border-border/60 pt-10 sm:grid-cols-3">
-          {landingStats.map((s) => (
-            <div key={s.label} className="flex flex-col items-center gap-1">
-              <dt className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-                {s.value}
-              </dt>
-              <dd className="text-sm text-muted-foreground">{s.label}</dd>
-            </div>
-          ))}
-        </dl>
       </div>
     </section>
   );

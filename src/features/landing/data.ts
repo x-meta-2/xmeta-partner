@@ -13,10 +13,10 @@ export interface Stat {
   label: string;
 }
 
-export const landingStats: Stat[] = [
-  { value: '100,000+', label: 'Total Partners' },
-  { value: '$15M+', label: 'Avg. Monthly Commission' },
-  { value: '170+', label: 'Countries Reached' },
+export const getLandingStats = (t: (key: string) => string): Stat[] => [
+  { value: t('landing:stats.partners.value'), label: t('landing:stats.partners.label') },
+  { value: t('landing:stats.commission.value'), label: t('landing:stats.commission.label') },
+  { value: t('landing:stats.countries.value'), label: t('landing:stats.countries.label') },
 ];
 
 export interface Benefit {
@@ -25,42 +25,36 @@ export interface Benefit {
   description: string;
 }
 
-export const landingBenefits: Benefit[] = [
+export const getLandingBenefits = (t: (key: string) => string): Benefit[] => [
   {
     icon: CircleDollarSign,
-    title: 'Up to 40% Commission Rate',
-    description:
-      'Industry-leading tiered commission rates — the more active clients and volume you bring, the higher your share.',
+    title: t('landing:benefit.commission.title'),
+    description: t('landing:benefit.commission.description'),
   },
   {
     icon: TrendingUp,
-    title: 'Industry-Leading Products',
-    description:
-      'World-class liquidity, lightning-fast execution and tight spreads on Spot, Futures and Earn.',
+    title: t('landing:benefit.products.title'),
+    description: t('landing:benefit.products.description'),
   },
   {
     icon: InfinityIcon,
-    title: 'Lifetime Commissions',
-    description:
-      'Earn recurring commissions from every trade your referrals make — for as long as they trade.',
+    title: t('landing:benefit.lifetime.title'),
+    description: t('landing:benefit.lifetime.description'),
   },
   {
     icon: Sparkles,
-    title: 'Partner-Exclusive Events',
-    description:
-      'Contests, leaderboards, and partner-only rewards to supercharge your referral earnings.',
+    title: t('landing:benefit.events.title'),
+    description: t('landing:benefit.events.description'),
   },
   {
     icon: Headset,
-    title: 'Dedicated Account Manager',
-    description:
-      '24/7 expert support to help you grow and unlock bigger opportunities for your audience.',
+    title: t('landing:benefit.manager.title'),
+    description: t('landing:benefit.manager.description'),
   },
   {
     icon: Award,
-    title: 'Global Brand, Local Support',
-    description:
-      'Reach audiences in 170+ countries with localised materials and multi-language support.',
+    title: t('landing:benefit.global.title'),
+    description: t('landing:benefit.global.description'),
   },
 ];
 
@@ -70,24 +64,21 @@ export interface Step {
   description: string;
 }
 
-export const landingSteps: Step[] = [
+export const getLandingSteps = (t: (key: string) => string): Step[] => [
   {
-    number: '01',
-    title: 'Apply to Become an X-Meta Partner',
-    description:
-      'Complete and submit your application. The X-Meta team will review and, once approved, you can start promoting.',
+    number: t('landing:step1.number'),
+    title: t('landing:step1.title'),
+    description: t('landing:step1.description'),
   },
   {
-    number: '02',
-    title: 'Get Your Exclusive Referral Code',
-    description:
-      'A unique 7-character referral code is generated for you automatically. Create up to 3 codes to track different channels.',
+    number: t('landing:step2.number'),
+    title: t('landing:step2.title'),
+    description: t('landing:step2.description'),
   },
   {
-    number: '03',
-    title: 'Invite Users & Earn Lifetime Commissions',
-    description:
-      'Share your code and referral link — you earn ongoing commissions for every trade your referrals make.',
+    number: t('landing:step3.number'),
+    title: t('landing:step3.title'),
+    description: t('landing:step3.description'),
   },
 ];
 
@@ -96,35 +87,29 @@ export interface Faq {
   answer: string;
 }
 
-export const landingFaqs: Faq[] = [
+export const getLandingFaqs = (t: (key: string) => string): Faq[] => [
   {
-    question: 'What is the X-Meta Partner Program?',
-    answer:
-      'The X-Meta Partner Program is an affiliate program that rewards content creators, influencers, traders and communities for bringing new users to the X-Meta exchange. Partners earn a share of every trading fee their referred users generate — for life.',
+    question: t('landing:faq.q1'),
+    answer: t('landing:faq.a1'),
   },
   {
-    question: 'How are commission tiers determined?',
-    answer:
-      'Your tier depends on two factors: the number of active clients you refer (users who traded futures in the last 120 days) and their total trading volume. As both metrics grow, you automatically advance to higher tiers with better commission rates.',
+    question: t('landing:faq.q2'),
+    answer: t('landing:faq.a2'),
   },
   {
-    question: 'Who is eligible to join the program?',
-    answer:
-      'Anyone with an active audience or community is eligible — crypto influencers, YouTubers, Telegram groups, traders and blog owners. You must pass our brief KYC/compliance review after applying.',
+    question: t('landing:faq.q3'),
+    answer: t('landing:faq.a3'),
   },
   {
-    question: 'Is there a fee to join the Partner Program?',
-    answer:
-      'No. The X-Meta Partner Program is completely free to join. There are no upfront costs, no monthly fees and no minimum volume requirements to start earning.',
+    question: t('landing:faq.q4'),
+    answer: t('landing:faq.a4'),
   },
   {
-    question: 'How do referral codes work?',
-    answer:
-      'When you join, a unique 7-character referral code is generated automatically. You can create up to 3 codes total to track different promotion channels. Codes are permanent and cannot be edited or deleted.',
+    question: t('landing:faq.q5'),
+    answer: t('landing:faq.a5'),
   },
   {
-    question: 'When is a referred user considered "active"?',
-    answer:
-      'A referred user is considered active if they have made at least one futures trade within the last 120 days. Inactive users do not count toward your active client tier requirements.',
+    question: t('landing:faq.q6'),
+    answer: t('landing:faq.a6'),
   },
 ];

@@ -1,4 +1,5 @@
 import { Badge } from '#/components/ui/badge';
+import { useI18n } from '#/i18n/context';
 import {
   ApplicationStatus,
   PartnerStatus,
@@ -16,33 +17,34 @@ interface StatusInfo {
 
 const KYC_REQUIRED_LEVEL = 1;
 
-/** Derive the onboarding / partner status from store snapshots. */
+type TranslateFn = (key: string, defaultValue?: string) => string;
+
 export function derivePartnerStatus(
   partner: Partner | undefined | null,
   application: PartnerApplication | undefined | null,
   user?: PartnerUser | undefined | null,
+  t?: TranslateFn,
 ): StatusInfo {
+  const tr = (key: string, fallback: string) => (t ? t(key) : fallback);
+
   if (partner?.status === PartnerStatus.Active) {
-    return { label: 'Active partner', variant: 'success' };
+    return { label: tr('partner:partnerStatus.active', 'Active partner'), variant: 'success' };
   }
   if (partner?.status === PartnerStatus.Suspended) {
-    return { label: 'Suspended', variant: 'destructive' };
+    return { label: tr('partner:partnerStatus.suspended', 'Suspended'), variant: 'destructive' };
   }
   if (application?.status === ApplicationStatus.Pending) {
-    return { label: 'Application pending', variant: 'warning' };
+    return { label: tr('partner:partnerStatus.pending', 'Application pending'), variant: 'warning' };
   }
   if (application?.status === ApplicationStatus.Rejected) {
-    return { label: 'Application rejected', variant: 'destructive' };
+    return { label: tr('partner:partnerStatus.rejected', 'Application rejected'), variant: 'destructive' };
   }
   if (user && (user.kycLevel ?? 0) < KYC_REQUIRED_LEVEL) {
-    return { label: 'Verify identity', variant: 'warning' };
+    return { label: tr('partner:partnerStatus.notVerified', 'Verify identity'), variant: 'warning' };
   }
-  return { label: 'Not a partner', variant: 'muted' };
+  return { label: tr('partner:partnerStatus.notPartner', 'Not a partner'), variant: 'muted' };
 }
 
-/**
- * PartnerStatusBadge — reusable status pill driven by Badge's token variants.
- */
 export function PartnerStatusBadge({
   partner,
   application,
@@ -52,6 +54,7 @@ export function PartnerStatusBadge({
   application: PartnerApplication | undefined | null;
   user?: PartnerUser | undefined | null;
 }) {
-  const { label, variant } = derivePartnerStatus(partner, application, user);
+  const { t } = useI18n();
+  const { label, variant } = derivePartnerStatus(partner, application, user, t);
   return <Badge variant={variant}>{label}</Badge>;
 }

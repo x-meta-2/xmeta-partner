@@ -8,11 +8,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '#/components/ui/popover';
+import { useI18n } from '#/i18n/context';
 import { signOutAndReset } from '#/stores/auth-actions';
 import { useAuthStore } from '#/stores/auth-store';
 import { formatRate } from '#/utils/tier';
 
 export function ProfileMenu() {
+  const { t } = useI18n();
   const partner = useAuthStore((s) => s.auth.partner);
   const application = useAuthStore((s) => s.auth.application);
   const user = useAuthStore((s) => s.auth.user);
@@ -76,14 +78,14 @@ export function ProfileMenu() {
             to="/dashboard/settings"
             className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-sm hover:bg-muted"
           >
-            <Settings className="size-4" /> Settings
+            <Settings className="size-4" /> {t('partner:common.settings')}
           </LocalizedLink>
           <button
             type="button"
             onClick={() => void signOutAndReset()}
             className="flex w-full items-center gap-2 rounded-md px-2 py-2 text-left text-sm text-destructive hover:bg-destructive-soft"
           >
-            <LogOut className="size-4" /> Sign out
+            <LogOut className="size-4" /> {t('partner:common.signOut')}
           </button>
         </div>
       </PopoverContent>

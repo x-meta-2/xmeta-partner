@@ -3,22 +3,17 @@ import { CheckCircle, Clock, DollarSign, TrendingUp } from 'lucide-react';
 
 import { PageHeader } from '#/components/common/page-header';
 import { BaseTable, DataTableHeader } from '#/components/data-table';
+import { useI18n } from '#/i18n/context';
 import { StatCard } from '#/features/partner/dashboard/stat-card';
 import { listCommissions } from '#/services/apis/partner/commissions';
 import { getDashboardSummary } from '#/services/apis/partner/dashboard';
 import { getPendingPayouts } from '#/services/apis/partner/payouts';
 
 import { formatUSD } from '#/utils';
-import { earningsColumns } from './columns';
-
-const STATUS_OPTIONS = [
-  { label: 'Pending', value: 'pending' },
-  { label: 'Approved', value: 'approved' },
-  { label: 'Paid', value: 'paid' },
-  { label: 'Cancelled', value: 'cancelled' },
-];
+import { getEarningsColumns } from './columns';
 
 export function PartnerEarningsPage() {
+  const { t } = useI18n();
   const summaryQuery = useQuery({
     queryKey: ['partner', 'dashboard', 'summary'],
     queryFn: getDashboardSummary,
@@ -39,33 +34,33 @@ export function PartnerEarningsPage() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Earnings"
-        description="Futures-trade commissions earned from your referred users"
+        title={t('partner:earnings.title')}
+        description={t('partner:earnings.description')}
       />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
-          label="Total Earned"
+          label={t('partner:earnings.totalEarned')}
           value={formatUSD(summary?.totalEarnings ?? 0)}
           icon={DollarSign}
           isLoading={summaryQuery.isLoading}
         />
         <StatCard
-          label="Pending"
+          label={t('partner:earnings.pending')}
           value={formatUSD(pending?.pendingBalance ?? 0)}
           icon={Clock}
-          hint="awaiting payout"
+          hint={t('partner:earnings.awaiting')}
           isLoading={pendingQuery.isLoading}
         />
         <StatCard
-          label="Paid Out"
+          label={t('partner:earnings.paidOut')}
           value={formatUSD(pending?.totalPaid ?? 0)}
           icon={CheckCircle}
-          hint="lifetime"
+          hint={t('partner:earnings.lifetime')}
           isLoading={pendingQuery.isLoading}
         />
         <StatCard
-          label="This Month"
+          label={t('partner:earnings.thisMonth')}
           value={formatUSD(summary?.monthEarnings ?? 0)}
           icon={TrendingUp}
           isLoading={summaryQuery.isLoading}
@@ -74,20 +69,25 @@ export function PartnerEarningsPage() {
 
       <BaseTable
         data={rows}
-        columns={earningsColumns}
+        columns={getEarningsColumns(t)}
         rowKey="id"
         isLoading={listQuery.isLoading}
         header={
           <DataTableHeader
-            title="Commission History"
-            description="Every commission earned, broken down per trade"
+            title={t('partner:earnings.history.title')}
+            description={t('partner:earnings.history.description')}
           />
         }
         toolbar={{
           searchKey: 'marketId',
-          searchPlaceholder: 'Search by market…',
+          searchPlaceholder: t('partner:earnings.search'),
           filters: [
-            { columnId: 'status', title: 'Status', options: STATUS_OPTIONS },
+            { columnId: 'status', title: t('partner:earnings.col.status'), options: [
+              { label: t('partner:earnings.status.pending'), value: 'pending' },
+              { label: t('partner:earnings.status.approved'), value: 'approved' },
+              { label: t('partner:earnings.status.paid'), value: 'paid' },
+              { label: t('partner:earnings.status.cancelled'), value: 'cancelled' },
+            ] },
           ],
         }}
       />

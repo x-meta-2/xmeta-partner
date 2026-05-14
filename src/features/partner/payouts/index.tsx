@@ -12,6 +12,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '#/components/ui/tooltip';
+import { useI18n } from '#/i18n/context';
 import { StatCard } from '#/features/partner/dashboard/stat-card';
 import {
   getPendingPayouts,
@@ -20,18 +21,12 @@ import {
 } from '#/services/apis/partner/payouts';
 import { formatUSD } from '#/utils';
 
-import { payoutsColumns } from './columns';
+import { getPayoutsColumns } from './columns';
 import { PayoutDetailSheet } from './payout-detail-sheet';
 import { RequestPayoutDialog } from './request-payout-dialog';
 
-const STATUS_OPTIONS = [
-  { label: 'Pending', value: 'pending' },
-  { label: 'Processing', value: 'processing' },
-  { label: 'Completed', value: 'completed' },
-  { label: 'Failed', value: 'failed' },
-];
-
 export function PartnerPayoutsPage() {
+  const { t } = useI18n();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedPayout, setSelectedPayout] = useState<Payout | null>(null);
 
@@ -54,15 +49,15 @@ export function PartnerPayoutsPage() {
   const payoutButton = (
     <Button disabled={belowMin} onClick={() => setDialogOpen(true)}>
       <DollarSign className="size-4" />
-      Request Payout
+      {t('partner:payouts.requestPayout')}
     </Button>
   );
 
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Payouts"
-        description="View your payout history and pending balance"
+        title={t('partner:payouts.title')}
+        description={t('partner:payouts.description')}
       />
 
       <Card className="gap-0 bg-gradient-to-br from-primary-soft to-transparent p-6">
@@ -73,13 +68,13 @@ export function PartnerPayoutsPage() {
             </div>
             <div className="space-y-1">
               <div className="text-sm text-muted-foreground">
-                Available for Payout
+                {t('partner:payouts.available')}
               </div>
               <div className="text-3xl font-semibold tracking-tight text-primary">
                 {formatUSD(pendingBalance)}
               </div>
               <div className="text-xs text-muted-foreground">
-                Minimum payout: {formatUSD(minAmount)}
+                {t('partner:payouts.minimumPayout')} {formatUSD(minAmount)}
               </div>
             </div>
           </div>
@@ -116,19 +111,19 @@ export function PartnerPayoutsPage() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <StatCard
-          label="Total Paid"
+          label={t('partner:payouts.totalPaid')}
           value={formatUSD(summary?.totalPaid ?? 0)}
           icon={CheckCircle}
           isLoading={summaryQuery.isLoading}
         />
         <StatCard
-          label="Pending Balance"
+          label={t('partner:payouts.pendingBalance')}
           value={formatUSD(pendingBalance)}
           icon={Clock}
           isLoading={summaryQuery.isLoading}
         />
         <StatCard
-          label="Last Payout"
+          label={t('partner:payouts.lastPayout')}
           value={summary?.lastPayoutDate ?? '—'}
           icon={Clock}
           isLoading={summaryQuery.isLoading}
@@ -137,20 +132,25 @@ export function PartnerPayoutsPage() {
 
       <BaseTable
         data={payouts}
-        columns={payoutsColumns}
+        columns={getPayoutsColumns(t)}
         rowKey="id"
         isLoading={listQuery.isLoading}
         header={
           <DataTableHeader
-            title="Payout History"
-            description="All your payout requests and their status"
+            title={t('partner:payouts.history.title')}
+            description={t('partner:payouts.history.description')}
           />
         }
         toolbar={{
           searchKey: 'id',
-          searchPlaceholder: 'Search by payout ID…',
+          searchPlaceholder: t('partner:payouts.search'),
           filters: [
-            { columnId: 'status', title: 'Status', options: STATUS_OPTIONS },
+            { columnId: 'status', title: t('partner:payouts.col.status'), options: [
+              { label: t('partner:payouts.status.pending'), value: 'pending' },
+              { label: t('partner:payouts.status.processing'), value: 'processing' },
+              { label: t('partner:payouts.status.completed'), value: 'completed' },
+              { label: t('partner:payouts.status.failed'), value: 'failed' },
+            ] },
           ],
         }}
         rowActions={(row) => (

@@ -9,6 +9,7 @@ import { Input } from '#/components/ui/input';
 import { Label } from '#/components/ui/label';
 import { Textarea } from '#/components/ui/textarea';
 import { useLocalizedNavigate } from '#/hooks/use-localized-navigate';
+import { useI18n } from '#/i18n/context';
 import { applyForPartner } from '#/services/apis/partner/profile';
 import { loadUserProfile } from '#/stores/auth-actions';
 
@@ -23,6 +24,7 @@ interface Prefill {
 
 export function ApplyPartnerForm({ prefill }: { prefill?: Prefill }) {
   const navigate = useLocalizedNavigate();
+  const { t } = useI18n();
   const [companyName, setCompanyName] = useState(prefill?.companyName ?? '');
   const [website, setWebsite] = useState(prefill?.website ?? '');
   const [facebookUrl, setFacebookUrl] = useState(prefill?.facebookUrl ?? '');
@@ -62,67 +64,66 @@ export function ApplyPartnerForm({ prefill }: { prefill?: Prefill }) {
     <div className="mx-auto flex min-h-[calc(100vh-8rem)] w-full items-center justify-center px-4 py-10">
       <div className="w-full max-w-2xl space-y-6">
         <div className="text-center">
-          <h1 className="text-2xl font-semibold">Become a Partner</h1>
+          <h1 className="text-2xl font-semibold">{t('partner:onboarding.apply.title')}</h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Tell us about your channel — our team reviews every application
-            within 2-3 business days.
+            {t('partner:onboarding.apply.description')}
           </p>
         </div>
 
         <Card className="gap-5 p-6">
           <Field
-            label="Company / Brand Name"
-            hint="Optional — leave blank if individual"
+            label={t('partner:onboarding.apply.company')}
+            hint={t('partner:onboarding.apply.companyHint')}
           >
             <Input
               value={companyName}
               onChange={(e) => setCompanyName(e.target.value)}
-              placeholder="e.g., Demo Trading LLC"
+              placeholder={t('partner:onboarding.apply.companyPlaceholder')}
             />
           </Field>
 
           <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Facebook URL">
+            <Field label={t('partner:onboarding.apply.facebook')}>
               <Input
                 value={facebookUrl}
                 onChange={(e) => setFacebookUrl(e.target.value)}
-                placeholder="https://facebook.com/yourpage"
+                placeholder={t('partner:onboarding.apply.facebookPlaceholder')}
               />
             </Field>
-            <Field label="Instagram URL">
+            <Field label={t('partner:onboarding.apply.instagram')}>
               <Input
                 value={instagramUrl}
                 onChange={(e) => setInstagramUrl(e.target.value)}
-                placeholder="https://instagram.com/yourhandle"
+                placeholder={t('partner:onboarding.apply.instagramPlaceholder')}
               />
             </Field>
           </div>
 
-          <Field label="Website" hint="Optional">
+          <Field label={t('partner:onboarding.apply.website')} hint={t('partner:onboarding.apply.optional')}>
             <Input
               value={website}
               onChange={(e) => setWebsite(e.target.value)}
-              placeholder="https://…"
+              placeholder={t('partner:onboarding.apply.websitePlaceholder')}
             />
           </Field>
 
-          <Field label="Audience Size">
+          <Field label={t('partner:onboarding.apply.audienceSize')}>
             <Input
               value={audienceSize}
               onChange={(e) => setAudienceSize(e.target.value)}
-              placeholder="e.g., 10k Instagram followers"
+              placeholder={t('partner:onboarding.apply.audiencePlaceholder')}
             />
           </Field>
 
           <Field
-            label="Promotion Plan"
-            hint="How will you promote xmeta to your audience?"
+            label={t('partner:onboarding.apply.promotionPlan')}
+            hint={t('partner:onboarding.apply.promotionHint')}
           >
             <Textarea
               value={promotionPlan}
               onChange={(e) => setPromotionPlan(e.target.value)}
               rows={5}
-              placeholder="Briefly describe your channel, audience, and promotion strategy…"
+              placeholder={t('partner:onboarding.apply.promotionPlaceholder')}
             />
           </Field>
         </Card>
@@ -133,11 +134,11 @@ export function ApplyPartnerForm({ prefill }: { prefill?: Prefill }) {
             onClick={() => navigate('/dashboard/overview')}
             disabled={mutation.isPending}
           >
-            Cancel
+            {t('partner:onboarding.apply.cancel')}
           </Button>
           <Button onClick={submit} disabled={mutation.isPending}>
             <Send className="size-4" />
-            {mutation.isPending ? 'Submitting…' : 'Submit Application'}
+            {mutation.isPending ? t('partner:onboarding.apply.submitting') : t('partner:onboarding.apply.submit')}
           </Button>
         </div>
       </div>
