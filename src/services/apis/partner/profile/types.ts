@@ -71,4 +71,5 @@ export interface ApplyPartnerPayload {
   socialMedia?: Record<string, unknown>;
   audienceSize?: string;
   promotionPlan?: string;
+  locale?: string;
 }

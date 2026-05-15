@@ -24,7 +24,7 @@ interface Prefill {
 
 export function ApplyPartnerForm({ prefill }: { prefill?: Prefill }) {
   const navigate = useLocalizedNavigate();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [companyName, setCompanyName] = useState(prefill?.companyName ?? '');
   const [website, setWebsite] = useState(prefill?.website ?? '');
   const [facebookUrl, setFacebookUrl] = useState(prefill?.facebookUrl ?? '');
@@ -57,6 +57,7 @@ export function ApplyPartnerForm({ prefill }: { prefill?: Prefill }) {
       },
       audienceSize,
       promotionPlan,
+      locale,
     });
   };
 
