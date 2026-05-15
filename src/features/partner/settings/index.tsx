@@ -14,6 +14,7 @@ import { getProfile, updateProfile } from '#/services/apis/partner/profile';
 import { loadUserProfile } from '#/stores/auth-actions';
 import { formatLongDate } from '#/utils/date';
 import { formatRate } from '#/utils/tier';
+import { TierArtwork } from '#/components/common/tier-artwork';
 
 export function PartnerSettingsPage() {
   const { t } = useI18n();
@@ -68,7 +69,9 @@ export function PartnerSettingsPage() {
 
       <Card className="gap-5 p-6">
         <div>
-          <div className="text-base font-semibold">{t('partner:settings.identity.title')}</div>
+          <div className="text-base font-semibold">
+            {t('partner:settings.identity.title')}
+          </div>
           <div className="text-xs text-muted-foreground">
             {t('partner:settings.identity.description')}
           </div>
@@ -88,20 +91,28 @@ export function PartnerSettingsPage() {
 
       <Card className="gap-5 p-6">
         <div>
-          <div className="text-base font-semibold">{t('partner:settings.profile.title')}</div>
+          <div className="text-base font-semibold">
+            {t('partner:settings.profile.title')}
+          </div>
           <div className="text-xs text-muted-foreground">
             {t('partner:settings.profile.description')}
           </div>
         </div>
         <div className="grid max-w-2xl gap-4 sm:grid-cols-2">
-          <Field label={t('partner:settings.profile.company')} hint={t('partner:settings.profile.optional')}>
+          <Field
+            label={t('partner:settings.profile.company')}
+            hint={t('partner:settings.profile.optional')}
+          >
             <Input
               value={companyName}
               onChange={(e) => setCompanyName(e.target.value)}
               placeholder="e.g., Demo Trading"
             />
           </Field>
-          <Field label={t('partner:settings.profile.website')} hint={t('partner:settings.profile.optional')}>
+          <Field
+            label={t('partner:settings.profile.website')}
+            hint={t('partner:settings.profile.optional')}
+          >
             <Input
               value={website}
               onChange={(e) => setWebsite(e.target.value)}
@@ -127,7 +138,9 @@ export function PartnerSettingsPage() {
 
       <Card className="gap-0 p-0">
         <div className="p-6 pb-3">
-          <div className="text-base font-semibold">{t('partner:settings.account.title')}</div>
+          <div className="text-base font-semibold">
+            {t('partner:settings.account.title')}
+          </div>
         </div>
         <div className="space-y-3 px-6 pb-6 text-sm">
           <InfoRow label={t('partner:settings.account.partnerId')}>
@@ -141,11 +154,17 @@ export function PartnerSettingsPage() {
           </InfoRow>
           <Separator className="opacity-40" />
           <InfoRow label={t('partner:settings.account.currentTier')}>
-            <span className="font-medium">
-              {partner?.tier
-                ? `${partner.tier.name} · ${formatRate(partner.tier.commissionRate)}`
-                : '—'}
-            </span>
+            {partner?.tier ? (
+              <span className="flex items-center gap-2 font-medium">
+                <TierArtwork
+                  tierName={partner.tier.name}
+                  className="size-9 rounded-md"
+                />
+                {partner.tier.name} · {formatRate(partner.tier.commissionRate)}
+              </span>
+            ) : (
+              <span className="font-medium">—</span>
+            )}
           </InfoRow>
           <Separator className="opacity-40" />
           <InfoRow label={t('partner:settings.account.memberSince')}>
@@ -159,7 +178,9 @@ export function PartnerSettingsPage() {
       <div className="flex justify-end">
         <Button onClick={save} disabled={updateMutation.isPending}>
           <Save className="size-4" />
-          {updateMutation.isPending ? t('partner:settings.saving') : t('partner:settings.save')}
+          {updateMutation.isPending
+            ? t('partner:settings.saving')
+            : t('partner:settings.save')}
         </Button>
       </div>
     </div>

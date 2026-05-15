@@ -4,6 +4,7 @@ import { LocalizedLink } from '#/components/common/localized-link';
 import { Button } from '#/components/ui/button';
 import { Card } from '#/components/ui/card';
 import { Skeleton } from '#/components/ui/skeleton';
+import { TierArtwork } from '#/components/common/tier-artwork';
 import { useI18n } from '#/i18n/context';
 import type { PartnerTier } from '#/services/apis/partner/types';
 import { getPublicTiers } from '#/services/apis/public';
@@ -65,8 +66,12 @@ export function LandingCommissionTiers() {
           <div className="border-t border-border bg-background/40 p-8 lg:border-l lg:border-t-0 lg:p-10">
             <div className="mb-3 grid grid-cols-[1fr_auto_auto] gap-2 px-4 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               <span>{t('landing:commission.tier')}</span>
-              <span className="w-20 text-center">{t('landing:commission.clients')}</span>
-              <span className="w-24 text-right">{t('landing:commission.rate')}</span>
+              <span className="w-20 text-center">
+                {t('landing:commission.clients')}
+              </span>
+              <span className="w-24 text-right">
+                {t('landing:commission.rate')}
+              </span>
             </div>
 
             <div className="space-y-2">
@@ -86,15 +91,18 @@ export function LandingCommissionTiers() {
 function TierRow({ tier }: { tier: PartnerTier }) {
   return (
     <div className="grid grid-cols-[1fr_auto_auto] items-center gap-2 rounded-lg border border-border/60 bg-card px-4 py-3">
-      <div>
-        <div
-          className="font-semibold"
-          style={{ color: tier.color || undefined }}
-        >
-          {tier.name}
-        </div>
-        <div className="text-xs text-muted-foreground">
-          Vol: {formatVolumeRange(tier.minVolume, tier.maxVolume)}
+      <div className="flex items-center gap-3">
+        <TierArtwork tierName={tier.name} className="size-11 rounded-md" />
+        <div>
+          <div
+            className="font-semibold"
+            style={{ color: tier.color || undefined }}
+          >
+            {tier.name}
+          </div>
+          <div className="text-xs text-muted-foreground">
+            Vol: {formatVolumeRange(tier.minVolume, tier.maxVolume)}
+          </div>
         </div>
       </div>
       <div className="w-20 text-center text-sm font-medium">

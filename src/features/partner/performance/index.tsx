@@ -14,6 +14,7 @@ import { getReferralStats } from '#/services/apis/partner/referrals';
 import { getPublicTiers } from '#/services/apis/public';
 import { formatCount, formatUSD } from '#/utils';
 import { formatRate, formatVolume, formatVolumeRange } from '#/utils/tier';
+import { TierArtwork } from '#/components/common/tier-artwork';
 
 export function PerformanceStatisticsPage() {
   const { t } = useI18n();
@@ -55,7 +56,11 @@ export function PerformanceStatisticsPage() {
   const nextTier = (() => {
     if (tier?.nextTier) return tier.nextTier;
     if (!currentTier || allTiers.length === 0) return null;
-    return allTiers.find((tier) => tier.level > currentTier.level) ?? null;
+    return (
+      allTiers.find(
+        (candidateTier) => candidateTier.level > currentTier.level,
+      ) ?? null
+    );
   })();
 
   const clientsPct = nextTier
@@ -104,7 +109,9 @@ export function PerformanceStatisticsPage() {
       <Card className="gap-5 p-5">
         <div className="flex items-center gap-2">
           <Award className="size-5 text-amber-500" />
-          <span className="text-base font-semibold">{t('partner:performance.tierProgress')}</span>
+          <span className="text-base font-semibold">
+            {t('partner:performance.tierProgress')}
+          </span>
         </div>
 
         {isLoading ? (
@@ -138,6 +145,10 @@ export function PerformanceStatisticsPage() {
                   {t('partner:performance.currentTier')}
                 </div>
                 <div className="mt-1 flex items-center gap-2">
+                  <TierArtwork
+                    tierName={currentTier?.name}
+                    className="size-12 rounded-md"
+                  />
                   <span
                     className="text-xl font-bold"
                     style={{ color: currentTier?.color || undefined }}
@@ -151,8 +162,14 @@ export function PerformanceStatisticsPage() {
               </div>
               {nextTier && (
                 <div className="text-right">
-                  <div className="text-sm text-muted-foreground">{t('partner:performance.nextTier')}</div>
+                  <div className="text-sm text-muted-foreground">
+                    {t('partner:performance.nextTier')}
+                  </div>
                   <div className="mt-1 flex items-center justify-end gap-2">
+                    <TierArtwork
+                      tierName={nextTier.name}
+                      className="size-12 rounded-md"
+                    />
                     <span
                       className="text-xl font-bold"
                       style={{ color: nextTier.color || undefined }}
@@ -200,10 +217,18 @@ export function PerformanceStatisticsPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b text-left text-muted-foreground">
-                  <th className="pb-3 font-medium">{t('partner:performance.col.tier')}</th>
-                  <th className="pb-3 font-medium">{t('partner:performance.col.commission')}</th>
-                  <th className="pb-3 font-medium">{t('partner:performance.col.activeClients')}</th>
-                  <th className="pb-3 font-medium">{t('partner:performance.col.tradingVolume')}</th>
+                  <th className="pb-3 font-medium">
+                    {t('partner:performance.col.tier')}
+                  </th>
+                  <th className="pb-3 font-medium">
+                    {t('partner:performance.col.commission')}
+                  </th>
+                  <th className="pb-3 font-medium">
+                    {t('partner:performance.col.activeClients')}
+                  </th>
+                  <th className="pb-3 font-medium">
+                    {t('partner:performance.col.tradingVolume')}
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -224,21 +249,29 @@ export function PerformanceStatisticsPage() {
                         </td>
                       </tr>
                     ))
-                  : allTiers.map((tier) => (
+                  : allTiers.map((rowTier) => (
                       <tr
-                        key={tier.id}
+                        key={rowTier.id}
                         className={`border-b last:border-0 ${
-                          tier.name === currentTier?.name ? 'bg-primary/5' : ''
+                          rowTier.name === currentTier?.name
+                            ? 'bg-primary/5'
+                            : ''
                         }`}
                       >
                         <td className="py-3">
-                          <span
-                            className="font-semibold"
-                            style={{ color: tier.color || undefined }}
-                          >
-                            {tier.name}
-                          </span>
-                          {tier.name === currentTier?.name && (
+                          <div className="flex items-center gap-2">
+                            <TierArtwork
+                              tierName={rowTier.name}
+                              className="size-9 rounded-md"
+                            />
+                            <span
+                              className="font-semibold"
+                              style={{ color: rowTier.color || undefined }}
+                            >
+                              {rowTier.name}
+                            </span>
+                          </div>
+                          {rowTier.name === currentTier?.name && (
                             <Badge
                               variant="secondary"
                               className="ml-2 text-[10px]"
@@ -248,13 +281,16 @@ export function PerformanceStatisticsPage() {
                           )}
                         </td>
                         <td className="py-3 font-medium tabular-nums">
-                          {formatRate(tier.commissionRate)}
+                          {formatRate(rowTier.commissionRate)}
                         </td>
                         <td className="py-3 tabular-nums">
-                          {'>='} {tier.minActiveClients}
+                          {'>='} {rowTier.minActiveClients}
                         </td>
                         <td className="py-3 tabular-nums">
-                          {formatVolumeRange(tier.minVolume, tier.maxVolume)}
+                          {formatVolumeRange(
+                            rowTier.minVolume,
+                            rowTier.maxVolume,
+                          )}
                         </td>
                       </tr>
                     ))}

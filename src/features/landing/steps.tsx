@@ -21,15 +21,23 @@ export function LandingSteps() {
       </div>
 
       <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
-        {steps.map((s) => (
-          <Card key={s.number} className="gap-4 p-6">
-            <div className="font-mono text-4xl font-bold text-primary/30">
-              {s.number}
+        {steps.map((s, index) => (
+          <Card key={s.number} className="group gap-4 overflow-hidden p-0">
+            <div className="relative flex h-52 items-center justify-center overflow-hidden border-b border-border/50 bg-[#14172f]">
+              <div className="absolute inset-x-10 bottom-2 h-16 rounded-full bg-primary/20 blur-3xl" />
+              <img
+                src={`/assets/images/landing/${index + 1}.png`}
+                alt=""
+                aria-hidden="true"
+                className="relative h-44 w-44 object-contain transition duration-500 group-hover:scale-105"
+              />
             </div>
-            <h3 className="text-lg font-semibold leading-snug">{s.title}</h3>
-            <p className="text-sm leading-relaxed text-muted-foreground">
-              {s.description}
-            </p>
+            <div className="space-y-4 p-6">
+              <h3 className="text-lg font-semibold leading-snug">{s.title}</h3>
+              <p className="text-sm leading-relaxed text-muted-foreground">
+                {s.description}
+              </p>
+            </div>
           </Card>
         ))}
       </div>

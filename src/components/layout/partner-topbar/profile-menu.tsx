@@ -12,6 +12,7 @@ import { useI18n } from '#/i18n/context';
 import { signOutAndReset } from '#/stores/auth-actions';
 import { useAuthStore } from '#/stores/auth-store';
 import { formatRate } from '#/utils/tier';
+import { TierArtwork } from '#/components/common/tier-artwork';
 
 export function ProfileMenu() {
   const { t } = useI18n();
@@ -65,9 +66,12 @@ export function ProfileMenu() {
               user={user}
             />
             {partner?.tier && (
-              <Badge variant="default">
-                {partner.tier.name} ·{' '}
-                {formatRate(partner.tier.commissionRate)}
+              <Badge variant="default" className="gap-1.5 pl-1">
+                <TierArtwork
+                  tierName={partner.tier.name}
+                  className="size-5 rounded-sm"
+                />
+                {partner.tier.name} · {formatRate(partner.tier.commissionRate)}
               </Badge>
             )}
           </div>
