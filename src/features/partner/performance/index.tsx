@@ -1,11 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
-import { Award, BarChart3, DollarSign, UserCheck, Users } from 'lucide-react';
+import { BarChart3, DollarSign, UserCheck, Users } from 'lucide-react';
 import { PageHeader } from '#/components/common/page-header';
-import { Badge } from '#/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '#/components/ui/card';
+import { Card } from '#/components/ui/card';
 import { Skeleton } from '#/components/ui/skeleton';
 import { useI18n } from '#/i18n/context';
-import { StatCard } from '#/features/partner/dashboard/stat-card';
 import {
   getDashboardSummary,
   getTierProgress,
@@ -13,8 +11,14 @@ import {
 import { getReferralStats } from '#/services/apis/partner/referrals';
 import { getPublicTiers } from '#/services/apis/public';
 import { formatCount, formatUSD } from '#/utils';
-import { formatRate, formatVolume, formatVolumeRange } from '#/utils/tier';
+import {
+  formatRate,
+  formatVolume,
+  formatVolumeRange,
+  getTierVideoSrc,
+} from '#/utils/tier';
 import { TierArtwork } from '#/components/common/tier-artwork';
+import type { LucideIcon } from 'lucide-react';
 
 export function PerformanceStatisticsPage() {
   const { t } = useI18n();
@@ -63,12 +67,13 @@ export function PerformanceStatisticsPage() {
     );
   })();
 
-  const clientsPct = nextTier
-    ? Math.min((activeClients / nextTier.minActiveClients) * 100, 100)
+  const maxTier = allTiers.length > 0 ? allTiers[allTiers.length - 1] : null;
+  const progressTarget = nextTier ?? maxTier;
+  const clientsPct = progressTarget
+    ? Math.min((activeClients / progressTarget.minActiveClients) * 100, 100)
     : 100;
-
-  const volPct = nextTier
-    ? Math.min((totalVolume / nextTier.minVolume) * 100, 100)
+  const volPct = progressTarget
+    ? Math.min((totalVolume / progressTarget.minVolume) * 100, 100)
     : 100;
 
   return (
@@ -78,270 +83,234 @@ export function PerformanceStatisticsPage() {
         description={t('partner:performance.description')}
       />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard
-          label={t('partner:performance.totalReferrals')}
-          value={formatCount(refStats?.total ?? 0)}
-          icon={Users}
-          isLoading={isLoading}
-        />
-        <StatCard
-          label={t('partner:performance.activeClients')}
-          value={formatCount(activeClients)}
-          icon={UserCheck}
-          hint={t('partner:performance.activeClientsNote')}
-          isLoading={isLoading}
-        />
-        <StatCard
-          label={t('partner:performance.totalVolume')}
-          value={formatVolume(totalVolume)}
-          icon={BarChart3}
-          isLoading={isLoading}
-        />
-        <StatCard
-          label={t('partner:performance.totalCommission')}
-          value={formatUSD(summary?.totalEarnings ?? 0)}
-          icon={DollarSign}
-          isLoading={isLoading}
-        />
-      </div>
-
-      <Card className="gap-5 p-5">
-        <div className="flex items-center gap-2">
-          <Award className="size-5 text-amber-500" />
-          <span className="text-base font-semibold">
-            {t('partner:performance.tierProgress')}
-          </span>
-        </div>
-
-        {isLoading ? (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="space-y-2">
-                <Skeleton className="h-4 w-20" />
-                <Skeleton className="h-7 w-32" />
-              </div>
-              <div className="space-y-2">
-                <Skeleton className="h-4 w-20" />
-                <Skeleton className="h-7 w-32" />
-              </div>
-            </div>
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-2 w-full rounded-full" />
-              </div>
-              <div className="space-y-2">
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-2 w-full rounded-full" />
-              </div>
-            </div>
-          </div>
-        ) : (
-          <>
-            <div className="flex items-center justify-between">
+      {isLoading ? (
+        <Skeleton className="h-24 w-full rounded-xl" />
+      ) : (
+        <Card className="relative overflow-hidden border-0 bg-slate-900">
+          <video
+            key={currentTier?.name ?? 'standard'}
+            src={getTierVideoSrc(currentTier?.name)}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 size-full object-cover opacity-30"
+          />
+          <div className="relative flex items-stretch gap-5 p-5">
+            <div className="flex shrink-0 items-center gap-3">
+              <TierArtwork
+                tierName={currentTier?.name}
+                className="size-14 rounded-lg"
+              />
               <div>
-                <div className="text-sm text-muted-foreground">
+                <span className="text-[10px] font-medium uppercase tracking-wider text-slate-400">
                   {t('partner:performance.currentTier')}
+                </span>
+                <div className="text-xl font-bold text-white">
+                  {currentTier?.name ?? 'Standard'}
                 </div>
-                <div className="mt-1 flex items-center gap-2">
-                  <TierArtwork
-                    tierName={currentTier?.name}
-                    className="size-12 rounded-md"
-                  />
-                  <span
-                    className="text-xl font-bold"
-                    style={{ color: currentTier?.color || undefined }}
-                  >
-                    {currentTier?.name ?? 'Standard'}
+                <span className="text-[11px] text-slate-400">
+                  {formatRate(currentTier?.commissionRate ?? 0)} Commission
+                </span>
+              </div>
+            </div>
+
+            <div className="flex flex-1 flex-col justify-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur-sm">
+              <div className="space-y-1">
+                <div className="flex items-center justify-between text-[11px] text-slate-400">
+                  <span>
+                    Active Clients ({activeClients} /{' '}
+                    {progressTarget?.minActiveClients ?? '–'})
                   </span>
-                  <Badge variant="outline" className="text-xs">
-                    {formatRate(currentTier?.commissionRate ?? 0)} commission
-                  </Badge>
+                  <span className="font-semibold text-slate-300">
+                    {Math.floor(clientsPct)}%
+                  </span>
+                </div>
+                <div className="h-2 overflow-hidden rounded-full bg-white/10">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-primary to-violet-400 transition-all"
+                    style={{
+                      width: `${Math.max(clientsPct, clientsPct > 0 ? 2 : 0)}%`,
+                    }}
+                  />
                 </div>
               </div>
-              {nextTier && (
-                <div className="text-right">
-                  <div className="text-sm text-muted-foreground">
-                    {t('partner:performance.nextTier')}
-                  </div>
-                  <div className="mt-1 flex items-center justify-end gap-2">
-                    <TierArtwork
-                      tierName={nextTier.name}
-                      className="size-12 rounded-md"
-                    />
-                    <span
-                      className="text-xl font-bold"
-                      style={{ color: nextTier.color || undefined }}
-                    >
-                      {nextTier.name}
-                    </span>
-                    <Badge variant="outline" className="text-xs">
-                      {formatRate(nextTier.commissionRate)}
-                    </Badge>
-                  </div>
+              <div className="space-y-1">
+                <div className="flex items-center justify-between text-[11px] text-slate-400">
+                  <span>
+                    Volume ({formatVolume(totalVolume)} /{' '}
+                    {progressTarget ? formatVolume(progressTarget.minVolume) : '–'})
+                  </span>
+                  <span className="font-semibold text-slate-300">
+                    {Math.floor(volPct)}%
+                  </span>
                 </div>
-              )}
+                <div className="h-2 overflow-hidden rounded-full bg-white/10">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all"
+                    style={{
+                      width: `${Math.max(volPct, volPct > 0 ? 2 : 0)}%`,
+                    }}
+                  />
+                </div>
+              </div>
             </div>
 
             {nextTier && (
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-                <ProgressRow
-                  icon={<UserCheck className="size-4 text-primary" />}
-                  label={t('partner:performance.activeClients')}
-                  current={activeClients}
-                  target={nextTier.minActiveClients}
-                  pct={clientsPct}
-                  requirementMetLabel={t('partner:performance.requirementMet')}
+              <div className="flex shrink-0 flex-col items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-5 py-3 backdrop-blur-sm">
+                <span className="text-[10px] text-slate-400">
+                  {t('partner:performance.nextTier')}
+                </span>
+                <TierArtwork
+                  tierName={nextTier.name}
+                  className="size-12 rounded-lg"
                 />
-                <ProgressRow
-                  icon={<BarChart3 className="size-4 text-primary" />}
-                  label={t('partner:performance.tradingVolume')}
-                  current={formatVolume(totalVolume)}
-                  target={formatVolume(nextTier.minVolume)}
-                  pct={volPct}
-                  requirementMetLabel={t('partner:performance.requirementMet')}
-                />
+                <span className="text-xs font-medium text-slate-300">
+                  {nextTier.name} · {formatRate(nextTier.commissionRate)}
+                </span>
               </div>
             )}
-          </>
-        )}
-      </Card>
+          </div>
+        </Card>
+      )}
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t('partner:performance.commissionTiers')}</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <div className="grid grid-cols-2 gap-3">
+          <MiniStatCard
+            label={t('partner:performance.totalReferrals')}
+            value={formatCount(refStats?.total ?? 0)}
+            icon={Users}
+            isLoading={isLoading}
+          />
+          <MiniStatCard
+            label={t('partner:performance.activeClients')}
+            value={formatCount(activeClients)}
+            icon={UserCheck}
+            isLoading={isLoading}
+          />
+          <MiniStatCard
+            label={t('partner:performance.totalVolume')}
+            value={formatVolume(totalVolume)}
+            icon={BarChart3}
+            isLoading={isLoading}
+          />
+          <MiniStatCard
+            label={t('partner:performance.totalCommission')}
+            value={formatUSD(summary?.totalEarnings ?? 0)}
+            icon={DollarSign}
+            isLoading={isLoading}
+          />
+        </div>
+
+        <Card className="p-5">
+          <h3 className="mb-4 text-sm font-semibold">
+            {t('partner:performance.commissionTiers')}
+          </h3>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b text-left text-muted-foreground">
-                  <th className="pb-3 font-medium">
+                <tr className="border-b text-left text-xs text-muted-foreground">
+                  <th className="pb-2.5 font-medium">
                     {t('partner:performance.col.tier')}
                   </th>
-                  <th className="pb-3 font-medium">
+                  <th className="pb-2.5 font-medium">
                     {t('partner:performance.col.commission')}
                   </th>
-                  <th className="pb-3 font-medium">
+                  <th className="pb-2.5 font-medium">
                     {t('partner:performance.col.activeClients')}
                   </th>
-                  <th className="pb-3 font-medium">
+                  <th className="pb-2.5 font-medium">
                     {t('partner:performance.col.tradingVolume')}
                   </th>
                 </tr>
               </thead>
               <tbody>
                 {isLoading
-                  ? Array.from({ length: 4 }).map((_, i) => (
+                  ? Array.from({ length: 5 }).map((_, i) => (
                       <tr key={i} className="border-b last:border-0">
-                        <td className="py-3">
+                        <td className="py-2.5">
                           <Skeleton className="h-5 w-20" />
                         </td>
-                        <td className="py-3">
+                        <td className="py-2.5">
                           <Skeleton className="h-5 w-12" />
                         </td>
-                        <td className="py-3">
+                        <td className="py-2.5">
                           <Skeleton className="h-5 w-14" />
                         </td>
-                        <td className="py-3">
+                        <td className="py-2.5">
                           <Skeleton className="h-5 w-28" />
                         </td>
                       </tr>
                     ))
-                  : allTiers.map((rowTier) => (
-                      <tr
-                        key={rowTier.id}
-                        className={`border-b last:border-0 ${
-                          rowTier.name === currentTier?.name
-                            ? 'bg-primary/5'
-                            : ''
-                        }`}
-                      >
-                        <td className="py-3">
-                          <div className="flex items-center gap-2">
-                            <TierArtwork
-                              tierName={rowTier.name}
-                              className="size-9 rounded-md"
-                            />
-                            <span
-                              className="font-semibold"
-                              style={{ color: rowTier.color || undefined }}
-                            >
-                              {rowTier.name}
-                            </span>
-                          </div>
-                          {rowTier.name === currentTier?.name && (
-                            <Badge
-                              variant="secondary"
-                              className="ml-2 text-[10px]"
-                            >
-                              {t('partner:performance.current')}
-                            </Badge>
-                          )}
-                        </td>
-                        <td className="py-3 font-medium tabular-nums">
-                          {formatRate(rowTier.commissionRate)}
-                        </td>
-                        <td className="py-3 tabular-nums">
-                          {'>='} {rowTier.minActiveClients}
-                        </td>
-                        <td className="py-3 tabular-nums">
-                          {formatVolumeRange(
-                            rowTier.minVolume,
-                            rowTier.maxVolume,
-                          )}
-                        </td>
-                      </tr>
-                    ))}
+                  : allTiers.map((rowTier) => {
+                      const isCurrent = rowTier.name === currentTier?.name;
+                      return (
+                        <tr
+                          key={rowTier.id}
+                          className={`border-b last:border-0 ${isCurrent ? 'bg-primary/5' : ''}`}
+                        >
+                          <td className="py-2.5">
+                            <div className="flex items-center gap-2">
+                              <TierArtwork
+                                tierName={rowTier.name}
+                                className="size-7 rounded"
+                              />
+                              <span
+                                className="text-xs font-semibold"
+                                style={{ color: rowTier.color || undefined }}
+                              >
+                                {rowTier.name}
+                              </span>
+                            </div>
+                          </td>
+                          <td className="py-2.5 text-xs tabular-nums">
+                            {formatRate(rowTier.commissionRate)}
+                          </td>
+                          <td className="py-2.5 text-xs tabular-nums">
+                            {'>='} {rowTier.minActiveClients}
+                          </td>
+                          <td className="py-2.5 text-xs tabular-nums">
+                            {formatVolumeRange(
+                              rowTier.minVolume,
+                              rowTier.maxVolume,
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
               </tbody>
             </table>
           </div>
-        </CardContent>
-      </Card>
+        </Card>
+      </div>
     </div>
   );
 }
 
-function ProgressRow({
-  icon,
+function MiniStatCard({
   label,
-  current,
-  target,
-  pct,
-  requirementMetLabel,
+  value,
+  icon: Icon,
+  isLoading,
 }: {
-  icon: React.ReactNode;
   label: string;
-  current: string | number;
-  target: string | number;
-  pct: number;
-  requirementMetLabel: string;
+  value: string;
+  icon: LucideIcon;
+  isLoading: boolean;
 }) {
   return (
-    <div className="space-y-2">
-      <div className="flex items-center justify-between text-sm">
-        <span className="flex items-center gap-1.5">
-          {icon}
-          {label}
-        </span>
-        <span className="font-medium tabular-nums">
-          {current} / {target}
-        </span>
+    <Card className="flex flex-col gap-3.5 p-5">
+      <div className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground">
+        <Icon className="size-4" strokeWidth={1.8} />
+        {label}
       </div>
-      <div className="h-2 overflow-hidden rounded-full bg-muted">
-        <div
-          className="h-full rounded-full bg-gradient-to-r from-primary to-primary-hover transition-all"
-          style={{ width: `${Math.max(pct, pct > 0 ? 1 : 0)}%` }}
-        />
-      </div>
-      <p className="text-xs text-muted-foreground">
-        {pct >= 100
-          ? requirementMetLabel
-          : pct < 1 && pct > 0
-            ? '< 1% complete'
-            : `${Math.floor(pct)}% complete`}
-      </p>
-    </div>
+      {isLoading ? (
+        <Skeleton className="h-8 w-24" />
+      ) : (
+        <span className="text-[1.75rem] font-semibold leading-none tracking-tight">
+          {value}
+        </span>
+      )}
+    </Card>
   );
 }

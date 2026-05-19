@@ -94,13 +94,11 @@ export function PartnerDashboardPage() {
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <div className="lg:col-span-2">
-          <ReferralLinkCard
-            code={partner?.referralCode ?? ''}
-            referralCount={summary?.activeReferrals ?? 0}
-          />
-        </div>
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <ReferralLinkCard
+          code={partner?.referralCode ?? ''}
+          referralCount={summary?.activeReferrals ?? 0}
+        />
         {tier ? <TierProgressCard progress={tier} /> : null}
       </div>
 
